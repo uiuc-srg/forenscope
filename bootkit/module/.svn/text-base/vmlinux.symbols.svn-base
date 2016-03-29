@@ -1,0 +1,62 @@
+# These are needed during boot... can't get rid of them.
+
+symbols="
+pg0			\
+swapper_pg_dir 		\
+INIT_MAP_BEYOND_END	\
+init_pg_tables_end	\
+__log_buf		\
+linux_banner		\
+__symbol_get 		\
+idt_descr 		\
+switch_to_new_gdt 	\
+per_cpu__init_tss 	\
+per_cpu__current_task 	\
+per_cpu__gdt_page 	\
+vt_console_driver 	\
+early_printk 		\
+hardirq_stack 		\
+sysrq_handle_reboot 	\
+kernel_execve 		\
+envp_init 		\
+sys_dup 		\
+sys_setsid 		\
+dev_get_by_name 	\
+force_sig 		\
+ide_timer_expiry 	\
+ide_hwifs 		\
+serio_reconnect_driver 	\
+psmouse_drv 		\
+ide_do_request 		\
+drive_is_ready 		\
+ide_do_reset 		\
+jiffies 		\
+loops_per_jiffy 	\
+do_settimeofday 	\
+rtc_tm_to_time 		\
+ktime_get_ts 		\
+i8042_enable_aux_port 	\
+i8042_set_mux_mode 	\
+i8042_enable_mux_ports 	\
+i8042_interrupt 	\
+i8042_resume 		\
+i8042_platform_device 	\
+i8042_controller_reset 	\
+i8042_ports 		\
+psmouse_reset 		\
+reset_pollfunc 		\
+default_idle 		\
+init_thread_union	\
+cpu_idle		\
+sys_call_table  	\
+syscall_table_size  	\
+elv_next_request 	\
+ratelimit_pages 	\
+reboot_buf		\
+page_buf		\
+proc_root		\
+proc_lookup		\
+proc_root_lookup	\
+dump_stack		\
+"
+

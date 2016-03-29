@@ -1,0 +1,1 @@
+cmd_drivers/char/ipmi/ipmi_si.o := ld -m elf_i386 -m elf_i386  -r -o drivers/char/ipmi/ipmi_si.o drivers/char/ipmi/ipmi_si_intf.o drivers/char/ipmi/ipmi_kcs_sm.o drivers/char/ipmi/ipmi_smic_sm.o drivers/char/ipmi/ipmi_bt_sm.o

@@ -1,0 +1,19 @@
+#! /bin/sh
+
+#sym="run_payload"
+log="/tmp/qemu.log"
+run_payload=`nm kernel | grep run_payload | cut -d " " -f 1`
+
+echo looking for $run_payload
+line=`grep -n $run_payload /tmp/qemu.log | cut -d ":" -f 1`
+
+lines=`wc -l /tmp/qemu.log | cut -d " " -f 1`
+echo found line $line
+
+echo expr $lines - $line
+cutlines=`expr $lines - $line`
+echo cutting $cutlines/$lines
+
+echo ---------------------------
+
+tail -n $cutlines /tmp/qemu.log

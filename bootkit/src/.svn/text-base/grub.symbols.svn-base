@@ -1,0 +1,24 @@
+# These are needed during boot... can't get rid of them.
+
+symbols="
+rawwrite \
+rawread \
+devread \
+grub_open \
+grub_read \
+fat_read \
+fsys_type \
+filepos \
+filemax \
+buf_drive \
+print_fsys_type \
+current_drive \
+blocklist_func \
+set_device \
+setup_part \
+open_device \
+disk_read_hook \
+disk_read_func \
+errnum \
+"
+

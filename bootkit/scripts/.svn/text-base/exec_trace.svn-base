@@ -1,0 +1,15 @@
+#! /bin/ksh
+nm vmlinux > syms
+
+LOG=qemu.log
+#INSTR="call"
+#FILTER="s/.*call   //g"
+INSTR="jmp"
+FILTER="s/.*jmp//g"
+
+#grep "0xc......." qemu.log | grep $INSTR | sed -e "s/0x//g" | while read i
+grep "0xc......." $LOG  | grep $INSTR | sed -e "s/0x//g" | sed -e "$FILTER" | grep "c......." | grep -v '%' | while read i
+do
+#	echo $addr
+	grep $i syms
+done

@@ -1,0 +1,1 @@
+cmd_drivers/ide/built-in.o :=  ld -m elf_i386 -m elf_i386  -r -o drivers/ide/built-in.o drivers/ide/pci/built-in.o drivers/ide/ide-core.o drivers/ide/ide-generic.o drivers/ide/ide-disk.o drivers/ide/ide-cd.o drivers/ide/legacy/built-in.o drivers/ide/arm/built-in.o drivers/ide/mips/built-in.o

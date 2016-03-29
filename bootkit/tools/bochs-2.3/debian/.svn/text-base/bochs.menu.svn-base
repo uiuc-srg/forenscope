@@ -1,0 +1,3 @@
+?package(bochs):needs="X11" section="Apps/Emulators" \
+ title="Bochs" command="/usr/bin/bochs"
+

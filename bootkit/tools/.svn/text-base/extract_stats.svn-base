@@ -1,0 +1,16 @@
+#! /bin/sh 
+
+echo "Usage: $0 <base filename>"
+[ $# -ne 1 ] && { echo "wrong args"; exit 0; }
+
+NAME=$1
+#STATS="Active Dirty Buffer Writeback"
+STATS="MemTotal MemFree Buffers Cached SwapCached Active Inactive HighTotal HighFree LowTotal LowFree SwapTotal SwapFree Dirty Writeback Mapped Slab Commited_AS PageTables VMallocTotal VMallocUsed VMallocChunk"
+
+for i in $STATS
+do
+	STAT="$i"
+	echo "Collecting $STAT $NAME.$STAT"
+	grep $STAT $NAME  | awk '{print $2}' > $NAME.$STAT
+	#grep $STAT $NAME  | sed -e "s/$STAT:.* ([0-9]+) kB/1/g" > $NAME.$STAT
+done

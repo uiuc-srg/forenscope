@@ -1,0 +1,1 @@
+cmd_arch/i386/kernel/vsyscall-syms.o := gcc -m32 -m elf_i386 -nostdlib -r -Wl,-T,arch/i386/kernel/vsyscall.lds arch/i386/kernel/vsyscall-sysenter.o arch/i386/kernel/vsyscall-note.o -o arch/i386/kernel/vsyscall-syms.o

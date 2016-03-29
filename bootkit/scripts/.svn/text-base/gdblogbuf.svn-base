@@ -1,0 +1,4 @@
+#! /bin/sh
+rm -f logbuf
+gdb -x scripts/gdblogbuf.gdb vmlinux
+less -f logbuf

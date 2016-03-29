@@ -1,0 +1,79 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/arch/cris/arch-v32
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+kernel
+dir
+
+Kconfig
+file
+
+
+
+
+2011-09-21T17:01:39.000000Z
+2c28c7d8d8ae58a457be415f2caafae7
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+boot
+dir
+
+vmlinux.lds.S
+file
+
+
+
+
+2011-09-21T17:01:39.000000Z
+a857e114cf4d8d8e3cb100994c145355
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+lib
+dir
+
+mm
+dir
+
+output_arch.ld
+file
+
+
+
+
+2011-09-21T17:01:39.000000Z
+75251740276bd1051d0857d9c3f5240c
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+drivers
+dir
+

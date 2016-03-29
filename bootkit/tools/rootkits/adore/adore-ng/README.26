@@ -1,0 +1,54 @@
+adore-ng works on kernel 2.6!
+
+2.6.{3,4,6,8,10,11,16} UP and SMP tested! i386 and x86_64 architecture.
+
+You need the module-init-tools for the new insmod, rmmod etc,
+the old ones don't work anymore.
+
+***************************************************************************
+* To build a adore for 2.6, use the "Makefile.2.6" Makefile
+* after you customized the elite UID etc. (or you did not,
+* I dont care at all).
+* Copy it to 'Makefile' and type 'make'.
+***************************************************************************
+
+The 2.6.0-test1 kernel has a different declaration for
+the unix_dgram_recvmg() function than the 2.6.x kernel. Thats
+why you may get some warning on 2.6.0 builds. You can ignore them.
+
+With the 2.6 kernel, a version magic is build into the kernel
+module (which are now .ko files carrying more info than
+the old .o files for 2.4) which is even checked at loading time.
+So, if the kernel is build with a different compiler than the
+one used for building the module, you get an error like:
+
+adore: version magic '2.6.3 586 gcc-3.2' should be '2.6.3 586 gcc-3.3'
+
+To circumvent this you can set an own version magic in the
+adore-ng.mod.c file (makes sense to use '2.6.3 586 gcc-3.3'
+in this case) if you use the generic Makefile.
+Or you set the -DCROSS_BUILD switch in the Makefile and
+modify the version magic string in adore-ng-2.6.c.
+
+LKM relinking ala Phrack61 is now also available for 2.6 kernels.
+Use 'relink26' script for this.
+
+2.6 kernels introduce a lot of changes during its lifetime.
+One of them is that newer GCC and therefore newer kernels enforce
+'const' on pointers. This means certain structures such as
+UNIX datagram ops are placed on read-only locations. This
+makes it impossible to hijack the syslog functions without
+crashing. Therefore adore-ng walkes the page tables and
+changes the UNIX dgram ops to read/write if it detects
+a >= 2.6.16 kernel. This condition might not be true
+in all cases. Maybe a newer GCC is installed with older kernels
+such as 2.6.10. For this reason you can add a -DMODIFY_PAGE_TABLE
+flag if you expect this. For systems such as x86-64 you also need to
+enable -DFOUR_LEVEL_PAGING since it uses different paging
+than x86. If you know a reliable way to automatically determine the
+levels of paging, mail me.
+
+Additionally the MODULE_PARM has been substituted by a module_param().
+
+S.
+

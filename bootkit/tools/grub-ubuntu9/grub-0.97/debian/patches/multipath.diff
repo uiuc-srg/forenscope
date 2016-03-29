@@ -1,0 +1,13 @@
+diff --git a/lib/device.c b/lib/device.c
+index 04a61f6..7e35b4a 100644
+--- a/lib/device.c
++++ b/lib/device.c
+@@ -1119,6 +1119,8 @@ write_to_partition (char **map, int drive, int partition,
+          (strncmp (dev, "/dev/cciss/", 11) == 0) ||
+          (strncmp (dev, "/dev/rd/", 8) == 0))
+         strcpy (dev + strlen(dev), "p");
++      else if (strncmp (dev, "/dev/mapper/mpath", 17) == 0)
++        strcpy (dev + strlen(dev), "-part");
+     }
+   sprintf (dev + strlen(dev), "%d", ((partition >> 16) & 0xFF) + 1);
+   

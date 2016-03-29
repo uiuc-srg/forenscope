@@ -1,0 +1,10 @@
+# last-good-boot
+#
+# Saves the last booted kernel
+
+description	"last kernel saver"
+author		"Ben Collins <ben.collins@canonical.com>"
+
+start on runlevel 2
+
+exec /usr/sbin/kernel-helper -u

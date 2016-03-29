@@ -1,0 +1,6 @@
+while true
+do
+	date
+	cat /proc/meminfo
+	sleep 1
+done

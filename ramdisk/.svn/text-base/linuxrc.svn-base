@@ -1,0 +1,13 @@
+#! /bin/sh
+export PATH=$PATH:/bin
+/busybox mount -o procfs /proc
+mkdir -p /sys
+/busybox mount -t sysfs none /sys
+/busybox mknod /dev/console c 5 1
+
+#mount -o ro -t ext3 /dev/hda1 /mnt 
+/busybox sh -c "mount /dev/hda1 /mnt"
+
+/busybox udhcpc
+
+/bin/sh

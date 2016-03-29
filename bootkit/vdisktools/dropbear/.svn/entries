@@ -1,0 +1,53 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/bootkit/vdisktools/dropbear
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2009-11-16T19:37:59.981965Z
+869
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+bin
+dir
+
+etc
+dir
+
+keys
+dir
+
+sbin
+dir
+
+startdropbear
+file
+
+
+
+
+2011-09-21T16:59:41.000000Z
+0e49e2e3bfcb237e1e46d22b39cf045f
+2009-11-16T19:37:59.981965Z
+869
+emchan
+has-props
+

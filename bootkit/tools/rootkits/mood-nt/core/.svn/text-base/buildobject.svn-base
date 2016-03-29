@@ -1,0 +1,6 @@
+#!/bin/bash
+echo ".data" > data.s
+echo "code_start:" >> data.s
+gcc -w -fno-builtin -I ../include -S -nostdlib -O0 -finline-functions kernelcore.c -o - | grep -vE "\.align|\.p2align|\.text|\.data|\.rodata|#|\.ident|\.file|\.version|\.note" >> data.s
+echo "code_end:" >> data.s
+gcc -nostdlib -fno-builtin -c data.s -o data.o

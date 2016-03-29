@@ -1,0 +1,14 @@
+Works:
+DR - Works in practice
+adore - works
+phalanx
+
+Almost works:
+mood-nt - Compiles, loads on forenscope... but causes segfaults
+
+
+Crashes/misbehaves:
+enyelkm - Compiles now.. but crashes upon load
+
+Won't compile:
+sk2rc2

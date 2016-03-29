@@ -1,0 +1,1 @@
+cmd_arch/i386/kernel/cpu/mtrr/built-in.o :=  ld -m elf_i386 -m elf_i386  -r -o arch/i386/kernel/cpu/mtrr/built-in.o arch/i386/kernel/cpu/mtrr/main.o arch/i386/kernel/cpu/mtrr/if.o arch/i386/kernel/cpu/mtrr/generic.o arch/i386/kernel/cpu/mtrr/state.o arch/i386/kernel/cpu/mtrr/amd.o arch/i386/kernel/cpu/mtrr/cyrix.o arch/i386/kernel/cpu/mtrr/centaur.o

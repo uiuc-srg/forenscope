@@ -1,0 +1,15 @@
+Index: iodev/ne2k.cc
+===================================================================
+--- iodev/ne2k.cc.orig	2006-05-30 01:33:38.000000000 +0300
++++ iodev/ne2k.cc	2007-08-02 06:55:12.000000000 +0300
+@@ -1275,8 +1275,8 @@ void bx_ne2k_c::rx_handler(void *arg, co
+  */
+ void bx_ne2k_c::rx_frame(const void *buf, unsigned io_len)
+ {
+-  unsigned pages;
+-  unsigned avail;
++  int pages;
++  int avail;
+   unsigned idx;
+   int wrapped;
+   int nextpage;

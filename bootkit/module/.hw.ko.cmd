@@ -1,0 +1,1 @@
+cmd_/home/ubuntu/forenscope/bootkit/module/hw.ko := ld -m elf_i386 -m elf_i386 -r -o /home/ubuntu/forenscope/bootkit/module/hw.ko /home/ubuntu/forenscope/bootkit/module/hw.o /home/ubuntu/forenscope/bootkit/module/hw.mod.o

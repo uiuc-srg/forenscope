@@ -1,0 +1,52 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/Documentation/ABI/stable
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+sysfs-module
+file
+
+
+
+
+2011-09-21T16:57:46.000000Z
+2e0fd2d2365898374a236d278acd3bb1
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+syscalls
+file
+
+
+
+
+2011-09-21T16:57:46.000000Z
+165c900800be76ab07a5a47b75e66120
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

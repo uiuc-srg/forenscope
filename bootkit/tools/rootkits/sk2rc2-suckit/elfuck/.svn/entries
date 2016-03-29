@@ -1,0 +1,75 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/bootkit/tools/rootkits/sk2rc2-suckit/elfuck
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2009-11-11T19:45:32.418438Z
+837
+amey
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+output
+file
+
+
+
+
+2011-09-21T16:59:21.000000Z
+1d6ccac3644f4e02c64a7addbe80e81e
+2009-11-11T19:31:08.990353Z
+836
+amey
+has-props
+
+include
+dir
+
+doc
+dir
+
+src
+dir
+
+ef
+file
+
+
+
+
+2011-09-21T16:59:21.000000Z
+3d010511916259d59f74059730e8309a
+2009-11-11T19:31:08.990353Z
+836
+amey
+has-props
+
+Makefile
+file
+
+
+
+
+2011-09-21T16:59:21.000000Z
+16a07f1f121512b42a687fa87e30ae41
+2009-11-11T19:31:08.990353Z
+836
+amey
+

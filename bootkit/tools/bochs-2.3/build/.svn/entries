@@ -1,0 +1,75 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/bootkit/tools/bochs-2.3/build
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2008-03-18T02:04:43.908387Z
+418
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+linux
+dir
+
+batch-build.perl
+file
+
+
+
+
+2011-09-21T16:58:24.000000Z
+3fce057166cd52358da72be0e8853f0b
+2008-03-18T02:04:43.908387Z
+418
+emchan
+has-props
+
+makeall.sh
+file
+
+
+
+
+2011-09-21T16:58:24.000000Z
+faaf23abc996dd883407aa1d160138ae
+2008-03-18T02:04:43.908387Z
+418
+emchan
+has-props
+
+debian
+dir
+
+macos
+dir
+
+win32
+dir
+
+redhat
+dir
+
+beos
+dir
+
+macosx
+dir
+

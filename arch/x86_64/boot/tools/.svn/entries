@@ -1,0 +1,52 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/arch/x86_64/boot/tools
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+build.c
+file
+
+
+
+
+2011-09-21T17:01:36.000000Z
+1e4e8d5156dde4ce83d76320e6e28b5e
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+.gitignore
+file
+
+
+
+
+2011-09-21T17:01:36.000000Z
+5ab6fb8bc4e43974c6e06df8c90d3848
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

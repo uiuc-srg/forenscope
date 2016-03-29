@@ -1,0 +1,52 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/drivers/rapidio/switches
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+tsi500.c
+file
+
+
+
+
+2011-09-21T17:02:23.000000Z
+7801aa9a86f29027217f3359a939b6bb
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+Makefile
+file
+
+
+
+
+2011-09-21T17:02:23.000000Z
+3e7c2e0237097595b86f2b7060929a50
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

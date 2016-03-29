@@ -1,0 +1,193 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2010-09-19T05:36:32.344333Z
+894
+venkata4
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+kernel
+dir
+
+crypto
+dir
+
+include
+dir
+
+net
+dir
+
+scripts
+dir
+
+sound
+dir
+
+ramdisk
+dir
+
+block
+dir
+
+README
+file
+
+
+
+
+2011-09-21T17:04:32.000000Z
+8a6e4b86934df52a1d87a634940737c7
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+CREDITS
+file
+
+
+
+
+2011-09-21T17:04:32.000000Z
+eea3fc6e60ca855a7a88f778d76a7595
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+.mailmap
+file
+
+
+
+
+2011-09-21T17:04:32.000000Z
+3186dcdcf95f3de2ee7c2f4174a862e7
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+init
+dir
+
+.gitignore
+file
+
+
+
+
+2011-09-21T17:04:32.000000Z
+b9dedfb0ffc98a5765bf7f62ff6ff642
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+lib
+dir
+
+security
+dir
+
+REPORTING-BUGS
+file
+
+
+
+
+2011-09-21T17:04:32.000000Z
+5151fb6b8a69fdbc2c8a9cc96de617be
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+fs
+dir
+
+COPYING
+file
+
+
+
+
+2011-09-21T17:04:32.000000Z
+d7810fab7487fb0aad327b76f1be7cd7
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+usr
+dir
+
+mm
+dir
+
+Documentation
+dir
+
+MAINTAINERS
+file
+
+
+
+
+2011-09-21T17:04:32.000000Z
+f64788ffd07f3bba21ead2027c4e6ca7
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+Kbuild
+file
+
+
+
+
+2011-09-21T17:04:32.000000Z
+1063a3350a6598e61580a0e0ed2b131e
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+bootkit
+dir
+
+ipc
+dir
+
+arch
+dir
+
+Makefile
+file
+
+
+
+
+2011-09-21T17:04:32.000000Z
+4fbdcb682d5ed8c3543e246f794c3537
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+drivers
+dir
+

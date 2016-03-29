@@ -1,0 +1,13 @@
+Index: bochs-2.3/iodev/hdimage.cc
+===================================================================
+--- bochs-2.3.orig/iodev/hdimage.cc	2006-09-17 02:28:23.000000000 +0300
++++ bochs-2.3/iodev/hdimage.cc	2006-09-17 02:28:53.000000000 +0300
+@@ -1586,7 +1586,7 @@ int z_undoable_image_t::open (const char
+                 sprintf (logname, "%s%s", pathname, UNDOABLE_REDOLOG_EXTENSION);
+         }
+ 
+-        if (redolog->open(logname,REDOLOG_SUBTYPE_UNDOABLE,size) < 0)
++        if (redolog->create(logname,REDOLOG_SUBTYPE_UNDOABLE,size) < 0)
+         {
+                 if (redolog->create(logname, REDOLOG_SUBTYPE_UNDOABLE, size) < 0)
+                 {

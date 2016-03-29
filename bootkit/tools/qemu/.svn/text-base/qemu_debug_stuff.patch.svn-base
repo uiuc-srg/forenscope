@@ -1,0 +1,264 @@
+Index: qemu-0.9.1/cpu-exec.c
+===================================================================
+--- qemu-0.9.1/cpu-exec.c	(revision 449)
++++ qemu-0.9.1/cpu-exec.c	(working copy)
+@@ -452,6 +452,7 @@
+                         svm_check_intercept(SVM_EXIT_INTR);
+                         env->interrupt_request &= ~(CPU_INTERRUPT_HARD | CPU_INTERRUPT_VIRQ);
+                         intno = cpu_get_pic_interrupt(env);
++                        if(intno == 8 && env->eip > 0xc0000000) fprintf(logfile, "emchan (DBLFAULT): Servicing hardware INT=0x%02x\n", intno);
+                         if (loglevel & CPU_LOG_TB_IN_ASM) {
+                             fprintf(logfile, "Servicing hardware INT=0x%02x\n", intno);
+                         }
+Index: qemu-0.9.1/monitor.c
+===================================================================
+--- qemu-0.9.1/monitor.c	(revision 449)
++++ qemu-0.9.1/monitor.c	(working copy)
+@@ -1355,6 +1355,10 @@
+       "", "show virtual to physical memory mappings", },
+     { "mem", "", mem_info,
+       "", "show the active virtual memory mappings", },
++    { "keyb", "", keyb_info,
++      "", "show keyboard state", },
++    { "pit", "", pit_info,
++      "", "show pit timer state", },
+ #endif
+     { "jit", "", do_info_jit,
+       "", "show dynamic compiler info", },
+Index: qemu-0.9.1/target-i386/helper.c
+===================================================================
+--- qemu-0.9.1/target-i386/helper.c	(revision 449)
++++ qemu-0.9.1/target-i386/helper.c	(working copy)
+@@ -597,6 +597,8 @@
+     uint32_t old_eip, sp_mask;
+     int svm_should_check = 1;
+ 
++	if(intno == 8) fprintf(logfile, "emchan (DBLFAULT) intno 8 %s\n", __FUNCTION__);
++
+     if ((env->intercept & INTERCEPT_SVM_MASK) && !is_int && next_eip==-1) {
+         next_eip = EIP;
+         svm_should_check = 0;
+@@ -844,6 +846,7 @@
+     target_ulong old_eip, esp, offset;
+     int svm_should_check = 1;
+ 
++	if(intno == 8) fprintf(logfile, "emchan (DBLFAULT) intno 8 %s\n", __FUNCTION__);
+     if ((env->intercept & INTERCEPT_SVM_MASK) && !is_int && next_eip==-1) {
+         next_eip = EIP;
+         svm_should_check = 0;
+@@ -1110,6 +1113,7 @@
+     uint32_t old_cs, old_eip;
+     int svm_should_check = 1;
+ 
++//	if(intno == 8) fprintf(logfile, "emchan (DBLFAULT) intno 8 %s\n", __FUNCTION__);
+     if ((env->intercept & INTERCEPT_SVM_MASK) && !is_int && next_eip==-1) {
+         next_eip = EIP;
+         svm_should_check = 0;
+@@ -1155,6 +1159,7 @@
+     int dpl, cpl, shift;
+     uint32_t e2;
+ 
++	if(intno == 8) fprintf(logfile, "emchan (DBLFAULT) intno 8 %s\n", __FUNCTION__);
+     dt = &env->idt;
+     if (env->hflags & HF_LMA_MASK) {
+         shift = 4;
+@@ -1185,6 +1190,7 @@
+ void do_interrupt(int intno, int is_int, int error_code,
+                   target_ulong next_eip, int is_hw)
+ {
++//	if(intno == 8) fprintf(logfile, "emchan (DBLFAULT) intno 8 %s\n", __FUNCTION__);
+     if (loglevel & CPU_LOG_INT) {
+         if ((env->cr[0] & CR0_PE_MASK)) {
+             static int count;
+@@ -1243,16 +1249,22 @@
+     char second_contributory = intno == 0 ||
+                                (intno >= 10 && intno <= 13);
+ 
++	if(intno == 8) fprintf(logfile, "emchan (DBLFAULT) intno 8 %s\n", __FUNCTION__);
+     if (loglevel & CPU_LOG_INT)
+-        fprintf(logfile, "check_exception old: %x new %x\n",
++        fprintf(logfile, "emchan check_exception old: %x new %x\n",
+                 env->old_exception, intno);
+ 
+     if (env->old_exception == EXCP08_DBLE)
++    {
++	fprintf(logfile, "emchan (TPLFAULT) intno 8 %s\n", __FUNCTION__);
+         cpu_abort(env, "triple fault");
++    }
+ 
+     if ((first_contributory && second_contributory)
+         || (env->old_exception == EXCP0E_PAGE &&
+             (second_contributory || (intno == EXCP0E_PAGE)))) {
++        fprintf(logfile, "emchan (DBLFAULT) intno 8 %s\n", __FUNCTION__);
++
+         intno = EXCP08_DBLE;
+         *error_code = 0;
+     }
+@@ -1275,9 +1287,13 @@
+ {
+     if (!is_int) {
+         svm_check_intercept_param(SVM_EXIT_EXCP_BASE + intno, error_code);
++	if(intno == 8)
++		fprintf(logfile, "emchan (DBLFAULT) raise_interrupt check_exception old: %x new %x\n",
++				env->old_exception, intno);
+         intno = check_exception(intno, &error_code);
+     }
+ 
++	if(intno == 8) fprintf(logfile, "emchan (DBLFAULT) intno 8 %s\n", __FUNCTION__);
+     env->exception_index = intno;
+     env->error_code = error_code;
+     env->exception_is_int = is_int;
+Index: qemu-0.9.1/target-i386/helper2.c
+===================================================================
+--- qemu-0.9.1/target-i386/helper2.c	(revision 449)
++++ qemu-0.9.1/target-i386/helper2.c	(working copy)
+@@ -724,6 +724,7 @@
+ {
+     env->cr[3] = new_cr3;
+     if (env->cr[0] & CR0_PG_MASK) {
++        fprintf(logfile, "emchan CR3 update: CR3=" TARGET_FMT_lx " func=%x\n", new_cr3, env->eip);
+ #if defined(DEBUG_MMU)
+         printf("CR3 update: CR3=" TARGET_FMT_lx "\n", new_cr3);
+ #endif
+Index: qemu-0.9.1/hw/i8254.c
+===================================================================
+--- qemu-0.9.1/hw/i8254.c	(revision 449)
++++ qemu-0.9.1/hw/i8254.c	(working copy)
+@@ -417,6 +417,31 @@
+     }
+ }
+ 
++void pit_info(void)
++{
++    PITState *pit = &pit_state;
++    PITChannelState *s;
++    int i;
++
++    for(i = 0; i < 3; i++) {
++        s = &pit->channels[i];
++	term_printf("count=%08x, latched_count=%04x, count_latched=%02x, status_latched=%02x, status=%02x, read_state=%02x, write_state=%02x, write_latch=%02x, rw_mode=%02x, mode=%02x, bcd=%02x, gate=%02x, count_load_time=%02x\n",
++        s->count,
++        s->latched_count,
++        s->count_latched,
++        s->status_latched,
++        s->status,
++        s->read_state,
++        s->write_state,
++        s->write_latch,
++        s->rw_mode,
++        s->mode,
++        s->bcd,
++        s->gate,
++        s->count_load_time);
++    }
++}
++
+ static int pit_load(QEMUFile *f, void *opaque, int version_id)
+ {
+     PITState *pit = opaque;
+Index: qemu-0.9.1/hw/i8259.c
+===================================================================
+--- qemu-0.9.1/hw/i8259.c	(revision 449)
++++ qemu-0.9.1/hw/i8259.c	(working copy)
+@@ -220,6 +220,7 @@
+         s->irr &= ~(1 << irq);
+ }
+ 
++extern FILE* logfile;
+ int pic_read_irq(PicState2 *s)
+ {
+     int irq, irq2, intno;
+@@ -236,14 +237,17 @@
+                 irq2 = 7;
+             }
+             intno = s->pics[1].irq_base + irq2;
++//	    if(intno == 8) fprintf(logfile, "emchan irq2 (DBLFAULT) intno 8 %s\n", __FUNCTION__);
+             irq = irq2 + 8;
+         } else {
+             intno = s->pics[0].irq_base + irq;
++//	    if(intno == 8) fprintf(logfile, "emchan irqo (DBLFAULT) intno 8 %s irqbase=%d irq=%d\n", __FUNCTION__, s->pics[0].irq_base, irq);
+         }
+     } else {
+         /* spurious IRQ on host controller */
+         irq = 7;
+         intno = s->pics[0].irq_base + irq;
++//	if(intno == 8) fprintf(logfile, "emchan spurious (DBLFAULT) intno 8 %s\n", __FUNCTION__);
+     }
+     pic_update_irq(s);
+ 
+Index: qemu-0.9.1/hw/pckbd.c
+===================================================================
+--- qemu-0.9.1/hw/pckbd.c	(revision 449)
++++ qemu-0.9.1/hw/pckbd.c	(working copy)
+@@ -448,3 +448,16 @@
+ #endif
+     qemu_register_reset(kbd_reset, s);
+ }
++
++void keyb_info(void)
++{
++    term_printf("emchan: keyb info\n");
++    term_printf("write_cmd=%02x status=%02x "
++	        "mode=%02x pending=%02x || "
++		"kbd=%08x irq=%d base=%08x "
++		"it_shift=%08x\n",
++		kbd_state.write_cmd, kbd_state.status,
++		kbd_state.mode, kbd_state.pending,
++		kbd_state.kbd, kbd_state.irq_kbd, kbd_state.base,
++		kbd_state.it_shift);
++}
+Index: qemu-0.9.1/hw/pc.c
+===================================================================
+--- qemu-0.9.1/hw/pc.c	(revision 449)
++++ qemu-0.9.1/hw/pc.c	(working copy)
+@@ -90,7 +90,7 @@
+         i440fx_set_smm(i440fx_state, (env->hflags >> HF_SMM_SHIFT) & 1);
+ }
+ 
+-
++extern FILE* logfile;
+ /* IRQ handling */
+ int cpu_get_pic_interrupt(CPUState *env)
+ {
+@@ -101,6 +101,9 @@
+         /* set irq request if a PIC irq is still pending */
+         /* XXX: improve that */
+         pic_update_irq(isa_pic);
++	    if(intno == 8 && env->eip > 0xc0000000) 
++			fprintf(logfile, "emchanapic (DBLFAULT) cpu_get_pic_interrupt\n");
++//	fprintf(logfile, "emchan apicint\n");
+         return intno;
+     }
+     /* read the irq from the PIC */
+@@ -108,6 +111,11 @@
+         return -1;
+ 
+     intno = pic_read_irq(isa_pic);
++
++    if(intno == 8 && env->eip > 0xc0000000) 
++                fprintf(logfile, "emchanisa (DBLFAULT) cpu_get_pic_interrupt\n");
++
++ //   fprintf(logfile, "emchan isaint\n");
+     return intno;
+ }
+ 
+Index: qemu-0.9.1/hw/pc.h
+===================================================================
+--- qemu-0.9.1/hw/pc.h	(revision 449)
++++ qemu-0.9.1/hw/pc.h	(working copy)
+@@ -46,6 +46,7 @@
+ void ioapic_set_irq(void *opaque, int vector, int level);
+ 
+ /* i8254.c */
++void pit_info(void);
+ 
+ #define PIT_FREQ 1193182
+ 
+@@ -66,6 +67,7 @@
+ void *vmmouse_init(void *m);
+ 
+ /* pckbd.c */
++void keyb_info(void);
+ 
+ void i8042_init(qemu_irq kbd_irq, qemu_irq mouse_irq, uint32_t io_base);
+ void i8042_mm_init(qemu_irq kbd_irq, qemu_irq mouse_irq,

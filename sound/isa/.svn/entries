@@ -1,0 +1,184 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/sound/isa
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+Kconfig
+file
+
+
+
+
+2011-09-21T16:57:11.000000Z
+d91cc28d2650343b408cda691006103c
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+als100.c
+file
+
+
+
+
+2011-09-21T16:57:11.000000Z
+365ef817aad9bf929d87a637d14f4c53
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+es18xx.c
+file
+
+
+
+
+2011-09-21T16:57:11.000000Z
+5806acc0bb641a461c7d12d1ac4bb6e9
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+opti9xx
+dir
+
+azt2320.c
+file
+
+
+
+
+2011-09-21T16:57:11.000000Z
+1b7ac2b093f78e7a40a15883aaf0b00e
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+cs423x
+dir
+
+sgalaxy.c
+file
+
+
+
+
+2011-09-21T16:57:11.000000Z
+416e13e6657c195413bb8cb8229aa9d2
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+adlib.c
+file
+
+
+
+
+2011-09-21T16:57:11.000000Z
+575b02c1c67448a14be0cc5de7e49b3f
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+es1688
+dir
+
+gus
+dir
+
+sscape.c
+file
+
+
+
+
+2011-09-21T16:57:11.000000Z
+13229ef85dfa925b67b00ba486911b9c
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+sb
+dir
+
+opl3sa2.c
+file
+
+
+
+
+2011-09-21T16:57:11.000000Z
+fa0f1a8a8dbbe0392c19a033d0791ca0
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+ad1816a
+dir
+
+cmi8330.c
+file
+
+
+
+
+2011-09-21T16:57:11.000000Z
+c5ff3b6a388fc7e3bd1bcbf6823d917e
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+ad1848
+dir
+
+dt019x.c
+file
+
+
+
+
+2011-09-21T16:57:11.000000Z
+2521722e9f43f08b6b901892d8d74874
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+wavefront
+dir
+
+Makefile
+file
+
+
+
+
+2011-09-21T16:57:11.000000Z
+cc768aab1eaebc21e407c2cf3f9775da
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

@@ -1,0 +1,45 @@
+Bochs supports several user interface plugins, the following is the
+current list:
+
+  - wx
+  - sdl
+  - x
+  - svga
+  - term
+
+In this document we will refer with '%ui%' to any of those plugins.
+In Debian those are split in independent packages, having installed
+the bochs-%ui% package we could use it in one of the following ways:
+
+1) Run it only once, using command line parameters.
+
+	$ bochs -q 'config_interface:textconfig display_library:%ui%'
+
+2) To make %ui% the default.
+
+    Edit '.bochsrc', change the 'config_interface' and 'display_library'
+    settings to:
+
+	config_interface: textconfig
+	display_library: %ui%
+
+    Run it:
+
+	$ bochs
+
+3) Use an %ui% config file occasionaly.
+
+    Copy your '.bochsrc' file:
+
+	$ cp .bochsrc .bochsrc.%ui%
+
+    Edit '.bochsrc.%ui%', change the 'config_interface' and
+    'display_library' settings to:
+
+	config_interface: textconfig
+	display_library: %ui%
+
+    Run bochs with the '-f' switch:
+
+	$ bochs -f .bochsrc.%ui%
+

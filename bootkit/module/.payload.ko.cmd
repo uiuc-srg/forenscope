@@ -1,0 +1,1 @@
+cmd_/home/ubuntu/forenscope/bootkit/module/payload.ko := ld -m elf_i386 -m elf_i386 -r -o /home/ubuntu/forenscope/bootkit/module/payload.ko /home/ubuntu/forenscope/bootkit/module/payload.o /home/ubuntu/forenscope/bootkit/module/payload.mod.o

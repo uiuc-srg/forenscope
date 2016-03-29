@@ -1,0 +1,604 @@
+http://pdos.csail.mit.edu/6.828/2005/readings/i386/toc.htm
+
+http://www.cs.princeton.edu/courses/archive/fall06/cos318/precepts/bochs.html
+http://pdos.csail.mit.edu/6.828/2005/lec/lec8-slides.pdf
+http://www.cs.virginia.edu/~evans/cs216/guides/x86.html
+
+Init memory cannot be freed if we are going to call the device driver init functions again.
+
+Looks like we can work around the softirq problem by using 4k stacks, which 
+allows the interrupt handler to use a separate stack called the hardirq_stack. 
+From this perspective, we just search for the return address of the call to native_machine_emergency restart. Of course, we won't see it on the stack immediately when just calling native_machine_emergency_restart, since the value of sysrq_handle_test_reboot()+offset will be present, so we'll need to back up the stack frames until we see a familiar context. If we do rewind the stack properly, then we can fake a return from this interrupt.
+
+Stack on x86 Linux is a decrementing stack (grows down).
+
+Here's an example. esp=0xc0407e94 before the call to emergency_restart(),
+we need to restore this value.
+
+#0  native_machine_emergency_restart () at arch/i386/kernel/reboot.c:332
+#1  0xc010c9d9 in machine_emergency_restart () at arch/i386/kernel/reboot.c:393
+#2  0xc0121378 in emergency_restart () at kernel/sys.c:789
+#3  0xc01d631f in sysrq_handle_test_reboot (key=<value optimized out>, 
+    tty=<value optimized out>) at drivers/char/sysrq.c:172
+#4  0xc01d603b in __handle_sysrq (key=122, tty=0xc13b0000, check_mask=1)
+    at drivers/char/sysrq.c:455
+#5  0xc01d6108 in handle_sysrq (key=122, tty=0xc13b0000)
+    at drivers/char/sysrq.c:487
+
+If we probe the stack, we see:
+0xc0407e80 <hardirq_stack+3712>:        0xc010c9d9      0xc0407e8c      0xc0121378      0xc0407eb0
+0xc0407e90 <hardirq_stack+3728>:       *0xc01d631f*     0xc0243428      0xc025452c      0x00010102
+0xc0407ea0 <hardirq_stack+3744>:        0x00000000      0xc026c000      0xc0407eac      0x00000000
+0xc0407eb0 <hardirq_stack+3760>:        0xc0407ed8      0xc01d603b      0xc023eff9
+
+0xc01d631f is the return for sysrq_handle_test_reboot, which lies at address 0xc0407e90. We need to find this address, and add 4, since something else is popped onto the stack also. 
+
+The other open question is what mode the processor is in during interrupt context. Here's an "info registers" in the keyboard handler.
+
+(gdb) info registers
+eax            0x61     97
+ecx            0xc0407000       -1069518848
+edx            0x10102  65794
+ebx            0xc0263410       -1071238128
+esp            0xc0407e80       0xc0407e80
+ebp            0xc0407e84       0xc0407e84
+esi            0x1      1
+edi            0x7a     122
+eip            0xc010cad0       0xc010cad0 <native_machine_emergency_restart>
+eflags         0x286    [ PF SF IF ]
+cs             0x60     96
+ss             0x68     104
+ds             0x7b     123
+es             0x7b     123
+fs             0x0      0
+gs             0x0      0
+
+Here's QEMU's info registers:
+(qemu) info registers 
+at sysrq_handle_test_reboot
+
+EAX=0000007a EBX=c0263410 ECX=c0407000 EDX=c1350000
+ESI=00000001 EDI=0000007a EBP=c0407eb0 ESP=c0407e94
+EIP=c01d62c6 EFL=00000092 [--S-A--] CPL=0 II=0 A20=1 HLT=0
+ES =007b 00000000 ffffffff 00cff300
+CS =0060 00000000 ffffffff 00cf9a00
+SS =0068 00000000 ffffffff 00cf9300
+DS =007b 00000000 ffffffff 00cff300
+FS =0000 00000000 00000000 00000000
+GS =0000 00000000 00000000 00000000
+LDT=0000 00000000 00000000 00008000
+TR =0080 c0254de0 00002073 c0008925
+GDT=     c0259000 000000ff
+IDT=     c0269000 000007ff
+CR0=8005003b CR2=080a47c8 CR3=0785a000 CR4=00000690
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+XMM00=00000000000000000000000000000000 XMM01=00000000000000000000000000000000
+XMM02=00000000000000000000000000000000 XMM03=00000000000000000000000000000000
+XMM04=00000000000000000000000000000000 XMM05=00000000000000000000000000000000
+XMM06=00000000000000000000000000000000 XMM07=00000000000000000000000000000000
+
+CR2, CR3 differ from idle and also arbitrary kernel addresses. CR2, CR3 same as other sysrq call. CS, SS, GS differ from "busy". CR2, CR3 differ from "busy".
+
+Right before calling emergency_restart():
+(qemu) info registers 
+EAX=00000061 EBX=c0263410 ECX=c0407000 EDX=00010002
+ESI=00000001 EDI=0000007a EBP=c0407eb0 ESP=c0407e94
+EIP=c01d631a EFL=00000286 [--S--P-] CPL=0 II=0 A20=1 HLT=0
+ES =007b 00000000 ffffffff 00cff300
+CS =0060 00000000 ffffffff 00cf9a00
+SS =0068 00000000 ffffffff 00cf9300
+DS =007b 00000000 ffffffff 00cff300
+FS =0000 00000000 00000000 00000000
+GS =0000 00000000 00000000 00000000
+LDT=0000 00000000 00000000 00008000
+TR =0080 c0254de0 00002073 c0008925
+GDT=     c0259000 000000ff
+IDT=     c0269000 000007ff
+CR0=8005003b CR2=080a47c8 CR3=0785a000 CR4=00000690
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+XMM00=00000000000000000000000000000000 XMM01=00000000000000000000000000000000
+XMM02=00000000000000000000000000000000 XMM03=00000000000000000000000000000000
+XMM04=00000000000000000000000000000000 XMM05=00000000000000000000000000000000
+XMM06=00000000000000000000000000000000 XMM07=00000000000000000000000000000000
+
+(gdb) info all-registers 
+eax            0x61     97
+ecx            0xc0407000       -1069518848
+edx            0x10002  65538
+ebx            0xc0263410       -1071238128
+esp            0xc0407e94       0xc0407e94
+ebp            0xc0407eb0       0xc0407eb0
+esi            0x1      1
+edi            0x7a     122
+eip            0xc01d631a       0xc01d631a <sysrq_handle_test_reboot+90>
+eflags         0x286    [ PF SF IF ]
+cs             0x60     96
+ss             0x68     104
+ds             0x7b     123
+es             0x7b     123
+fs             0x0      0
+gs             0x0      0
+st0            0        (raw 0x00000000000000000000)
+st1            0        (raw 0x00000000000000000000)
+st2            0        (raw 0x00000000000000000000)
+st3            0        (raw 0x00000000000000000000)
+st4            0        (raw 0x00000000000000000000)
+st5            0        (raw 0x00000000000000000000)
+st6            0        (raw 0x00000000000000000000)
+st7            0        (raw 0x00000000000000000000)
+fctrl          0x37f    895
+fstat          0x0      0
+ftag           0x0      0
+fiseg          0x0      0
+fioff          0x0      0
+foseg          0x0      0
+fooff          0x0      0
+fop            0x0      0
+xmm0           {v4_float = {0x0, 0x0, 0x0, 0x0}, v2_double = {0x0, 0x0}, v16_int8 = {0x0 <repeats 16 times>}, v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, v4_int32 = {
+    0x0, 0x0, 0x0, 0x0}, v2_int64 = {0x0, 0x0}, uint128 = 0x00000000000000000000000000000000}
+xmm1           {v4_float = {0x0, 0x0, 0x0, 0x0}, v2_double = {0x0, 0x0}, v16_int8 = {0x0 <repeats 16 times>}, v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, v4_int32 = {
+    0x0, 0x0, 0x0, 0x0}, v2_int64 = {0x0, 0x0}, uint128 = 0x00000000000000000000000000000000}
+xmm2           {v4_float = {0x0, 0x0, 0x0, 0x0}, v2_double = {0x0, 0x0}, v16_int8 = {0x0 <repeats 16 times>}, v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, v4_int32 = {
+    0x0, 0x0, 0x0, 0x0}, v2_int64 = {0x0, 0x0}, uint128 = 0x00000000000000000000000000000000}
+xmm3           {v4_float = {0x0, 0x0, 0x0, 0x0}, v2_double = {0x0, 0x0}, v16_int8 = {0x0 <repeats 16 times>}, v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, v4_int32 = {
+    0x0, 0x0, 0x0, 0x0}, v2_int64 = {0x0, 0x0}, uint128 = 0x00000000000000000000000000000000}
+xmm4           {v4_float = {0x0, 0x0, 0x0, 0x0}, v2_double = {0x0, 0x0}, v16_int8 = {0x0 <repeats 16 times>}, v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, v4_int32 = {
+    0x0, 0x0, 0x0, 0x0}, v2_int64 = {0x0, 0x0}, uint128 = 0x00000000000000000000000000000000}
+xmm5           {v4_float = {0x0, 0x0, 0x0, 0x0}, v2_double = {0x0, 0x0}, v16_int8 = {0x0 <repeats 16 times>}, v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, v4_int32 = {
+    0x0, 0x0, 0x0, 0x0}, v2_int64 = {0x0, 0x0}, uint128 = 0x00000000000000000000000000000000}
+---Type <return> to continue, or q <return> to quit---
+xmm6           {v4_float = {0x0, 0x0, 0x0, 0x0}, v2_double = {0x0, 0x0}, v16_int8 = {0x0 <repeats 16 times>}, v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, v4_int32 = {
+    0x0, 0x0, 0x0, 0x0}, v2_int64 = {0x0, 0x0}, uint128 = 0x00000000000000000000000000000000}
+xmm7           {v4_float = {0x0, 0x0, 0x0, 0x0}, v2_double = {0x0, 0x0}, v16_int8 = {0x0 <repeats 16 times>}, v8_int16 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}, v4_int32 = {
+    0x0, 0x0, 0x0, 0x0}, v2_int64 = {0x0, 0x0}, uint128 = 0x00000000000000000000000000000000}
+mxcsr          0x0      [ ]
+mm0            {uint64 = 0x0, v2_int32 = {0x0, 0x0}, v4_int16 = {0x0, 0x0, 0x0, 0x0}, v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}}
+mm1            {uint64 = 0x0, v2_int32 = {0x0, 0x0}, v4_int16 = {0x0, 0x0, 0x0, 0x0}, v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}}
+mm2            {uint64 = 0x0, v2_int32 = {0x0, 0x0}, v4_int16 = {0x0, 0x0, 0x0, 0x0}, v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}}
+mm3            {uint64 = 0x0, v2_int32 = {0x0, 0x0}, v4_int16 = {0x0, 0x0, 0x0, 0x0}, v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}}
+mm4            {uint64 = 0x0, v2_int32 = {0x0, 0x0}, v4_int16 = {0x0, 0x0, 0x0, 0x0}, v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}}
+mm5            {uint64 = 0x0, v2_int32 = {0x0, 0x0}, v4_int16 = {0x0, 0x0, 0x0, 0x0}, v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}}
+mm6            {uint64 = 0x0, v2_int32 = {0x0, 0x0}, v4_int16 = {0x0, 0x0, 0x0, 0x0}, v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}}
+mm7            {uint64 = 0x0, v2_int32 = {0x0, 0x0}, v4_int16 = {0x0, 0x0, 0x0, 0x0}, v8_int8 = {0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0, 0x0}}
+
+When running "busy" loop:
+(qemu) info registers 
+EAX=00000001 EBX=00000000 ECX=00000000 EDX=080ba8d0
+ESI=00020616 EDI=00000003 EBP=bfb19798 ESP=bfb19780
+EIP=08048220 EFL=00000202 [-------] CPL=3 II=0 A20=1 HLT=0
+ES =007b 00000000 ffffffff 00cff300
+CS =0073 00000000 ffffffff 00cffa00
+SS =007b 00000000 ffffffff 00cff300
+DS =007b 00000000 ffffffff 00cff300
+FS =0000 00000000 00000000 00000000
+GS =0033 080bc830 ffffffff 08dff30b
+LDT=0000 00000000 00000000 00008000
+TR =0080 c0254de0 00002073 c0008925
+GDT=     c0259000 000000ff
+IDT=     c0269000 000007ff
+CR0=8005003b CR2=b7f98000 CR3=0787b000 CR4=00000690
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+XMM00=00000000000000000000000000000000 XMM01=00000000000000000000000000000000
+XMM02=00000000000000000000000000000000 XMM03=00000000000000000000000000000000
+XMM04=00000000000000000000000000000000 XMM05=00000000000000000000000000000000
+XMM06=00000000000000000000000000000000 XMM07=00000000000000000000000000000000
+
+Notice how CPL is 3 in user mode.
+
+Again with "busy":
+(qemu) info registers 
+EAX=00000001 EBX=00000000 ECX=00000000 EDX=080ba8d0
+ESI=00020616 EDI=00000003 EBP=bfb19798 ESP=bfb19780
+EIP=08048220 EFL=00000202 [-------] CPL=3 II=0 A20=1 HLT=0
+ES =007b 00000000 ffffffff 00cff300
+CS =0073 00000000 ffffffff 00cffa00
+SS =007b 00000000 ffffffff 00cff300
+DS =007b 00000000 ffffffff 00cff300
+FS =0000 00000000 00000000 00000000
+GS =0033 080bc830 ffffffff 08dff30b
+LDT=0000 00000000 00000000 00008000
+TR =0080 c0254de0 00002073 c0008925
+GDT=     c0259000 000000ff
+IDT=     c0269000 000007ff
+CR0=8005003b CR2=b7f98000 CR3=0787b000 CR4=00000690
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+XMM00=00000000000000000000000000000000 XMM01=00000000000000000000000000000000
+XMM02=00000000000000000000000000000000 XMM03=00000000000000000000000000000000
+XMM04=00000000000000000000000000000000 XMM05=00000000000000000000000000000000
+XMM06=00000000000000000000000000000000 XMM07=00000000000000000000000000000000
+
+Last time with "busy":
+(qemu) info registers 
+EAX=00000001 EBX=00000000 ECX=00000000 EDX=080ba8d0
+ESI=00020616 EDI=00000003 EBP=bfb19798 ESP=bfb19780
+EIP=08048220 EFL=00000202 [-------] CPL=3 II=0 A20=1 HLT=0
+ES =007b 00000000 ffffffff 00cff300
+CS =0073 00000000 ffffffff 00cffa00
+SS =007b 00000000 ffffffff 00cff300
+DS =007b 00000000 ffffffff 00cff300
+FS =0000 00000000 00000000 00000000
+GS =0033 080bc830 ffffffff 08dff30b
+LDT=0000 00000000 00000000 00008000
+TR =0080 c0254de0 00002073 c0008925
+GDT=     c0259000 000000ff
+IDT=     c0269000 000007ff
+CR0=8005003b CR2=b7f98000 CR3=0787b000 CR4=00000690
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+XMM00=00000000000000000000000000000000 XMM01=00000000000000000000000000000000
+XMM02=00000000000000000000000000000000 XMM03=00000000000000000000000000000000
+XMM04=00000000000000000000000000000000 XMM05=00000000000000000000000000000000
+XMM06=00000000000000000000000000000000 XMM07=00000000000000000000000000000000
+
+Register state in idle loop:
+(qemu) info registers 
+EAX=ffff9004 EBX=ffffffff ECX=c026c000 EDX=c0102ae0
+ESI=c028323d EDI=c1301b9d EBP=c026cfc8 ESP=c026cfc4
+EIP=c0102ae0 EFL=00000246 [---Z-P-] CPL=0 II=0 A20=1 HLT=0
+ES =007b 00000000 ffffffff 00cff300
+CS =0060 00000000 ffffffff 00cf9a00
+SS =0068 00000000 ffffffff 00cf9300
+DS =007b 00000000 ffffffff 00cff300
+FS =0000 00000000 00000000 00000000
+GS =0000 00000000 00000000 00000000
+LDT=0000 00000000 00000000 00008000
+TR =0080 c0254de0 00002073 c0008925
+GDT=     c0259000 000000ff
+IDT=     c0269000 000007ff
+CR0=8005003b CR2=080a5414 CR3=0782e000 CR4=00000690
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+XMM00=00000000000000000000000000000000 XMM01=00000000000000000000000000000000
+XMM02=00000000000000000000000000000000 XMM03=00000000000000000000000000000000
+XMM04=00000000000000000000000000000000 XMM05=00000000000000000000000000000000
+XMM06=00000000000000000000000000000000 XMM07=00000000000000000000000000000000
+
+Once again in "idle":
+(qemu) info registers 
+EAX=ffff9007 EBX=ffffffff ECX=c026c000 EDX=c0102ae0
+ESI=c028323d EDI=c1301b9d EBP=c026cfc8 ESP=c026cfc4
+EIP=c0102ae0 EFL=00000246 [---Z-P-] CPL=0 II=0 A20=1 HLT=0
+ES =007b 00000000 ffffffff 00cff300
+CS =0060 00000000 ffffffff 00cf9a00
+SS =0068 00000000 ffffffff 00cf9300
+DS =007b 00000000 ffffffff 00cff300
+FS =0000 00000000 00000000 00000000
+GS =0000 00000000 00000000 00000000
+LDT=0000 00000000 00000000 00008000
+TR =0080 c0254de0 00002073 c0008925
+GDT=     c0259000 000000ff
+IDT=     c0269000 000007ff
+CR0=8005003b CR2=080a5414 CR3=0782e000 CR4=00000690
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+XMM00=00000000000000000000000000000000 XMM01=00000000000000000000000000000000
+XMM02=00000000000000000000000000000000 XMM03=00000000000000000000000000000000
+XMM04=00000000000000000000000000000000 XMM05=00000000000000000000000000000000
+XMM06=00000000000000000000000000000000 XMM07=00000000000000000000000000000000
+
+Arbitrary kernel addresses:
+(qemu) info registers 
+EAX=00007f83 EBX=ffffffff ECX=00000000 EDX=00000000
+ESI=c028323d EDI=c1301b9d EBP=c026cfc0 ESP=c026cfc0
+EIP=c0102b26 EFL=00000206 [-----P-] CPL=0 II=0 A20=1 HLT=1
+ES =007b 00000000 ffffffff 00cff300
+CS =0060 00000000 ffffffff 00cf9a00
+SS =0068 00000000 ffffffff 00cf9300
+DS =007b 00000000 ffffffff 00cff300
+FS =0000 00000000 00000000 00000000
+GS =0000 00000000 00000000 00000000
+LDT=0000 00000000 00000000 00008000
+TR =0080 c0254de0 00002073 c0008925
+GDT=     c0259000 000000ff
+IDT=     c0269000 000007ff
+CR0=8005003b CR2=080a5414 CR3=0782e000 CR4=00000690
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+XMM00=00000000000000000000000000000000 XMM01=00000000000000000000000000000000
+XMM02=00000000000000000000000000000000 XMM03=00000000000000000000000000000000
+XMM04=00000000000000000000000000000000 XMM05=00000000000000000000000000000000
+XMM06=00000000000000000000000000000000 XMM07=00000000000000000000000000000000
+
+The only difference here is the P flag in the eflags register.
+
+------------------------
+Now that the registers are cool, we're dying at the return from
+the sysrq handler, which accesses the keyboard_tasklet.
+
+IN: 
+0xc01d6108:  mov    (%esp,1),%ebx
+0xc01d610b:  mov    0x4(%esp,1),%esi
+0xc01d610f:  mov    %ebp,%esp
+0xc01d6111:  pop    %ebp
+0xc01d6112:  ret    
+
+----------------
+IN: 
+0xc01d042f:  jmp    0xc01d00df <--------- BOOM kbd_event+31
+
+Servicing hardware INT=0x08
+----------------
+IN: 
+0xc010d600:  push   %ebp
+0xc010d601:  mov    %esp,%ebp
+0xc010d603:  push   %ebx
+0xc010d604:  sub    $0x1c,%esp
+
+-------------------------------
+Normal return point of sysrq kbd handler:
+info registers 
+EAX=00000000 EBX=*00000019 ECX=c0407000 EDX=*00010001
+ESI=00000001 EDI=*c13a3000 EBP=c0407f10 ESP=c0407ef0
+EIP=c01d042f EFL=00000086 [--S--P-] CPL=0 II=0 A20=1 HLT=0
+ES =007b 00000000 ffffffff 00cff300
+CS =0060 00000000 ffffffff 00cf9a00
+SS =0068 00000000 ffffffff 00cf9300
+DS =007b 00000000 ffffffff 00cff300
+FS =0000 00000000 00000000 00000000
+GS =0000 00000000 00000000 00000000
+*LDT=0000 00000000 00000000 00008000
+*TR =0080 c0254de0 00002073 c0008925
+GDT=     c0259000 000000ff
+IDT=     c0269000 000007ff
+CR0=8005003b CR2=080a47c8 CR3=*07870000 CR4=00000690
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+XMM00=00000000000000000000000000000000 XMM01=00000000000000000000000000000000
+XMM02=00000000000000000000000000000000 XMM03=00000000000000000000000000000000
+XMM04=00000000000000000000000000000000 XMM05=00000000000000000000000000000000
+XMM06=00000000000000000000000000000000 XMM07=00000000000000000000000000000000
+
+Bootjacked sysrq kbd handler registers:
+(qemu) info registers 
+EAX=00000000 EBX=0000002c ECX=c0407000 EDX=00010101
+ESI=00000001 EDI=c13a9000 EBP=c0407f10 ESP=c0407ef0
+EIP=c01d042f EFL=00000086 [--S--P-] CPL=0 II=0 A20=1 HLT=0
+ES =007b 00000000 ffffffff 00cff300
+CS =0060 00000000 ffffffff 00cf9a00
+SS =0068 00000000 ffffffff 00cf9300
+DS =007b 00000000 ffffffff 00cff300
+FS =0000 00000000 00000000 00000000
+GS =0000 00000000 00000000 00000000
+LDT=0000 00000000 0000ffff 00008000
+TR =0000 00000000 0000ffff 00008000
+GDT=     c0259000 000000ff
+IDT=     c0269000 000007ff
+CR0=8005003b CR2=080a47c8 CR3=00401000 CR4=00000690
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+XMM00=00000000000000000000000000000000 XMM01=00000000000000000000000000000000
+XMM02=00000000000000000000000000000000 XMM03=00000000000000000000000000000000
+XMM04=00000000000000000000000000000000 XMM05=00000000000000000000000000000000
+XMM06=00000000000000000000000000000000 XMM07=00000000000000000000000000000000
+
+----------------------------------
+Look for emergency_restart() on the stack frame... sysrq has grabbed some nasty locks...
+This is the best place because it has the fewest saved regs: ebp and eip
+
+The best place to return is:
+Dump of assembler code for function sysrq_handle_test_reboot:
+0xc01daab0 <sysrq_handle_test_reboot+0>:        push   %ebp
+0xc01daab1 <sysrq_handle_test_reboot+1>:        mov    %esp,%ebp
+0xc01daab3 <sysrq_handle_test_reboot+3>:        sub    $0x1c,%esp
+0xc01daab6 <sysrq_handle_test_reboot+6>:        movl   $0x0,0xfffffffc(%ebp)
+0xc01daabd <sysrq_handle_test_reboot+13>:       call   0xc012f7c0 <lockdep_off>
+0xc01daac2 <sysrq_handle_test_reboot+18>:       call   0xc01304c0 <trace_hardirqs_on>
+0xc01daac7 <sysrq_handle_test_reboot+23>:       sti    
+0xc01daac8 <sysrq_handle_test_reboot+24>:       lea    0xfffffffc(%ebp),%eax
+0xc01daacb <sysrq_handle_test_reboot+27>:       mov    0xc025e000,%edx
+0xc01daad1 <sysrq_handle_test_reboot+33>:       mov    %eax,0x14(%esp)
+0xc01daad5 <sysrq_handle_test_reboot+37>:       mov    0x4(%edx),%eax
+0xc01daad8 <sysrq_handle_test_reboot+40>:       mov    %eax,0x10(%esp)
+0xc01daadc <sysrq_handle_test_reboot+44>:       mov    0xa4(%edx),%eax
+0xc01daae2 <sysrq_handle_test_reboot+50>:       add    $0x18c,%edx
+0xc01daae8 <sysrq_handle_test_reboot+56>:       mov    %eax,0xc(%esp)
+0xc01daaec <sysrq_handle_test_reboot+60>:       mov    %esp,%eax
+0xc01daaee <sysrq_handle_test_reboot+62>:       and    $0xfffff000,%eax
+0xc01daaf3 <sysrq_handle_test_reboot+67>:       mov    0x14(%eax),%eax
+0xc01daaf6 <sysrq_handle_test_reboot+70>:       mov    %edx,0x4(%esp)
+0xc01daafa <sysrq_handle_test_reboot+74>:       movl   $0xc0249a3c,(%esp)
+0xc01dab01 <sysrq_handle_test_reboot+81>:       mov    %eax,0x8(%esp)
+0xc01dab05 <sysrq_handle_test_reboot+85>:       call   0xc0115600 <printk>
+0xc01dab0a <sysrq_handle_test_reboot+90>:       call   0xc0121460 <emergency_restart>
+0xc01dab0f <sysrq_handle_test_reboot+95>:       leave  <------
+0xc01dab10 <sysrq_handle_test_reboot+96>:       ret    
+
+EAX=00000061 EBX=c02696f0 ECX=c040f000 EDX=00010102
+ESI=00000001 EDI=0000007a EBP=c040feb0 ESP=c040fe94
+EIP=c01dab0a EFL=00000286 [--S--P-] CPL=0 II=0 A20=1 HLT=0
+Restore point is 0xc01dab0f (call addr - 5)... scan stack for call to emergency_restart + 5
+4 bytes before that is the value of %ebp
+%esp is derived by %ebp - 0x1c (7 vars pushed, asm code actually performs a sub in the prologue)
+ES =007b 00000000 ffffffff 00cff300
+CS =0060 00000000 ffffffff 00cf9a00
+SS =0068 00000000 ffffffff 00cf9300
+DS =007b 00000000 ffffffff 00cff300
+FS =0000 00000000 00000000 00000000
+GS =0000 00000000 00000000 00000000
+LDT=0000 00000000 00000000 00008000
+TR =0080 c025ade0 00002073 c0008925
+GDT=     c025f000 000000ff
+IDT=     c0271000 000007ff
+CR0=8005003b CR2=080a5414 CR3=078d0000 CR4=00000690
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+XMM00=00000000000000000000000000000000 XMM01=00000000000000000000000000000000
+XMM02=00000000000000000000000000000000 XMM03=00000000000000000000000000000000
+XMM04=00000000000000000000000000000000 XMM05=00000000000000000000000000000000
+XMM06=00000000000000000000000000000000 XMM07=00000000000000000000000000000000
+
+Ok... test seems to confirm that this approach will work.
+
+Dies at 0xc01d48cf.
+
+Investigate behavior of ltr.
+
+----------------------------
+EAX=00000061 EBX=c026a6f0 ECX=c0411000 EDX=00010002
+ESI=00000001 EDI=0000007a EBP=c0411eb0 ESP=c0411e94
+EIP=c01dab1a EFL=00000286 [--S--P-] CPL=0 II=0 A20=1 SMM=0 HLT=0
+Ret eip: 0xc01dab1f
+ES =007b 00000000 ffffffff 00cff300
+CS =0060 00000000 ffffffff 00cf9a00
+SS =0068 00000000 ffffffff 00cf9300
+DS =007b 00000000 ffffffff 00cff300
+FS =0000 00000000 00000000 00000000
+GS =0000 00000000 00000000 00000000
+LDT=0000 00000000 00000000 00008000
+TR =0080 c025bde0 00002073 c0008925
+GDT=     c0260000 000000ff
+IDT=     c0272000 000007ff
+CR0=8005003b CR2=080a47c8 CR3=078ee000 CR4=00000690
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+XMM00=00000000000000000000000000000000 XMM01=00000000000000000000000000000000
+XMM02=00000000000000000000000000000000 XMM03=00000000000000000000000000000000
+XMM04=00000000000000000000000000000000 XMM05=00000000000000000000000000000000
+XMM06=00000000000000000000000000000000 XMM07=00000000000000000000000000000000
+
+Find the init task's CR3:
+p/x init_task->active_mm->pgd
+-----------------
+Fixed CR3 problem. Needed to read it from init_task, and fix the page table
+address banding issue.
+-----------------
+Seems like the next crash point is in note_interrupt. It's called tons of
+times.
+
+------------------
+Looks like we're dying here:
+0xc01061af <do_softirq+31>:     mov    0xfffffff4(%ebp),%ebx
+0xc01061b2 <do_softirq+34>:     mov    0xfffffff8(%ebp),%esi
+0xc01061b5 <do_softirq+37>:     mov    0xfffffffc(%ebp),%edi
+0xc01061b8 <do_softirq+40>:     mov    %ebp,%esp
+0xc01061ba <do_softirq+42>:     pop    %ebp
+0xc01061bb <do_softirq+43>:     ret  <----------------********
+
+This corresponds to in_interrupt() == true, preempt count is positive.
+ 
+----------------------------------
+TSS magic:
+http://library.n0i.net/hardware/intel80386/Chap7.html
+
+----------------------------------
+Of course the system crashes upon restore... CR3 needs to be the
+exact value of the active process, otherwise it can't return to
+the user-space code... need to find a way to sync them up. Follow
+TSS??
+
+----------------------------------
+We're on the wrong stack:
+
+Bootjacker deadbeat stack:
+(gdb) x/10xw ($esp-0x20)
+0xc0275f38 <init_thread_union+3896>:    0xc0115605      0xc0275f6a      0xc0240669      0x00000034
+0xc0275f48 <init_thread_union+3912>:    0x0000003c      0x0006c170      0x00000000      0x1a639ff8
+0xc0275f58 <init_thread_union+3928>:    0x00000046      0x00000055
+
+proper Linux stack:
+(gdb) x/10xw ($esp-0x20)
+0xc1fc2c78:     0x00000000      0x00000001      0xc1fc10a0      0x00000001
+0xc1fc2c88:     0xc1fc2ca4      0x00000000      0xc0140990      0xc1fc2c9c
+0xc1fc2c98:     0xc0119858      0xc1fc2cc4
+
+----------------------------------
+We die in restore_nocheck_notrace, set bp on general_protection
+IN: 
+0xc010418b:  pop    %ebx
+0xc010418c:  pop    %ecx
+0xc010418d:  pop    %edx
+0xc010418e:  pop    %esi
+0xc010418f:  pop    %edi
+0xc0104190:  pop    %ebp
+0xc0104191:  pop    %eax
+0xc0104192:  pop    %ds <------------
+
+----------------
+IN: 
+0xc0203a70:  push   $0xc0105cf0
+0xc0203a75:  jmp    0xc0203860
+
+
+----------------
+Preempt disabled
+
+(qemu) info registers 
+EAX=00000001 EBX=c0265590 ECX=c0114b3f EDX=c126e000
+ESI=00000001 EDI=00000062 EBP=c040ceb0 ESP=c040ceb0
+EIP=c01d707e EFL=00000202 [-------] CPL=0 II=1 A20=1 SMM=0 HLT=0
+*****ret=0xc01d7083
+ES =007b 00000000 ffffffff 00cff300
+CS =0060 00000000 ffffffff 00cf9a00
+SS =0068 00000000 ffffffff 00cf9300
+DS =007b 00000000 ffffffff 00cff300
+FS =0000 00000000 00000000 00000000
+GS =0000 00000000 00000000 00000000
+LDT=0000 00000000 00000000 00008000
+TR =0080 c0256de0 00002073 c0008925
+GDT=     c025b000 000000ff
+IDT=     c026d000 000007ff
+CR0=8005003b CR2=080a47c8 CR3=01838000 CR4=00000690
+FCW=037f FSW=0000 [ST=0] FTW=00 MXCSR=00001f80
+FPR0=0000000000000000 0000 FPR1=0000000000000000 0000
+FPR2=0000000000000000 0000 FPR3=0000000000000000 0000
+FPR4=0000000000000000 0000 FPR5=0000000000000000 0000
+FPR6=0000000000000000 0000 FPR7=0000000000000000 0000
+XMM00=00000000000000000000000000000000 XMM01=00000000000000000000000000000000
+XMM02=00000000000000000000000000000000 XMM03=00000000000000000000000000000000
+XMM04=00000000000000000000000000000000 XMM05=00000000000000000000000000000000
+XMM06=00000000000000000000000000000000 XMM07=00000000000000000000000000000000
+
+-----------------------------
+set breakpoint at do_invalid_op, do_trap, signal_wake_up.
+
+Breakpoint 10, do_trap (trapnr=6, signr=4, str=0xc0239e08 "invalid opcode", 
+    vm86=0, regs=0xc1fd2fb8, error_code=0, info=0xc1fd2f28)
+    at arch/i386/kernel/traps.c:463
+
+(gdb) p/x regs->eip
+$3 = 0x810ae38
+
+1: x/i $eip  0xc0104dd2 <do_trap+18>:   mov    %eax,%esi
+(gdb) p/x regs->eip
+$4 = 0x810ae38
+

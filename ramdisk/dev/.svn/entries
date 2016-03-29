@@ -1,0 +1,41 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/ramdisk/dev
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2009-11-16T00:58:00.127531Z
+854
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+mkconsole
+file
+
+
+
+
+2011-09-21T16:57:17.000000Z
+90d34cf9290caedafc8fdbabf1fcecf3
+2009-11-16T00:58:00.127531Z
+854
+emchan
+has-props
+

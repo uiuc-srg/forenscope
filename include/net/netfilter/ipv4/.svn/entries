@@ -1,0 +1,52 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/include/net/netfilter/ipv4
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+nf_conntrack_icmp.h
+file
+
+
+
+
+2011-09-21T16:56:17.000000Z
+ef3250bbb6002a91d620509ece605752
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+nf_conntrack_ipv4.h
+file
+
+
+
+
+2011-09-21T16:56:17.000000Z
+9236fbc80c71cb2ab8a888e1750bea49
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

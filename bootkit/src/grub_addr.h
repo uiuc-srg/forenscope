@@ -1,0 +1,20 @@
+
+#define kk_rawwrite		0x0000fd8e
+#define kk_rawread		0x0000fa30
+#define kk_devread		0x0000fd0d
+#define kk_grub_open		0x0001130a
+#define kk_grub_read		0x000114fb
+#define kk_fat_read		0x00012303
+#define kk_fsys_type		0x000204c4
+#define kk_filepos		0x0002be3c
+#define kk_filemax		0x0002be10
+#define kk_buf_drive		0x000204c0
+#define kk_print_fsys_type		0x00010018
+#define kk_current_drive		0x000204c8
+#define kk_blocklist_func		0x0000a7d0
+#define kk_set_device		0x00010604
+#define kk_setup_part		0x00010db8
+#define kk_open_device		0x00010d99
+#define kk_disk_read_hook		0x00021274
+#define kk_disk_read_func		0x00021270
+#define kk_errnum		0x00021264

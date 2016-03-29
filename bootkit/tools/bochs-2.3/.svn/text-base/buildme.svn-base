@@ -1,0 +1,4 @@
+#! /bin/sh
+
+CC=gcc-3.4 CXX=g++-3.4 ./configure --disable-docbook --enable-debugger --enable-disasm --enable-vbe
+make

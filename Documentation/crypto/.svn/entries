@@ -1,0 +1,52 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/Documentation/crypto
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+api-intro.txt
+file
+
+
+
+
+2011-09-21T16:57:47.000000Z
+b1a5bf2fe8353d98deed8dbbe6fefff5
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+descore-readme.txt
+file
+
+
+
+
+2011-09-21T16:57:47.000000Z
+cea76759e24fb66610e29e9ac6f5ad9d
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

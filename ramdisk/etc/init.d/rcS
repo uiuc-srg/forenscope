@@ -1,0 +1,13 @@
+#! /bin/sh
+/busybox mount -o procfs /proc
+mkdir -p /sys
+/busybox mount -t sysfs none /sys
+
+mount -o rw /dev/hda1 /mnt 
+mount /dev/hdc /cdrom
+/busybox udhcpc
+sleep 1
+/busybox httpd -p 8080 -h /www
+
+# Run custom RC files.
+/cdrom/rcS

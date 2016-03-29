@@ -1,0 +1,88 @@
+bochs for Debian
+----------------
+
+In order to use Bochs you need to follow these steps:
+
+  - Gunzip the sample bochsrc file (in examples/bochsrc.gz) into ~/.bochsrc.
+
+  - Take a look at ~/.bochsrc and adapt it to your needs. In particular you
+    need to set the "boot:" parameter. The default is to use /dev/cdrom for
+    boot. If you want to start from floppy or hard disk you'll need to
+    change that.
+
+  - Now invoke bochs from command line or from the menu entry.
+
+
+Upstream documentation
+----------------------
+
+It's in the bochs-doc package. Start with index.html.
+
+
+sb16ctrl
+--------
+
+The sb16ctrl utility can be used to query the emulated SB16 device from
+WITHIN the emulator. You can compile it with:
+
+	gcc sb16ctrl.c -o sb16ctrl
+
+Add -static if you're not certain that the libc version of the guest
+and the system where you compile are the same.
+
+If your guest OS is debian-based there's a "sb16ctrl-bochs" package you
+can use.
+
+
+amd64 / x86-64 support
+----------------------
+
+amd64 support in Bochs turned out to be not mature enough to be enabled
+as default in the package, but you can easily re-enable it by adding
+"--enable-x86-64" to conf_args in debian/rules and rebuilding the bochs
+package.
+
+You can find an image of Linux, the kernel, for x86-64 in
+<http://bochs.sourceforge.net/diskimages.html>.
+
+The site <http://www.x86-64.org/> contains an x86-64 toolchain, cpu
+specification and other resources.
+
+
+Bochs as init
+-------------
+
+By telling your kernel to use /etc/bochs-init/init.sh as init, you can turn
+your system into a Bochs-only environment. This may be useful for simulating
+that you have an i386-based PC on different hardware platforms. It is mainly
+targetted at embedded systems or some such.
+
+If your kernel is Linux (which is the most likely), you need to pass
+"init=/etc/bochs-init/init.sh" as a kernel parameter.
+
+Beware that Bochs is not particularly dessigned to be secure from local
+attacks. This will let any user with physical access to the system to run
+Bochs. Don't use this feature if you're concerned about local security.
+
+
+Source tree
+-----------
+
+This package's orig file contains a pristine Bochs source tree, with some
+slight modifications.
+
+I had to remove the propietary VGA BIOS software in bios/VGABIOS-elpin-2.40,
+which is not free software as per the DFSG.
+
+
+EtherBoot support
+-----------------
+
+To be able to use EtherBoot within Bochs you can read the following
+info:
+
+	<http://wiki.etherboot.org/pmwiki.php/Main/EtherbootBochs>
+
+The pseudo NIC is now enabled by default, so there is no need to rebuild
+the package.
+

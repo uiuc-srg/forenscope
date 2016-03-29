@@ -1,0 +1,3 @@
+version=3
+opts="uversionmangle=s/^[0-9]./0./" \
+ftp://alpha.gnu.org/gnu/grub/grub-([0-9.]+).tar.gz debian uupdate

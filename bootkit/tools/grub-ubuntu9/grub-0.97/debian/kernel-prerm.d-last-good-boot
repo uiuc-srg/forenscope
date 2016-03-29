@@ -1,0 +1,5 @@
+#!/bin/sh
+# Make sure a last-good-boot exists before removing any kernels.
+if [ -x /usr/sbin/kernel-helper ]; then
+	/usr/sbin/kernel-helper -i
+fi

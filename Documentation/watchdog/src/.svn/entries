@@ -1,0 +1,52 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/Documentation/watchdog/src
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+watchdog-simple.c
+file
+
+
+
+
+2011-09-21T16:57:43.000000Z
+7f2cc84c2cef76de2231a6cb728b458f
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+watchdog-test.c
+file
+
+
+
+
+2011-09-21T16:57:43.000000Z
+b6a916a8d65ee69c5fb82defa29003e0
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

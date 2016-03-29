@@ -1,0 +1,54 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/ramdisk/usr/share/udhcpc
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2008-04-06T03:35:29.036320Z
+498
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+default.deconfig
+file
+
+
+
+
+2011-09-21T16:57:17.000000Z
+cbb0411e42d0e14cb4c51db342a545a6
+2008-04-06T03:35:29.036320Z
+498
+emchan
+has-props
+
+default.script
+file
+
+
+
+
+2011-09-21T16:57:17.000000Z
+432666e3b9153cda78ca9fc8fe66e51e
+2008-04-06T03:35:29.036320Z
+498
+emchan
+has-props
+

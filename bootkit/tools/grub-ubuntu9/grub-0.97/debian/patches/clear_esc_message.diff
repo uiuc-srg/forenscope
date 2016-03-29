@@ -1,0 +1,28 @@
+diff --git a/stage2/stage2.c b/stage2/stage2.c
+index 9fd4b36..9182498 100644
+--- a/stage2/stage2.c
++++ b/stage2/stage2.c
+@@ -237,7 +237,7 @@ static void
+ run_menu (char *menu_entries, char *config_entries, int num_entries,
+ 	  char *heap, int entryno)
+ {
+-  int c, time1, time2 = -1, first_entry = 0;
++  int c, time1, time2 = -1, first_entry = 0, clear_esc_message = 0;
+   char *cur_entry = 0;
+   struct term_entry *prev_term = NULL;
+ 
+@@ -312,10 +312,14 @@ restart:
+ 	      /* Print a message.  */
+ 	      grub_printf ("\rPress `ESC' to enter the menu... %d   ",
+ 			   grub_timeout);
++	      clear_esc_message = 1;
+ 	    }
+ 	}
+     }
+ 
++  if (clear_esc_message)
++      grub_printf ("\r                                     ");
++
+   /* Only display the menu if the user wants to see it. */
+   if (show_menu)
+     {

@@ -1,0 +1,77 @@
+.\"Document Author:  Guillem Jover   -   <guillem@debian.org>
+.TH sb16ctrl 1 2006-02-09 sb16ctrl "The Bochs Project"
+.\"SKIP_SECTION"
+.SH NAME
+sb16ctrl \- SoundBlaster16 emulator control program for Bochs
+.\"SKIP_SECTION"
+.SH USAGE
+.B sb16ctrl
+.RI [ options ]
+.\"SKIP_SECTION"
+.SH DESCRIPTION
+.LP
+sb16ctrl is a program to control the operation of the SoundBlaster16
+emulator for bochs.
+.\".\"DONT_SPLIT"
+.SH OPTIONS
+.LP
+Any number of commands can be given. If none are present "\-f \-"
+is assumed. The value "#" can be decimal, octal (first digit 0)
+or hexadecimal (0x..).
+.TP
+.BI \-i #
+show the selected emulator info string
+.TP
+.BI \-t #,#,#,#,#,#
+load the patch translation into the emulator
+.TP
+.BI \-r
+resets the patch translation table
+.TP
+.BI \-m #,...
+sends the given midi message (up to 255 bytes)
+.TP
+.BI \-f filename
+loads commands from the given file, or stdin if "\-"
+.TP
+.BI \-v
+be verbose
+.\"SKIP_SECTION"
+.SH LICENSE
+This program is distributed under the terms of the GNU
+Lesser General Public License as published by the Free
+Software Foundation. See the COPYING file located in
+/usr/local/share/doc/bochs/ for details on the license and
+the lack of warrantee.
+.\"SKIP_SECTION"
+.SH AVAILABILITY
+The latest version of this program can be found at:
+  http://bochs.sourceforge.net/getcurrent.html
+.\"SKIP_SECTION"
+.SH SEE ALSO
+.BR bochs (1),
+.BR bochsrc (5),
+.BR bochs-dlx (1),
+.BR bximage (1).
+.PP
+.nf
+The Bochs IA-32 Emulator site on the World Wide Web:
+  http://bochs.sourceforge.net
+
+Online Bochs Documentation:
+   http://bochs.sourceforge.net/doc/docbook
+.fi
+.\"SKIP_SECTION"
+.SH AUTHORS
+sb16ctrl was written by Josef Drexler.
+.\"SKIP_SECTION"
+.SH BUGS
+Please report all bugs to the bug tracker on our web site.
+Just go to http://bochs.sourceforge.net, and click "Bug
+Reports" on the sidebar under "Feedback."
+.PP
+Provide a detailed description of the bug, the version of
+the program you are running, the operating system you are
+running the program on and the operating system you are
+running in the emulator.
+

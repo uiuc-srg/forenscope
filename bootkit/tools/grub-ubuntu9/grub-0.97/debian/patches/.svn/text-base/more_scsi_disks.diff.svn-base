@@ -1,0 +1,113 @@
+Index: b/lib/device.c
+===================================================================
+--- a/lib/device.c
++++ b/lib/device.c
+@@ -599,7 +599,10 @@
+ {
+ #if defined(__linux__)
+   /* GNU/Linux */
+-  sprintf (name, "/dev/sd%c", unit + 'a');
++  if (unit < 26)
++    sprintf (name, "/dev/sd%c", unit + 'a');
++  else
++    sprintf (name, "/dev/sd%c%c", unit / 26 - 1 + 'a', unit % 26 + 'a');
+ #elif defined(__GNU__)
+   /* GNU/Hurd */
+   sprintf (name, "/dev/sd%d", unit);
+@@ -955,6 +958,9 @@
+ 	  char name[PATH_MAX];
+ 	  struct stat st;
+ 
++	  if (num_hd + 0x80 >= NUM_DISKS)
++	    break;
++
+ 	  /* Linux creates symlinks "/dev/discs/discN" for convenience.
+ 	     The way to number disks is the same as GRUB's.  */
+ 	  sprintf (discn, "/dev/discs/disc%d", num_hd);
+@@ -980,6 +986,9 @@
+   for (i = 0; i < 16; i++)
+     {
+       char name[16];
++
++      if (num_hd + 0x80 >= NUM_DISKS)
++	break;
+       
+       get_virtio_disk_name (name, i);
+       if (check_device (name))
+@@ -996,6 +1005,9 @@
+   for (i = 0; i < 8; i++)
+     {
+       char name[16];
++
++      if (num_hd + 0x80 >= NUM_DISKS)
++	break;
+       
+       get_ide_disk_name (name, i);
+       if (check_device (name))
+@@ -1013,6 +1025,9 @@
+     {
+       char name[20];
+ 
++      if (num_hd + 0x80 >= NUM_DISKS)
++	break;
++
+       get_ataraid_disk_name (name, i);
+       if (check_device (name))
+         {
+@@ -1025,9 +1040,16 @@
+ #endif /* __linux__ */
+ 
+   /* The rest is SCSI disks.  */
++#ifdef __linux__
++  for (i = 0; i < 256; i++)
++#else
+   for (i = 0; i < 16; i++)
++#endif
+     {
+       char name[16];
++
++      if (num_hd + 0x80 >= NUM_DISKS)
++	break;
+       
+       get_scsi_disk_name (name, i);
+       if (check_device (name))
+@@ -1053,6 +1075,9 @@
+ 	for (drive = 0; drive < 15; drive++)
+ 	  {
+ 	    char name[24];
++
++	    if (num_hd + 0x80 >= NUM_DISKS)
++	      break;
+ 	    
+ 	    get_dac960_disk_name (name, controller, drive);
+ 	    if (check_device (name))
+@@ -1073,6 +1098,9 @@
+     for (unit = 'a'; unit < 'f'; unit++)
+       {
+         char name[24];
++
++	if (num_hd + 0x80 >= NUM_DISKS)
++	  break;
+     
+         get_i2o_disk_name (name, unit);
+         if (check_device (name))
+@@ -1102,6 +1130,9 @@
+ 	for (drive = 0; drive < 9; drive++)
+ 	  {
+ 	    char name[24];
++
++	    if (num_hd + 0x80 >= NUM_DISKS)
++	      break;
+ 	    
+ 	    get_cciss_disk_name (name, controller, drive);
+ 	    if (check_device (name))
+@@ -1132,6 +1163,9 @@
+ 	for (drive = 0; drive < 9; drive++)
+ 	  {
+ 	    char name[24];
++
++	    if (num_hd + 0x80 >= NUM_DISKS)
++	      break;
+ 	    
+ 	    get_ida_disk_name (name, controller, drive);
+ 	    if (check_device (name))

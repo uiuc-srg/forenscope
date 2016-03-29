@@ -1,0 +1,1 @@
+./vdisktools/dropbear/bin/dbclient -p 8022 -i ./vdisktools/dropbear/keys/loginkey root@localhost

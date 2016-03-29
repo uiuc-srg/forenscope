@@ -1,0 +1,2 @@
+- Added regparm and vsyscalls support. Warning, it works only on kernels
+  < 2.6.20

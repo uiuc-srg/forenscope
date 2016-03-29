@@ -1,0 +1,309 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>SRG | Systems Software Research Group @ University of Illinois at Urbana-Champaign</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="http://srg.cs.illinois.edu/srg/blogapi/rsd" />
+
+<link rel="alternate" type="application/rss+xml" title="SRG RSS" href="http://srg.cs.illinois.edu/srg/rss.xml" />
+
+  <link type="text/css" rel="stylesheet" media="all" href="http://srg.cs.illinois.edu/srg/modules/node/node.css?s" />
+<link type="text/css" rel="stylesheet" media="all" href="http://srg.cs.illinois.edu/srg/modules/system/defaults.css?s" />
+<link type="text/css" rel="stylesheet" media="all" href="http://srg.cs.illinois.edu/srg/modules/system/system.css?s" />
+<link type="text/css" rel="stylesheet" media="all" href="http://srg.cs.illinois.edu/srg/modules/system/system-menus.css?s" />
+<link type="text/css" rel="stylesheet" media="all" href="http://srg.cs.illinois.edu/srg/modules/user/user.css?s" />
+<link type="text/css" rel="stylesheet" media="all" href="http://srg.cs.illinois.edu/srg/sites/all/modules/img_assist/img_assist.css?s" />
+<link type="text/css" rel="stylesheet" media="all" href="http://srg.cs.illinois.edu/srg/sites/all/modules/tagadelic/tagadelic.css?s" />
+<link type="text/css" rel="stylesheet" media="all" href="http://srg.cs.illinois.edu/srg/sites/all/modules/biblio/biblio.css?s" />
+<link type="text/css" rel="stylesheet" media="all" href="http://srg.cs.illinois.edu/srg/sites/all/themes/simply_modern/style.css?s" />
+<link type="text/css" rel="stylesheet" media="all" href="http://srg.cs.illinois.edu/srg/sites/all/themes/simply_modern/css/green.css?s" />
+  <script type="text/javascript" src="http://srg.cs.illinois.edu/srg/misc/jquery.js?s"></script>
+<script type="text/javascript" src="http://srg.cs.illinois.edu/srg/misc/drupal.js?s"></script>
+<script type="text/javascript" src="http://srg.cs.illinois.edu/srg/sites/all/modules/img_assist/img_assist.js?s"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+jQuery.extend(Drupal.settings, { "basePath": "/srg/", "googleanalytics": { "trackOutgoing": 1, "trackMailto": 1, "trackDownload": 1, "trackDownloadExtensions": "7z|aac|avi|csv|doc|exe|flv|gif|gz|jpe?g|js|mp(3|4|e?g)|mov|pdf|phps|png|ppt|rar|sit|tar|torrent|txt|wma|wmv|xls|xml|zip" } });
+//--><!]]>
+</script>
+  <script type="text/javascript"> </script>
+  <!--
+  // this block of JS is supposed to extend the suckerfish rollovers, but it
+  // seems to have no effect that I can perceive except to change the background
+  // color and keep it hard encoded: not css dependant
+  <script type="text/javascript">
+  $(document).ready(function(){
+    // Code for extending suckerfish rollovers
+    $("#suckerfishmenu .content ul.menu:first > li").hover(function(event){
+      $(this).children("> a").css("background",$("#footer a").css("color"));
+    },function(event){
+      $(this).children("> a").css("background","#3f3f3f");
+    });
+  });  
+  </script>
+  -->
+      <style type="text/css">
+    #page, #squeeze-top {
+      width : 872px;
+    }
+    #top-center {
+      width : 850px;
+    }
+    #top-container {
+    padding:0;
+    }
+    #squeeze-top {
+      background:#020202 url('/srg/sites/all/themes/simply_modern/images/top_gradient_dark.jpg') repeat-x;
+      margin:0 auto;
+    }
+    </style>
+        <style type="text/css">
+    body.sidebar-left #main {
+      margin-left: -210px;
+    }
+    body.sidebars #main {
+      margin-left: -210px;
+    }
+    body.sidebar-left #squeeze {
+      margin-left: 210px;
+    }
+    body.sidebars #squeeze {
+      margin-left: 210px;
+    }
+    #sidebar-left {
+      width: 210px;
+    }
+    </style>
+        <style type="text/css">
+    body.sidebar-right #main {
+      margin-right: -210px;
+    }
+    body.sidebars #main {
+      margin-right: -210px;
+    }
+    body.sidebar-right #squeeze {
+      margin-right: 210px;
+    }
+    body.sidebars #squeeze {
+      margin-right: 210px;
+    }
+    #sidebar-right {
+      width: 210px;
+    }
+    </style>
+        <style type="text/css">
+    body {
+      font-family : Arial, Verdana, sans-serif;
+    }
+    </style>
+          <style type="text/css">
+  body {
+      }
+  </style>
+  
+ 
+  <style type="text/css">
+  #header {
+      background-image:none;
+      }
+  </style>
+<!--[if IE]>
+<style type="text/css" media="all">@import "/srg/sites/all/themes/simply_modern/css/ie.css";</style>
+<![endif]-->
+        <!-- <script type="text/javascript" src="http://srg.cs.illinois.edu/srg/sites/all/themes/simply_modern/js/pickstyle.js"></script> -->
+</head>
+<body class="sidebar-right">
+  <div id="simplemenu_container"></div>
+  <div id="simplemenu_closing-div" style="clear:both;"></div>
+        <div id="top-container">
+    <div id="squeeze-top">
+      <div id="top-center">
+        <div id="logo-title">
+                            <a href="index.html" title="Home"> <img src="http://srg.cs.illinois.edu/srg/sites/default/files/simply_modern_logo.jpg" alt="Home" id="logo" /> </a>
+                      </div><!-- /logo-title -->
+                      <div id="primarymenu">
+                          <ul class="links primary-links"><li class="menu-146 first"><a href="http://srg.cs.illinois.edu/srg/about" title="The System Research Group">About SRG</a></li>
+<li class="menu-147"><a href="http://srg.cs.illinois.edu/srg/research/summary" title="Research">Research</a></li>
+<li class="menu-148"><a href="http://srg.cs.illinois.edu/srg/people" title="People">People</a></li>
+<li class="menu-149"><a href="http://srg.cs.illinois.edu/srg/biblio" title="Publications">Publications</a></li>
+<li class="menu-150"><a href="http://srg.cs.illinois.edu/srg/alumni" title="Alumni">Alumni</a></li>
+<li class="menu-207 last"><a href="http://srg.cs.illinois.edu/srg/pastprojects" title="Past Projects">Past Projects</a></li>
+</ul>                        <form action="index.html"  accept-charset="UTF-8" method="post" id="search-theme-form">
+<div><div id="search" class="container-inline">
+  <div class="form-item" id="edit-search-theme-form-1-wrapper">
+ <label for="edit-search-theme-form-1">Search this site: </label>
+ <input type="text" maxlength="128" name="search_theme_form" id="edit-search-theme-form-1" size="15" value="" title="Enter the terms you wish to search for." class="form-text" />
+</div>
+<input type="submit" name="op" id="edit-submit-2" value="Search"  class="form-submit" />
+<input type="hidden" name="form_build_id" id="form-fe3530ff462ad4b056d7ad4834be48bb" value="form-fe3530ff462ad4b056d7ad4834be48bb"  />
+<input type="hidden" name="form_id" id="edit-search-theme-form" value="search_theme_form"  />
+</div>
+
+</div></form>
+            </div>
+                </div>
+      </div>
+  </div>
+    <div id="page" class="node"><div id="shadow-right"><div id="page-bg">
+      <div id="header" class="clear-block">
+      <div id="name-and-slogan">
+                          <div class='site-slogan'> Systems Software Research Group @ University of Illinois at Urbana-Champaign </div>
+              </div><!-- /name-and-slogan -->
+      
+        </div><!-- /header -->
+                    <div id="middlecontainer">
+                                <div id="main">
+        <div id="squeeze">
+                                <div id="mission"><p>The systems software research group has a 30 year record of research into the design of system software, with over 41 Ph.D. and 148 M.S. alumni. We are proud of our alumni. many of which have become professors and leaders of research in industry all over the world.</p>
+
+<p>
+Roy Campbell leads the System Software Research Group. He is the Sohaib and Sara Abbasi Professor of Computer Science and also the Director of the NSA Designated Center of Excellence at the University of Illinois Urbana-Champaign: see the CIAE Center of Information Assurance in Education <a href="http://ciae.cs.uiuc.edu/">ciae.cs.uiuc.edu</a>. He is director of CARIS, the Center for Advanced Research in Information Security, <a href="http://www.caris.uiuc.edu">www.caris.uiuc.edu</a>
+</p></div>
+                    <div id="squeeze-content">
+                        <div id="inner-content"  class="node" >
+                             <div id="content-top"><div class="block block-tagadelic" id="block-tagadelic-2">
+  <h2 class="title">Tags in Tags</h2>  <div class="content"><a href="http://srg.cs.illinois.edu/srg/taxonomy/term/8" class="tagadelic level2" rel="tag">3D</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/76" class="tagadelic level1" rel="tag">:clemma:scm:data models:</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/75" class="tagadelic level1" rel="tag">:oo:sde:pm:scm:data models:</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/77" class="tagadelic level1" rel="tag">:saga:</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/47" class="tagadelic level1" rel="tag">Access Controls, Security</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/49" class="tagadelic level1" rel="tag">Active access control, active capability, active</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/42" class="tagadelic level1" rel="tag">Ambient Calculus</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/45" class="tagadelic level1" rel="tag">attacks</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/9" class="tagadelic level2" rel="tag">cloud</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/32" class="tagadelic level1" rel="tag">control systems</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/33" class="tagadelic level2" rel="tag">cyber-infrastructure</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/95" class="tagadelic level1" rel="tag">forensics</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/6" class="tagadelic level1" rel="tag">gaia</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/79" class="tagadelic level2" rel="tag">grant</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/94" class="tagadelic level1" rel="tag">intern</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/31" class="tagadelic level2" rel="tag">mobile</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/11" class="tagadelic level6" rel="tag">MS</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/82" class="tagadelic level2" rel="tag">multimedia</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/19" class="tagadelic level2" rel="tag">operating systems</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/40" class="tagadelic level6" rel="tag">paper</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/10" class="tagadelic level2" rel="tag">people</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/17" class="tagadelic level2" rel="tag">performance</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/21" class="tagadelic level2" rel="tag">pervasive computing</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/12" class="tagadelic level2" rel="tag">PhD</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/29" class="tagadelic level2" rel="tag">Power Grid</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/20" class="tagadelic level1" rel="tag">reliability</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/14" class="tagadelic level2" rel="tag">research</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/7" class="tagadelic level2" rel="tag">scada</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/2" class="tagadelic level3" rel="tag">security</a> 
+<a href="http://srg.cs.illinois.edu/srg/taxonomy/term/18" class="tagadelic level2" rel="tag">yahoo</a> 
+<div class='more-link'><a href="http://srg.cs.illinois.edu/srg/tagadelic/chunk/2">more tags</a></div></div></div>
+</div>
+                            <h1 class="title"></h1>
+              <div class="tabs"></div>
+                                          <div class="node">
+  
+            <h2 class="title"><a href="http://srg.cs.illinois.edu/srg/node/523">The Lab (3105) at its best</a></h2>
+            <span class="submitted">Submitted by emchan on Fri, 09/11/2009 - 22:02</span> 
+    
+  <div class="content"><a href="http://srg.cs.illinois.edu/srg/node/523"><img src="http://srg.cs.illinois.edu/srg/sites/default/files/images/Panorama_3105_small.thumbnail.jpg" alt="The Lab (3105) at its best" title="The Lab (3105) at its best"  class="image image-thumbnail " width="640" height="175" /></a><p>Where SRG works its magic.</p>
+</div>
+  <div class="clear-block clear"></div>
+
+  
+</div>
+<div class="node">
+  
+            <h2 class="title"><a href="http://srg.cs.illinois.edu/srg/node/522">Siebel Center Panorama</a></h2>
+            <span class="submitted">Submitted by emchan on Fri, 09/11/2009 - 21:57</span> 
+        <div class="taxonomy"><ul class="links inline"><li class="taxonomy_term_25 first last"><a href="http://srg.cs.illinois.edu/srg/image/tid/25" rel="tag" title="">SRG Gallery</a></li>
+</ul></div>
+  
+  <div class="content"><a href="http://srg.cs.illinois.edu/srg/node/522"><img src="http://srg.cs.illinois.edu/srg/sites/default/files/images/siebel_panorama_small.thumbnail.jpg" alt="Siebel Center Panorama" title="Siebel Center Panorama"  class="image image-thumbnail " width="640" height="194" /></a><p>&nbsp;The magnificent Siebel Center.</p>
+</div>
+  <div class="clear-block clear"></div>
+
+  
+</div>
+<div class="node">
+  
+            <h2 class="title"><a href="http://srg.cs.illinois.edu/srg/node/520">ITI Intern Luncheon</a></h2>
+            <span class="submitted">Submitted by wwan2 on Sat, 08/01/2009 - 20:36</span> 
+    
+  <div class="content"><a href="http://srg.cs.illinois.edu/srg/node/520"><img src="http://srg.cs.illinois.edu/srg/sites/default/files/images/intern_luncheon_small.thumbnail.jpg" alt="ITI Intern Luncheon" title="ITI Intern Luncheon"  class="image image-thumbnail " width="640" height="426" /></a><p>ITI Final Intern Luncheon, Summer 2009.&nbsp; From left, Ellick Chan, Amey Chaugule, Winston Wan, and Prof. Roy Campbell.</p>
+</div>
+  <div class="clear-block clear"></div>
+
+  
+</div>
+<div class="node">
+  
+            <h2 class="title"><a href="http://srg.cs.illinois.edu/srg/research/summary">Research</a></h2>
+              <div class="taxonomy"><ul class="links inline"><li class="taxonomy_term_14 first last"><a href="http://srg.cs.illinois.edu/srg/taxonomy/term/14" rel="tag" title="">research</a></li>
+</ul></div>
+  
+  <div class="content"><p>The Systems Software Research Group is breaking new ground in research on Data-Intensive Computing, Operating Systems; Mobile Computing Group Management, Reputation, Tagging, and Games; Security and Cell Phones, Root Kits, Hypervisors, SCADA Systems; Location Awareness; and 3-D Immersive Technology.</p>
+</div>
+  <div class="clear-block clear"></div>
+
+      <div class="links"><ul class="links inline"><li class="node_read_more first last"><a href="http://srg.cs.illinois.edu/srg/research/summary" title="Read the rest of Research.">Read more</a></li>
+</ul></div>
+  
+</div>
+ 
+              <a href="http://srg.cs.illinois.edu/srg/rss.xml" class="feed-icon"><img src="http://srg.cs.illinois.edu/srg/misc/feed.png" alt="Syndicate content" title="SRG RSS" width="16" height="16" /></a>                          </div><!-- /inner-content -->
+          </div><!-- /squeeze-content -->
+        </div><!-- /squeeze -->
+      </div><!-- /main -->
+                              <div id="sidebar-right"><div class="block block-user" id="block-user-0">
+  <h2 class="title">User login</h2>  <div class="content"><form action="http://srg.cs.illinois.edu/srg/node?destination=node"  accept-charset="UTF-8" method="post" id="user-login-form">
+<div><div class="form-item" id="edit-name-wrapper">
+ <label for="edit-name">Username: <span class="form-required" title="This field is required.">*</span></label>
+ <input type="text" maxlength="60" name="name" id="edit-name" size="15" value="" class="form-text required" />
+</div>
+<div class="form-item" id="edit-pass-wrapper">
+ <label for="edit-pass">Password: <span class="form-required" title="This field is required.">*</span></label>
+ <input type="password" name="pass" id="edit-pass"  maxlength="60"  size="15"  class="form-text required" />
+</div>
+<input type="submit" name="op" id="edit-submit" value="Log in"  class="form-submit" />
+<div class="item-list"><ul><li class="first last"><a href="http://srg.cs.illinois.edu/srg/user/password" title="Request new password via e-mail.">Request new password</a></li>
+</ul></div><input type="hidden" name="form_build_id" id="form-677d83c8893a59cc7d3d1668ce2f3ac6" value="form-677d83c8893a59cc7d3d1668ce2f3ac6"  />
+<input type="hidden" name="form_id" id="edit-user-login-block" value="user_login_block"  />
+
+</div></form>
+</div></div>
+<div class="block block-search" id="block-search-0">
+  <h2 class="title">Search</h2>  <div class="content"><form action="index.html"  accept-charset="UTF-8" method="post" id="search-block-form">
+<div><div class="container-inline">
+  <div class="form-item" id="edit-search-block-form-1-wrapper">
+ <label for="edit-search-block-form-1">Search this site: </label>
+ <input type="text" maxlength="128" name="search_block_form" id="edit-search-block-form-1" size="15" value="" title="Enter the terms you wish to search for." class="form-text" />
+</div>
+<input type="submit" name="op" id="edit-submit-1" value="Search"  class="form-submit" />
+<input type="hidden" name="form_build_id" id="form-3b2d8be10c40f453df56a984fa727415" value="form-3b2d8be10c40f453df56a984fa727415"  />
+<input type="hidden" name="form_id" id="edit-search-block-form" value="search_block_form"  />
+</div>
+
+</div></form>
+</div></div>
+ </div>
+                  </div><!-- /middle-container -->
+    <div style="clear:both"></div>
+                  <div id="secondary-links">
+         
+        <div style="clear:both"></div>
+      </div>
+        <div id="footer">
+                <div style="color:gray"><strong>THEME DESIGN</strong> Copyright &#169; 2009 under <a href="http://www.gnu.org/licenses/gpl.html" target="_blank">GPL</a> by <a href="http://www.tributemedia.com" title="High Performing, Industry Specific Websites" target="_blank">Tribute Media</a>. Site Powered by <a href="http://drupal.org/">Drupal</a>.</div>
+    </div><!-- /footer -->
+  <div style="clear:both"></div>
+  <script type="text/javascript" src="http://srg.cs.illinois.edu/srg/sites/all/modules/google_analytics/googleanalytics.js?s"></script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+//--><!]]>
+</script>
+<script type="text/javascript">
+<!--//--><![CDATA[//><!--
+try{var pageTracker = _gat._getTracker("UA-8552070-2");pageTracker._trackPageview();} catch(err) {}
+//--><!]]>
+</script>
+</div></div>
+  </div> <!-- /page -->
+</body>
+</html>

@@ -1,0 +1,54 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/bootkit/tools/rootkits/mood-nt/lib
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2009-11-11T19:30:16.776448Z
+835
+amey
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+Makefile
+file
+
+
+
+
+2011-09-21T16:59:24.000000Z
+eb053bf8ff0f96492eb99731af86ab04
+2009-11-11T19:30:16.776448Z
+835
+amey
+has-props
+
+rk.c
+file
+
+
+
+
+2011-09-21T16:59:24.000000Z
+03d65051b761da2818362a80a4bb29b4
+2009-11-11T19:30:16.776448Z
+835
+amey
+has-props
+

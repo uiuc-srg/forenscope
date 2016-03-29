@@ -1,0 +1,1 @@
+cmd_drivers/base/power/built-in.o :=  ld -m elf_i386 -m elf_i386  -r -o drivers/base/power/built-in.o drivers/base/power/shutdown.o drivers/base/power/main.o drivers/base/power/suspend.o drivers/base/power/resume.o drivers/base/power/runtime.o drivers/base/power/sysfs.o

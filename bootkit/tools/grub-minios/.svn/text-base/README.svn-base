@@ -1,0 +1,5 @@
+Files copied from grub-0.97
+To make minios from grub:
+ CC=gcc-3.4 ./configure --enable-example-kernel
+
+

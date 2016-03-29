@@ -1,0 +1,218 @@
+#!/usr/bin/make -f
+#
+# $Id: rules 109 2006-09-18 00:12:14Z guillem $
+#
+# Copyright (C) 1997-1999 Joey Hess <joeyh@debian.org>
+# Copyright (C) 2002-2004 Robert Millan <rmh@debian.org>
+# Copyright (C) 2004-2006 Guillem Jover <guillem@debian.org>
+#
+
+tmpdir = $(CURDIR)/debian/tmp
+pkg_bochs = $(CURDIR)/debian/bochs
+
+DEB_BUILD_GNU_TYPE	?= $(shell dpkg-architecture -qDEB_BUILD_GNU_TYPE)
+DEB_HOST_GNU_TYPE	?= $(shell dpkg-architecture -qDEB_HOST_GNU_TYPE)
+DEB_HOST_ARCH_CPU	?= $(shell dpkg-architecture -qDEB_HOST_ARCH_CPU)
+DEB_HOST_ARCH_OS	?= $(shell dpkg-architecture -qDEB_HOST_ARCH_OS)
+
+CFLAGS = -Wall -g
+
+ifneq (,$(findstring noopt,$(DEB_BUILD_OPTIONS)))
+  CFLAGS += -O0
+else
+  CFLAGS += -O2
+endif
+
+sb16 = dummy
+cdrom = cdrom
+
+ifeq ($(DEB_HOST_ARCH_OS),linux)
+  kernel = linux
+  conf_args += --enable-ne2000 --enable-pnic
+  eth = eth0
+  sb16 = linux
+  com = ttyS0
+ifneq (,$(findstring $(DEB_HOST_ARCH_CPU),i386 amd64))
+  conf_args += --with-svga
+endif
+endif
+ifeq ($(DEB_HOST_ARCH_OS),kfreebsd)
+  kernel = fbsd
+  conf_args += --enable-ne2000 --enable-pnic
+  eth = xl0
+  sb16 = freebsd
+  com = cuua0
+  cdrom = acd0
+endif
+ifeq ($(DEB_HOST_ARCH_OS),hurd)
+  com = com0
+endif
+
+include /usr/share/quilt/quilt.make
+
+clean: unpatch
+	dh_testdir
+	dh_testroot
+	
+	-$(MAKE) -C bios bios-clean
+	rm -f bios/VGABIOS-*
+	rm -f misc/sb16/sb16ctrl
+	-$(MAKE) dist-clean
+	
+	dh_clean
+
+configure: configure.in
+	dh_testdir
+	
+	autoconf
+
+config.status: configure
+	dh_testdir
+	
+	CFLAGS="$(CFLAGS)" CXXFLAGS="$(CFLAGS)" ./configure \
+	  --host=$(DEB_HOST_GNU_TYPE) --build=$(DEB_BUILD_GNU_TYPE) \
+	  --prefix=/usr \
+	  --mandir=\$${prefix}/share/man \
+	  --with-x11 \
+	  --with-term \
+	  --with-sdl \
+	  --with-wx \
+	  --enable-cdrom \
+	  --enable-vbe \
+	  --enable-pci \
+	  --enable-usb \
+	  --enable-new-pit \
+	  --enable-apic \
+	  --enable-cpu-level=6 \
+	  --enable-x86-64 \
+	  --enable-vme \
+	  --enable-fpu \
+	  --enable-mmx \
+	  --enable-3dnow \
+	  --enable-sse=4 \
+	  --enable-gdb-stub \
+	  --enable-disasm \
+	  --enable-idle-hack \
+	  --enable-all-optimizations \
+	  --enable-repeat-speedups \
+	  --enable-icache \
+	  --enable-plugins \
+	  --enable-save-restore \
+	  --enable-compressed-hd \
+	  --enable-sb16=$(sb16) \
+	  $(conf_args)
+
+build: build-arch
+
+build-arch: patch config.status
+	dh_testdir
+	
+	$(MAKE)
+	
+ifeq ($(DEB_HOST_ARCH_CPU),i386)
+	$(CC) misc/sb16/sb16ctrl.c -o misc/sb16/sb16ctrl
+endif
+
+build-indep: patch config.status
+	dh_testdir
+	
+	# bochsbios
+	$(MAKE) -C bios
+
+install: build
+	dh_testdir
+	dh_testroot
+	dh_clean -k
+	dh_installdirs -s
+	
+	# Hack to keep install target happy
+	touch bios/VGABIOS-fake
+	
+	$(MAKE) install DESTDIR=$(tmpdir)
+	
+	# misc cleanup
+	rm -f \
+	  $(tmpdir)/usr/share/bochs/install-x11-fonts \
+	  $(tmpdir)/usr/share/bochs/test-x11-fonts \
+	  $(tmpdir)/usr/share/man/man1/bochs-dlx.1.gz \
+	  $(tmpdir)/usr/share/doc/bochs/COPYING.gz \
+	  $(tmpdir)/usr/bin/bochs-docs
+	
+	# bochs
+	cat $(tmpdir)/usr/share/doc/bochs/bochsrc-sample.txt \
+	| sed \
+	  -e "s/#kernel#/$(kernel)/g" \
+	  -e "s/#eth#/$(eth)/g" \
+	  -e "s/#com#/$(com)/g" \
+	  -e "s/#cdrom#/$(cdrom)/g" \
+	| gzip -c9 \
+	> $(pkg_bochs)/usr/share/doc/bochs/examples/bochsrc.gz
+	rm -f $(tmpdir)/usr/share/doc/bochs/bochsrc-sample.txt
+	
+	mv $(tmpdir)/usr/bin/bochs \
+	   $(tmpdir)/usr/bin/bochs-bin
+	install -m755 debian/launcher \
+		      $(tmpdir)/usr/bin/bochs
+	
+	cp -a debian/etc debian/tmp/
+	chmod 755 $(tmpdir)/etc/bochs-init/init.sh
+	
+ifeq ($(DEB_HOST_ARCH_CPU),i386)
+	cp misc/sb16/sb16ctrl \
+	   $(tmpdir)/usr/bin/
+endif
+
+install-indep: build-indep install
+	dh_testdir
+	dh_testroot
+	dh_installdirs -i
+	
+	# bochsbios
+	cp bios/BIOS* \
+	   $(tmpdir)/usr/share/bochs/
+	
+	# bochs-doc
+	cp /usr/share/sgml/docbook/stylesheet/dsssl/modular/images/note.gif \
+	   $(tmpdir)/usr/share/doc/bochs/images/
+
+binary-indep: install-indep
+	dh_testdir -i
+	dh_testroot -i
+	dh_install -i --sourcedir=$(tmpdir)
+	
+	dh_installdocs -i
+	dh_installexamples -i
+	dh_installchangelogs -i CHANGES
+	dh_link -i
+	dh_compress -i
+	dh_fixperms -i
+	dh_installdeb -i
+	dh_gencontrol -i
+	dh_md5sums -i
+	dh_builddeb -i
+
+binary-arch: install
+	dh_testdir -s
+	dh_testroot -s
+	dh_install -s -Nbochs --sourcedir=$(tmpdir)
+	dh_install -pbochs --sourcedir=$(tmpdir) # bochs should be last
+	dh_installdocs -s
+	dh_installexamples -s
+	dh_installmenu -s
+	dh_installman -s
+	dh_installchangelogs -s CHANGES
+	dh_link -s
+	dh_strip -s
+	dh_compress -s
+	dh_fixperms -s
+	dh_installdeb -s
+	dh_shlibdeps -s
+	dh_gencontrol -s
+	dh_md5sums -s
+	dh_builddeb -s
+
+binary: binary-indep binary-arch
+
+.PHONY: build build-arch build-indep clean install install-indep
+.PHONY: binary-indep binary-arch binary
+

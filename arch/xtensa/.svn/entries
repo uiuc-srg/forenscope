@@ -1,0 +1,82 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/arch/xtensa
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+kernel
+dir
+
+platform-iss
+dir
+
+Kconfig
+file
+
+
+
+
+2011-09-21T17:01:42.000000Z
+d28e2f3122e604cbcb190196c2739326
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+boot
+dir
+
+Kconfig.debug
+file
+
+
+
+
+2011-09-21T17:01:42.000000Z
+22cba7b5049f9dc34fa757e3d842cca0
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+lib
+dir
+
+configs
+dir
+
+mm
+dir
+
+Makefile
+file
+
+
+
+
+2011-09-21T17:01:42.000000Z
+b17683a9996463a5b6fd6fd68b391e76
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

@@ -1,0 +1,6 @@
+#! /bin/sh
+while /busybox true
+do
+	/busybox date
+	/busybox sleep 1
+done

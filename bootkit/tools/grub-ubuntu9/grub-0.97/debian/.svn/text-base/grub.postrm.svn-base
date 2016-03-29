@@ -1,0 +1,12 @@
+#!/bin/sh
+
+if [ "$1" = purge ]; then
+	if [ -x "`which ucf 2>/dev/null`" ]; then
+		ucf --purge /var/run/grub/menu.lst
+	fi
+	if [ -x "`which ucfr 2>/dev/null`" ]; then
+		ucfr --purge grub /var/run/grub/menu.lst
+	fi
+fi
+
+#DEBHELPER#

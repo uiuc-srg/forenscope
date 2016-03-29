@@ -1,0 +1,41 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/ramdisk/etc/init.d
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2010-01-30T04:22:05.506810Z
+887
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+rcS
+file
+
+
+
+
+2011-09-21T16:57:17.000000Z
+e8eb6a2865ebb0cebf1e4fa46ba6209b
+2010-01-30T04:22:05.506810Z
+887
+emchan
+has-props
+

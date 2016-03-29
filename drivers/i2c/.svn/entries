@@ -1,0 +1,109 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/drivers/i2c
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+i2c-boardinfo.c
+file
+
+
+
+
+2011-09-21T17:04:32.000000Z
+2cd478e1a960d6a3d3c3d6a2a702f6d7
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+Kconfig
+file
+
+
+
+
+2011-09-21T17:04:32.000000Z
+c19e6f3b48bf60b6d59a3dbe7ca57b4e
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+busses
+dir
+
+i2c-core.c
+file
+
+
+
+
+2011-09-21T17:04:32.000000Z
+c14db867b623af65b38f2cafd8d45b3c
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+algos
+dir
+
+chips
+dir
+
+i2c-core.h
+file
+
+
+
+
+2011-09-21T17:04:32.000000Z
+37dee091acd282c3c6ef9a0c96da45ba
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+i2c-dev.c
+file
+
+
+
+
+2011-09-21T17:04:32.000000Z
+d428af7056b79468473ada01fcef5cf7
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+Makefile
+file
+
+
+
+
+2011-09-21T17:04:32.000000Z
+3c78b336ca7abc079eb5996a16fb07bc
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

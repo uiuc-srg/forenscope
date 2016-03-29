@@ -1,0 +1,30 @@
+#!/bin/sh
+
+set echo
+
+./configure --target=pentium-windows \
+            --enable-cdrom \
+            --enable-sb16 \
+            --enable-ne2000 \
+            --enable-vbe \
+            --enable-all-optimizations \
+            --enable-cpu-level=6 \
+            --enable-sse=1 \
+            --enable-pci \
+            --enable-clgd54xx \
+            --enable-usb \
+            --enable-save-restore \
+            --disable-readline \
+            --without-x \
+            --enable-cpp \
+            --with-win32 --with-rfb --with-nogui
+
+unset echo
+
+# Fix up all makefiles so that nmake can handle them.
+for i in `find . -name Makefile`; do
+  echo Removing curly brackets in $i for NMAKE.
+  mv $i $i.tmp
+  sed -e 's/{/(/g' -e 's/}/)/g' < $i.tmp > $i
+  rm -f $i.tmp
+done

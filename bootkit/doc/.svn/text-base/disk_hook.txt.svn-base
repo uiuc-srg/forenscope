@@ -1,0 +1,120 @@
+Some notes on disk shadowing.
+
+Syscalls caught and blocked
+(replaced with simple return with sucess code function)
+BDFLUSH (134)
+SYNC (36)
+FSYNC (118)
+FDATASYNC (148)
+SYNC_FILE_RANGE (314)
+
+Define and load "rw_disk" optional function in "ide_hwif_t" struct
+--this should be one of the last functions called before request is put to the disk
+--added a printk here to identify reads vs writes
+
+Killed pdflush daemons using DKOM on task_struct.
+--Changed to KILLED state
+
+Added hook to elevator function at the end of elv_next_request in block/elevator.c
+--filter out write requests
+--fails somehow in that it freezes the elevator system
+
+
+--------------emchan----------------
+#0  ide_outsw (port=496, addr=0xc7aa3000, count=256)
+    at drivers/ide/ide-iops.c:73
+#1  0xc097f01f in ata_output_data (drive=0xc0e20468, buffer=0xc7aa3000, 
+    wcount=128) at drivers/ide/ide-iops.c:252
+#2  0xc0981e04 in ide_pio_sector (drive=0xc0e20468, write=1)
+    at drivers/ide/ide-taskfile.c:78
+#3  0xc0981ef2 in ide_pio_datablock (drive=0xc0e20468, 
+    rq=<value optimized out>, write=1) at drivers/ide/ide-taskfile.c:311
+#4  0xc0982ccf in pre_task_out_intr (drive=0xc0e20468, rq=0xc1392ca8)
+    at drivers/ide/ide-taskfile.c:470
+#5  0xc0984793 in ide_do_rw_disk (drive=0xc0e20468, rq=0xc1392ca8, block=0)
+    at drivers/ide/ide-disk.c:297
+#6  0xc097d27f in ide_do_request (hwgroup=0xc113a800, masked_irq=-1)
+    at drivers/ide/ide-io.c:1054
+#7  0xc097d729 in do_ide_request (q=<value optimized out>)
+    at drivers/ide/ide-io.c:1328
+#8  0xc08f1fc0 in __generic_unplug_device (q=0xc79767d4)
+    at block/ll_rw_blk.c:1597
+#9  0xc08eefb2 in elv_insert (q=0xc79767d4, rq=0xc1392bf0, where=256)
+    at block/elevator.c:642
+#10 0xc08ef11e in __elv_add_request (q=0xc79767d4, rq=0xc1392bf0, where=3, 
+    plug=0) at block/elevator.c:679
+#11 0xc08f2b23 in __make_request (q=0xc79767d4, bio=0xc7f8f780)
+    at block/ll_rw_blk.c:2703
+#12 0xc08f0fa3 in generic_make_request (bio=0xc7f8f780)
+    at block/ll_rw_blk.c:3223
+#13 0xc08f3452 in submit_bio (rw=<value optimized out>, bio=0xc7f8f780)
+    at block/ll_rw_blk.c:3313
+#14 0xc087cfeb in mpage_bio_submit (rw=496, bio=0xc7aa3000) at fs/mpage.c:98
+#15 0xc087d312 in __mpage_writepage (page=0xc10d0700, wbc=0xc1135d2c, 
+    data=<value optimized out>) at fs/mpage.c:613
+#16 0xc084373a in write_cache_pages (mapping=0xc79ce254, wbc=0xc1135d2c, 
+    writepage=0xc087cff0 <__mpage_writepage>, data=0xc1135c5c)
+    at mm/page-writeback.c:675
+#17 0xc087d7fe in mpage_writepages (mapping=0xc79ce254, wbc=0xc7aa3000, 
+    get_block=<value optimized out>) at fs/mpage.c:712
+#18 0xc08b876d in fat_writepages (mapping=0x1f0, wbc=0xc7aa3000)
+    at fs/fat/inode.c:129
+#19 0xc084387e in do_writepages (mapping=0xc79ce254, wbc=0xc1135d2c)
+    at mm/page-writeback.c:745
+#20 0xc08729f6 in __writeback_single_inode (inode=0xc79ce1c0, wbc=0xc1135d2c)
+    at fs/fs-writeback.c:170
+#21 0xc0872ff0 in sync_sb_inodes (sb=0xc79e5800, wbc=0xc1135d2c)
+    at fs/fs-writeback.c:379
+#22 0xc08733c2 in writeback_inodes (wbc=0xc1135d2c) at fs/fs-writeback.c:444
+#23 0xc0843a1f in balance_dirty_pages_ratelimited_nr (mapping=0xc79ce114, 
+---Type <return> to continue, or q <return> to quit---
+    nr_pages_dirtied=<value optimized out>) at mm/page-writeback.c:241
+#24 0xc083fbc8 in generic_file_buffered_write (iocb=0xc1135ed8, 
+    iov=<value optimized out>, nr_segs=1, pos=12775424, ppos=0xc1135f20, 
+    count=2464, written=5728) at include/linux/writeback.h:113
+#25 0xc0840119 in __generic_file_aio_write_nolock (iocb=0xc1135ed8, 
+    iov=0xc1135f60, nr_segs=1, ppos=0xc1135f20) at mm/filemap.c:2330
+#26 0xc0840400 in generic_file_aio_write (iocb=0xc1135ed8, iov=0xc1135f60, 
+    nr_segs=1, pos=12769696) at mm/filemap.c:2373
+#27 0xc085970f in do_sync_write (filp=0xc7b45ea0, buf=<value optimized out>, 
+    len=<value optimized out>, ppos=0xc1135f9c) at fs/read_write.c:299
+#28 0xc0859eaa in vfs_write (file=0xc7b45ea0, 
+    buf=0xbff1732c "\211�\203�\037\211���\005\017�D\224\f\017\222�\204�\017\204�\002", count=256, pos=0xc1135f9c) at fs/read_write.c:330
+#29 0xc085a36d in sys_write (fd=1, 
+    buf=0xbff1732c "\211�\203�\037\211���\005\017�D\224\f\017\222�\204�\017\204�\002", count=8192) at fs/read_write.c:383
+#30 0xc0803ee2 in system_call ()
+#31 0xbff1732c in ?? ()
+
+---------------------------------------------------
+ 299ssize_t vfs_write(struct file *file, const char __user *buf, size_t count, loff_t *pos)
+ 300{
+ 301        ssize_t ret;
+ 302
+ 303        if (!(file->f_mode & FMODE_WRITE))
+ 304                return -EBADF;
+ 305        if (!file->f_op || (!file->f_op->write && !file->f_op->aio_write))
+ 306                return -EINVAL;
+ 307        if (unlikely(!access_ok(VERIFY_READ, buf, count)))
+ 308                return -EFAULT;
+ 309
+ 310        ret = rw_verify_area(WRITE, file, pos, count);
+ 311        if (ret >= 0) {
+ 312                count = ret;
+ 313                ret = security_file_permission (file, MAY_WRITE);
+ 314                if (!ret) {
+ 315 ********************   if (file->f_op->write) *******************
+ 316                                ret = file->f_op->write(file, buf, count, pos);
+ 317                        else
+ 318                                ret = do_sync_write(file, buf, count, pos);
+ 319                        if (ret > 0) {
+ 320                                fsnotify_modify(file->f_dentry);
+ 321                                current->wchar += ret;
+ 322                        }
+ 323                        current->syscw++;
+ 324                }
+ 325        }
+ 326
+ 327        return ret;
+ 328}
+
+*** set ratelimit = inf ****

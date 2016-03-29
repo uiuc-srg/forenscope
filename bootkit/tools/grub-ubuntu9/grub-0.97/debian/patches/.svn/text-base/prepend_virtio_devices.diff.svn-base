@@ -1,0 +1,85 @@
+=== modified file 'lib/device.c'
+--- grub-0.97~/lib/device.c	2008-02-12 16:28:21 +0000
++++ grub-0.97/lib/device.c	2008-02-12 16:32:24 +0000
+@@ -454,6 +454,14 @@
+ #endif
+ }
+ 
++#if defined(__linux__)
++static void
++get_virtio_disk_name (char *name, int unit)
++{
++  sprintf (name, "/dev/vd%c", unit + 'a');
++}
++#endif
++
+ static void
+ get_ide_disk_name (char *name, int unit)
+ {
+@@ -870,6 +878,27 @@
+       return 1;
+     }
+ #endif /* __linux__ */
++
++#ifdef __linux__
++  /* virtio devices.  */
++  for (i = 0; i < 16; i++)
++    {
++      char name[16];
++      
++      get_virtio_disk_name (name, i);
++      if (check_device (name))
++	{
++	  (*map)[num_hd + 0x80] = strdup (name);
++	  assert ((*map)[num_hd + 0x80]);
++	  
++	  /* If the device map file is opened, write the map.  */
++	  if (fp)
++	    fprintf (fp, "(hd%d)\t%s\n", num_hd, name);
++	  
++	  num_hd++;
++	}
++    }
++#endif /* __linux__ */
+     
+   /* IDE disks.  */
+   for (i = 0; i < 8; i++)
+
+=== modified file 'util/grub-install.in'
+--- grub-0.97~/util/grub-install.in	2008-02-12 23:04:22 +0000
++++ grub-0.97/util/grub-install.in	2008-02-12 23:04:47 +0000
+@@ -104,7 +104,7 @@
+ 	)"
+ 
+ 	# Convert RAID devices list into a list of disks
+-	tmp_disks=`echo "$devices" | sed -e 's%\([sh]d[a-z]\)[0-9]*$%\1%' \
++	tmp_disks=`echo "$devices" | sed -e 's%\([vsh]d[a-z]\)[0-9]*$%\1%' \
+ 					 -e 's%\(d[0-9]*\)p[0-9]*$%\1%' \
+ 					 -e 's%\(fd[0-9]*\)$%\1%' \
+ 					 -e 's%/part[0-9]*$%/disc%' \
+@@ -144,13 +144,13 @@
+ 	case $1 in
+ 		/dev/md*)  set -- `getraid_mdadm $1`
+ 	esac
+-	tmp_disk=`echo "$1" | sed -e 's%\([sh]d[a-z]\)[0-9]*$%\1%' \
++	tmp_disk=`echo "$1" | sed -e 's%\([vsh]d[a-z]\)[0-9]*$%\1%' \
+ 				  -e 's%\(d[0-9]*\)p[0-9]*$%\1%' \
+ 				  -e 's%\(fd[0-9]*\)$%\1%' \
+ 				  -e 's%/part[0-9]*$%/disc%' \
+ 				  -e 's%\(c[0-7]d[0-9]*\).*$%\1%' \
+ 				  -e 's%\(e[0-9]\.[0-9]*\).*$%\1%'`
+-	tmp_part=`echo "$1" | sed -e 's%.*/[sh]d[a-z]\([0-9]*\)$%\1%' \
++	tmp_part=`echo "$1" | sed -e 's%.*/[vsh]d[a-z]\([0-9]*\)$%\1%' \
+ 				  -e 's%.*d[0-9]*p%%' \
+ 				  -e 's%.*/fd[0-9]*$%%' \
+ 				  -e 's%.*/floppy/[0-9]*$%%' \
+@@ -160,7 +160,7 @@
+ 				  -e 's%.*e[0-9]\.[0-9]*\$%%'`
+ 	;;
+     gnu*)
+-	tmp_disk=`echo "$1" | sed 's%\([sh]d[0-9]*\).*%\1%'`
++	tmp_disk=`echo "$1" | sed 's%\([vsh]d[0-9]*\).*%\1%'`
+ 	tmp_part=`echo "$1" | sed "s%$tmp_disk%%"` ;;
+     freebsd* | kfreebsd*-gnu)
+ 	tmp_disk=`echo "$1" | sed 's%r\{0,1\}\([saw]d[0-9]*\).*$%\1%' \
+

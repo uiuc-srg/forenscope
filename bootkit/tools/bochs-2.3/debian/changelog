@@ -1,0 +1,714 @@
+bochs (2.3-2etch1) stable-security; urgency=high
+
+  * Fix heap buffer overflow in ne2k emulated driver. (Closes: #427144)
+    CVE-2007-2893
+    - debian/patches/05_security_ne2k.patch: New file.
+
+ -- Guillem Jover <guillem@debian.org>  Thu, 02 Aug 2007 06:56:24 +0300
+
+bochs (2.3-2) unstable; urgency=low
+
+  * Install the note.gif only if building the binary independent packages.
+  * Make the bochs wrapper exec the real binary, to avoid unneecessary
+    running processes.
+
+ -- Guillem Jover <guillem@debian.org>  Mon, 18 Sep 2006 03:17:02 +0300
+
+bochs (2.3-1) unstable; urgency=low
+
+  * New Upstream Release.
+    - debian/patches/00_base.patch: Sync.
+    - debian/patches/03_g++-4.1.patch: Integrated upstream. Remove.
+    - debian/patches/04_wx2.6.patch: Likewise.
+    - debian/patches/03_redolog_FTBFS.patch: New file. Fix build failure.
+    - Documentation now uses index.html instead of book1.html. Remove now
+      unneeded debian/bochs-doc.links. (Closes: #380380)
+  * Switched to quilt:
+    - Add new debian/patches/series file.
+    - Add Build-Depends on 'quilt (>= 0.40)'.
+    - Include quilt.make from debian/rules.
+    - Remove now unused debian/patch.mk.
+  * Now using Standards-Version 3.7.2 (no changes needed).
+  * Add 2006 to the copyright years in debian/copyright.
+  * Remove obsolete template note and all debconf support with it.
+  * Remove code to strip possible RPATH in SDL plugin as it should not contain
+    it anymore, do not Build-Depend on chrpath anymore.
+  * Use source:Version in bochs' bochsbios Depencency, to make the package
+    binNMU safe, and Build-Depend on dpkg 1.13.19.
+  * Fix manpage warning due to unwrappable long line by using a table.
+    - debian/patches/04_man_table.patch: New file.
+  * Include the note.gif image in the bochs-doc package. (Closes: #198766)
+  * Do not install into bochs doc dir the README-plugins and README-wxWindows
+    files which contain development information not interesting to the user,
+    neither sb16ctrl example and source code which are provided in a separete
+    package already.
+  * Add a small README.plugins in the bochs package to document how to use
+    the ui plugin packages. (Closes: #250194)
+    Thanks to A Costa <agcosta@gis.net> for the initial text.
+  * Include bxcommit in the bximage package.
+  * Include busmouse plugin in the bochs package.
+  * Do not set unused substvar sb16ctrl-bochs:Architecture in debian/rules.
+  * Enable new PIT model, APIC, Virtual 8086 Mode Extensions, x86_64, SSE4,
+    icache, internal disassembler, io and memory repetition speedups,
+    simulation save and restore, and limited USB support.
+  * Upgrade cpu-level to 6, as required by the x86_64 support.
+  * Add a Tag: field to all binary packages, using the data from debtags.
+
+ -- Guillem Jover <guillem@debian.org>  Sun, 17 Sep 2006 20:07:05 +0300
+
+bochs (2.2.6-2) unstable; urgency=low
+
+  * Fix typos in bochsrc(5). (Closes: #356012)
+    - debian/patches/01_man.patch: New file.
+    Thanks to A Costa <agcosta@gis.net>.
+  * Fix clean target by calling upstream dist-clean, bios-clean under bios/,
+    and removing the misc/sb16/sb16ctrl and bios/VGABIOS-*.
+  * Switch to libwxgtk2.6-dev and libgtk2.0-dev.
+    - debian/patches/04_wx2.6.patch: New file.
+    Thanks to Hans de Goede <j.w.r.degoede@hhs.nl>.
+  * Fix FTBFS with g++ 4.1. (Closes: #357059)
+    - debian/patches/03_g++-4.1.patch: New file.
+    Thanks to Martin Michlmayr <tbm@cyrius.com>.
+
+ -- Guillem Jover <guillem@debian.org>  Tue, 21 Mar 2006 02:51:22 +0200
+
+bochs (2.2.6-1) unstable; urgency=low
+
+  * New Upstream Release.
+    - debian/patches/01_doc.patch: Integrated upstream. Remove.
+    - debian/patches/03_gcc-4.0.patch: Likewise.
+    - debian/patches/00_base.patch: Sync.
+    - debian/patches/02_libtool.patch: Likewise.
+  * Do not install ROM BIOS that are not built anymore.
+  * Do not create a fake stamp file for the ROM BIOS.
+  * Fix debian/sb16ctrl.1:
+    - Change the SEE ALSO references to be bold.
+    - Escaped some hyphens.
+    - Reindent the Bochs Online Documentation's URL.
+  * Build the svga module on amd64. (Closes: #346577)
+    Thanks to Kaare Hviid <ukh@svansen.se> for the initial patch.
+
+ -- Guillem Jover <guillem@debian.org>  Thu,  9 Feb 2006 04:30:50 +0200
+
+bochs (2.2.5-1) unstable; urgency=low
+
+  * New Upstream Release.
+    - debian/patches/00_base.patch: Synced.
+    - debian/patches/01_doc.patch: Likewise.
+    - debian/patches/02_libtool.patch: Likewise.
+  * Debconf templates:
+    - Added Spanish. (Closes: #333897)
+      Thanks to César Gómez Martín <cesar.gomez@gmail.com>.
+    - Added Swedish. (Closes: #330987)
+      Thanks to Daniel Nylander <po@danielnylander.se>.
+    - Added Portuguese. (Closes: #338892)
+      Thanks to Simão Pedro Cardoso <pthell@gmail.com>.
+  * Include pci plugins into bochs package. (Closes: #341436)
+    Thanks to Robert Millan <rmh@aybabtu.com>
+  * Fix more typos in bochs and bochsrc manpages. (Closes: #335334, #335336)
+    Thanks to A Costa <agcosta@gis.net>.
+  * Wrap lines in debian/control fields (knowingly breaking policy).
+  * Switch to debhelper compat level 5.
+  * Build-Conflict against libwxgtk2.6-dev as it FTBFS if present.
+  * Clean up debian/patch.mk:
+    - Rename clean to unpatch.
+    - Switch patch and unpatch to single-colon targets.
+    - Add patch, unpatch, apply-patches and reverse-patches to the PHONY
+      targets.
+  * Clean up debian/rules file:
+    - Add a proper copyright comment header.
+    - Remove null, bochs and INSTALL_PROGRAM variables.
+    - Switch clean to single-colon target, make it depend on unpatch and call
+      make clean.
+    - Swap config.status and configure from target to dependency.
+    - Pass CFLAGS and CXXFLAGS to configure.
+    - Remove configure from the PHONY targets.
+    - Inline the main conf_args to the configure invokation.
+    - Just use autoconf, and do not try autoconf2.50.
+    - Split autoconf and configure commands in different targets.
+    - Make build-arch and build-indep depend on patch and config.status.
+    - Make binary-indep depend on install-indep, and binary-arch on install.
+    - Remove commented debhelper commands.
+
+ -- Guillem Jover <guillem@debian.org>  Sat,  7 Jan 2006 08:19:52 +0200
+
+bochs (2.2.1-2) unstable; urgency=low
+
+  * Use misc:Depends instead of an explicit dependency to debconf
+    to get the alternative debconf-2.0 as well.
+  * Fix typo in bochsrc.5 that prevents the line from being displayed.
+    (Closes: #326528)
+    - debian/patches/01_doc.patch: Updated.
+    Thanks to Nicolas François <nicolas.francois@centraliens.net>.
+  * Update LGPL to 2.1 and fix FSF address in debian/copyright.
+  * Change Build-Depends to 'libreadline5-dev | libreadline-dev' from
+    'libreadline4-dev'.
+  * Fix bashisms in bochs.config and bochs.postinst.
+  * Added missing angle to email address in sb16ctrl.1.
+  * Install sb16ctl.1 in the binary.
+  * Use variable assignment and handle spaces in filenames correctly.
+    - debian/launcher: Updated.
+  * Do not use a variable with read and use $() instead of backticks.
+    - debian/launcher/etc/bochs-init/init.sh: Reindent. Updated.
+
+ -- Guillem Jover <guillem@debian.org>  Sun, 11 Sep 2005 05:24:24 +0300
+
+bochs (2.2.1-1) unstable; urgency=low
+
+  * New Upstream Release.
+    - debian/patches/00_base.patch: Synced.
+    - debian/patches/01_doc.patch: Likewise.
+    - debian/patches/02_libtool.patch: Likewise.
+    - debian/patches/03_gcc-4.0.patch: Likewise.
+    - debian/patches/04_no_pcibios_init.patch: Removed.
+    - Fix ">>PANIC<< prefetch: RIP > CS.limit". (Closes: #162785, #288766)
+    - Fix TUN/TAP network interface. (Closes: #268422)
+  * Added Vietnamese debconf translation. (Closes: #313170)
+    Thanks to Clytie Siddall <clytie@riverland.net.au>.
+  * Fix typos in the bochsrc man page. (Closes: #310359)
+    - debian/patches/01_doc.patch: Update.
+    Thanks to A Costa <agcosta@gis.net>.
+  * Enable the pseudo NIC interface to be used with EtherBoot and document
+    the addition in the README.Debian file.
+    Thanks to Robert Millan <rmh@aybabtu.com> for the pointer.
+  * Cosmetic cleaning of README.Debian.
+  * Provide a symlinked manpage for bochs-bin.
+  * Add a man page for sb16ctrl.
+  * Explicitly state architectures and stop using type-handling.
+  * Replace aalib1-dev Build-Depends with libaa1-dev.
+  * Replace xlibs-dev Build-Depends with the fain grained only ones
+    needed: libx11-dev, libxpm-dev, libice-dev, libsm-dev.
+  * Tighten dependencies on bochsbios and vgabios. (Closes: #290188)
+  * Do not use a stamp file for configure.
+  * Add Debian Subversion repository URL.
+  * Update copyright year.
+  * Update watch file to version 3 (no changes needed).
+  * Now using Standards-Version 3.6.2 (no changes needed).
+  * Use new QA SourceForge watch redirector.
+  * Use new dpkg-architecture variables for os and cpu.
+  * C++ ABI transition.
+    - Remove special case for m68k to use g++-3.4.
+
+ -- Guillem Jover <guillem@debian.org>  Fri, 29 Jul 2005 03:18:33 +0300
+
+bochs (2.1.1+20041109-3) unstable; urgency=high
+
+  * Remove rombios pcibios initialization code. It lets the virtual box
+    in a state inconsitent with what qemu expects.
+    - debian/patches/04_no_pcibios_init.patch: New file.
+    (Closes: #281862, #283166, #284132, #285752)
+
+ -- Guillem Jover <guillem@debian.org>  Tue, 11 Jan 2005 18:36:23 +0100
+
+bochs (2.1.1+20041109-2) unstable; urgency=high
+
+  * Build-Depends and use gcc-3.4 on m68k to avoid an ICE. (Closes: #284050)
+  * Fix build failure with gcc-4.0. (Closes: #284748)
+    Thanks to Andreas Jochens <aj@andaco.de>.
+  * Add missing "--tag CXX" in libtool invokations.
+  * Remove possible RPATH in SDL plugin.
+  * Fix typo in documentation. (Partial fix: #198766)
+  * Fix broken links to Home in bochs-doc manuals. (Closes: #198861)
+  * Update bochsrc(5) with new vgaromimage syntax, and fix warnings in all
+    manpages. (Closes: #274336)
+
+ -- Guillem Jover <guillem@debian.org>  Mon, 13 Dec 2004 17:22:43 +0100
+
+bochs (2.1.1+20041109-1) unstable; urgency=low
+
+  * New maintainer. (Closes: #276392)
+  * New upstream snapshot.
+    - Stop using tar in tar.
+    - Fix Linux kernel loading on 2.4.26 or 2.6.8 and up. (Closes: #273424)
+  * Added a debian/tarball.sh script to easily manage snapshots.
+  * Patches:
+    - Use debian/patch.mk.
+    - debian/patches/gdb.diff: Remove, integrated upstream.
+    - debian/patches/gzip.diff: Likewise.
+    - debian/patches/kbsd-gnu.diff: Likewise
+    - debian/patches/orig.diff: Renamed to ...
+    - debian/patches/00_base.patch: ... this. Remove upstream integrated
+      changes. Fixed 3DNow hunk duplication.
+    - debian/patches/plex86.diff: Renamed to ...
+    - debian/patches/plex86.disabled: ... this.
+  * Use new vgaromimage syntax in bochs-init config:
+    - debian/etc/bochs-init/bochsrc: Update.
+  * Create tun devices. (Closes: #215576)
+  * Removed leftover debian/rules.ZILESAVE.
+  * Removed leftover debian/xfonts-bochs.dirs.
+  * General cosmetic fixes.
+  * Cleaned debian/copyright.
+  * Major cleanup of debian/rules.
+    - Honour noopt in DEB_BUILD_OPTIONS.
+    - Build with debugging symbols by default.
+    - Use -s in debhelper scripts instead of -a and hardcoded package
+      excludes.
+    - Use debian/tmp as the source dir in dh_install. Fix all *.install
+      files.
+  * Added a debian/watch file.
+  * Added Catalan debconf template.
+  * Now using Standard-Version 3.6.1.
+
+ -- Guillem Jover <guillem@debian.org>  Sat, 13 Nov 2004 17:32:09 +0100
+
+bochs (2.1.1+20040903-3) unstable; urgency=low
+
+  * QA Upload
+  * Correct QA Group's maintainer address
+  * Bug fix: "Czech translation of bochs debconf messages", thanks to Jan
+    Outrata (Closes: #275500).
+
+ -- Frank Lichtenheld <djpig@debian.org>  Mon,  8 Nov 2004 04:28:11 +0100
+
+bochs (2.1.1+20040903-2) unstable; urgency=low
+
+  * Orphan.
+    - control.in (Maintainer): Set to Debian QA Group.
+
+ -- Robert Millan <rmh@debian.org>  Wed, 13 Oct 2004 20:58:27 +0200
+
+bochs (2.1.1+20040903-1) unstable; urgency=low
+
+  * New upstream snapshot.
+    - patches: Resync some stuff.
+    - control.in (Depends):  Set vgabios (>= 0.4c+20040829-2)
+  * Add German and Japanese translations.
+    - po/de.po
+    - po/ja.po
+
+ -- Robert Millan <rmh@debian.org>  Fri,  3 Sep 2004 10:34:28 +0200
+
+bochs (2.1.1-11) unstable; urgency=low
+
+  * rules (conf_args): Enable mmx, 3dnow, compressed-hd (unimplemented).
+  * control (Build-Depends): Add libreadline4-dev.
+  * patches/ftbfs_mmx.diff: New.  Fix some fuckery.
+
+ -- Robert Millan <rmh@debian.org>  Mon, 30 Aug 2004 04:24:39 +0200
+
+bochs (2.1.1-10) unstable; urgency=high
+
+  * urgency=high because change in -8 _must_ release with sarge.
+  * patches/gdb.diff: Fix dependency on plex86 patch, which was disabled on
+    2.1.1-8. (Closes: #265941)
+  * rules: Fail if any patch fails to apply (I hate make).
+
+ -- Robert Millan <rmh@debian.org>  Mon, 16 Aug 2004 03:31:50 +0200
+
+bochs (2.1.1-9) unstable; urgency=low
+
+  * Allow building of bochsbios on non-i386. It was reported that the
+    resulting binary is identical, since we use bin86/bcc to compile it.
+    (Closes: #249796).
+
+ -- Robert Millan <rmh@debian.org>  Sun, 15 Aug 2004 02:01:48 +0200
+
+bochs (2.1.1-8) unstable; urgency=low
+
+  * Disable Plex86 backend.
+
+ -- Robert Millan <rmh@debian.org>  Mon,  9 Aug 2004 20:56:01 +0200
+
+bochs (2.1.1-7) unstable; urgency=low
+
+  * rules: Fallback to autoconf when autoconf2.50 is not found (sigh).
+
+ -- Robert Millan <rmh@debian.org>  Thu,  5 Aug 2004 21:11:30 +0200
+
+bochs (2.1.1-6) unstable; urgency=low
+
+  * Use type-handling to handle dpkg arch-specific build-dependencies.
+    - control.in: New.
+    - rules: Parse @i386@, @linux-gnu@ and @svgalib@ from control.in.
+  * Allow building of binary-indep from any platform.
+    - control.in (Build-Depends): Nuke i386.
+  * Explicitly use autoconf2.50.
+    - rules: s/autoconf/autoconf2.50/g
+    - control.in (Build-Conflicts): Nuke autoconf2.13.
+  * patches/kbsd-gnu.diff: New. Fix GNU/k*BSD portability issues.
+
+ -- Robert Millan <rmh@debian.org>  Thu,  5 Aug 2004 04:05:30 +0200
+
+bochs (2.1.1-5) unstable; urgency=low
+
+  * Fix FTBFS on ! i386-linux-gnu. (Closes: #247957)
+    - rules: Pass -Nbochs-svga to dh_gencontrol for ! i386-linux-gnu.
+  * etc/bochs-init: New. Scripts for running Bochs as init.
+    - README.Debian: Describe what this means.
+    - rules: Install it in debian/tmp.
+    - bochs.install: Add it.
+
+ -- Robert Millan <rmh@debian.org>  Tue, 27 Apr 2004 09:44:37 +0200
+
+bochs (2.1.1-4) unstable; urgency=low
+
+  * New binary package: bochs-svga (SVGA GUI plugin).
+    - control (Build-Depends): Add libsvga1-dev [i386].
+    - control: Add bochs-svga (for i386-linux-gnu only).
+    - rules (conf_args): Add --with-svga on i386-linux-gnu.
+    - bochs-svga.install: New. Install svga plugin.
+
+ -- Robert Millan <rmh@debian.org>  Mon, 26 Apr 2004 20:26:34 +0200
+
+bochs (2.1.1-3) unstable; urgency=low
+
+  * Noone loves Xfree86 anymore.
+    - control: s/Xfree86/X11/g.
+  * Sad, but true. Disable AMD64 support. (Closes: #242793)
+    - rules (conf_args): Remove --enable-x86-64.
+    - control (Description): Remove amd64-related bits.
+  * Kiss bochsconf goodbye. (Closes: #203698)
+    - bochsconf: Nuked.
+    - README.Debian: Replace bochsconf-related notes.
+    - bochs.install: Nuke bochsconf.
+    - rules: Ditto.
+    - launcher: Remove bochsconf-related lines.
+  * control: Make descriptions of bochsbios, bochs-term, bochs-x, bochs-wx and
+    bochs-sdl more accurate. Thanks Javier. (Closes: #209436, #209437,
+    #209446, #209472, #209522)
+  * Add Dutch po-debconf translation. (Closes: #241317)
+    - po/nl.po: New. Contributed by Luk Claes <luk.claes@ugent.be>
+
+ -- Robert Millan <rmh@debian.org>  Sun, 25 Apr 2004 21:37:36 +0200
+
+bochs (2.1.1-2) unstable; urgency=low
+
+  * rules (conf_args): Add --enable-fpu. (Closes: #239904)
+  * control (Build-Depends): Add libasound2-dev, aalib1-dev. (Closes: #239927)
+  * patches/orig.diff: Resync.
+  * README.Debian: Remove reference to user/x1948.html. (Closes: #237274)
+  * control (Suggests): Nuke e2fsprogs.
+
+ -- Robert Millan <rmh@debian.org>  Wed, 24 Mar 2004 22:43:26 +0100
+
+bochs (2.1.1-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Robert Millan <rmh@debian.org>  Thu, 11 Mar 2004 14:21:42 +0100
+
+bochs (2.1rel-4) unstable; urgency=low
+
+  * launcher: Made bochsconf run optional. (Closes: #179143)
+
+ -- Robert Millan <rmh@debian.org>  Sat,  7 Feb 2004 13:39:56 +0100
+
+bochs (2.1rel-3) unstable; urgency=low
+
+  * rules: s/gdb-stubs/gdb-stub/g. (Really closes: #224862)
+
+ -- Robert Millan <rmh@debian.org>  Fri,  6 Feb 2004 15:04:13 +0100
+
+bochs (2.1rel-2) unstable; urgency=low
+
+  * patches/gdb.diff: New. Turn GDB stubs into a conffile option. (patch
+    from Charles Duffy)
+  * rules: Enable GDB stubs. (Closes: #224862)
+    - 0list: Update.
+
+ -- Robert Millan <rmh@debian.org>  Sun,  1 Feb 2004 23:29:59 +0100
+
+bochs (2.1rel-1) unstable; urgency=low
+
+  * New upstream release.
+  * patches/plex86.diff: Dont panic on failure to open Plex86 device.
+    (Closes: #222550)
+
+ -- Robert Millan <rmh@debian.org>  Sat, 31 Jan 2004 16:54:18 +0100
+
+bochs (2.1pre3-1) unstable; urgency=low
+
+  * New upstream pre-release.
+  * Switch to debhelper compat 4.
+    - rules: Don't override DH_COMPAT.
+    - compat: New.
+  * rules: Add --enable-idle-hack. Thanks Josh Metzler. (Closes: #223879)
+
+ -- Robert Millan <rmh@debian.org>  Sat, 10 Jan 2004 12:53:34 +0100
+
+bochs (2.1pre1.a-2) unstable; urgency=low
+
+  * rules: Reorganise kernel-specific checks.
+
+ -- Robert Millan <rmh@debian.org>  Tue, 16 Dec 2003 16:45:21 +0100
+
+bochs (2.1pre1.a-1) unstable; urgency=low
+
+  * Switched to DBS-like tarball/patch handling. (Closes: #217522)
+  * control: Lower Recommends to Suggests for Plex86. (Closes: #215112)
+  * Nuked redundant upstream changelog.gz file. (Closes: #170545)
+
+ -- Robert Millan <rmh@debian.org>  Tue, 28 Oct 2003 20:07:59 +0100
+
+bochs (2.1pre1-1) unstable; urgency=low
+
+  * New upstream release.
+
+ -- Robert Millan <rmh@debian.org>  Wed,  8 Oct 2003 21:57:37 +0000
+
+bochs (2.0.2+20030829-1) unstable; urgency=low
+
+  * New upstream snapshot.
+    - Updated libtool. (Closes: #195826)
+    - Fixed CPU bug. (Closes: #197094)
+    - debian/patches/orig.diff: Update.
+    - debian/patches/plex86.diff: Update.
+  * debian/{control,po/,templates}: Switch to gettext-based debconf templates;
+    thanks Christian Perrier. (Closes: #205777)
+  * debian/po/fr.po: New. French debconf translation; thanks again to
+    Christian Perrier. (Closes: #206735)
+  * debian/rules: s/freebsd/kfreebsd-gnu/g cleanup.
+  * debian/control (xfonts-bochs): Nuked (obsoleted upstream).
+  * debian/rules: Likewise.
+  * debian/bochs.install: Add "gameport" plugin.
+  * debian/control (bochsbios): Bumped bochs dependency.
+
+ -- Robert Millan <rmh@debian.org>  Fri, 29 Aug 2003 14:09:39 +0000
+
+bochs (2.0.2+20030525-1) unstable; urgency=low
+
+  * New upstream snapshot.
+  * Merged fix-link-deps.diff and cpu/3dnow.cc fixes into upstream.
+  * Update plex86.diff from upstream's bts. (see patch header)
+
+ -- Robert Millan <rmh@debian.org>  Sun, 25 May 2003 03:49:22 +0200
+
+bochs (2.0.2+20030522-3) unstable; urgency=low
+
+  * Fixed link dependencies in bochs-* GUI packages so that GUI plugins
+    depend on their respective GUI libraries, and bochs can stop depending
+    on them. (Closes: #176458)
+
+ -- Robert Millan <rmh@debian.org>  Sat, 24 May 2003 13:36:09 +0200
+
+bochs (2.0.2+20030522-2) unstable; urgency=low
+
+  * Moved diffs into debian/patches.
+  * Added patch for Plex86 support.
+
+ -- Robert Millan <rmh@debian.org>  Fri, 23 May 2003 17:17:50 +0000
+
+bochs (2.0.2+20030522-1) unstable; urgency=low
+
+  * New upstream snapshot.
+    - fixes FTBFS.
+    - has x11-pc-be.map (Closes: #191080)
+  * Copy all missing plugins from plugin dir. (Closes: #191639)	
+
+ -- Robert Millan <rmh@debian.org>  Thu, 22 May 2003 00:36:17 +0200
+
+bochs (2.0.2+20020419-1) unstable; urgency=low
+
+  * New upstream snapshot. (Closes: #188538)
+  * Fix x86-64 emulation. thanks Arnd Bergmann. (Closes: #189349)
+
+ -- Robert Millan <rmh@debian.org>  Sat, 19 Apr 2003 19:38:39 +0200
+
+bochs (2.0.2-3) unstable; urgency=low
+
+  * Added libgtk1.2-dev explicitly to Build-Depends. (Closes: #181964)
+  * Put debian address in Maintainer field.
+
+ -- Robert Millan <rmh@debian.org>  Fri, 21 Feb 2003 18:46:59 +0100
+
+bochs (2.0.2-2) unstable; urgency=low
+
+  * First upload as a developer.
+  * Building against libwxgtk2.4-dev. (Closes: #178294)
+  * Fixed marks in SGML documentation, thanks Aaron M. Ucko. (Closes: #179138)
+  * Fixed GZIP variable mess in Makefile.in.
+
+ -- Robert Millan <rmh@debian.org>  Thu, 20 Feb 2003 22:43:05 +0100
+
+bochs (2.0.2-1) unstable; urgency=low
+
+  * New upstream release. (Closes: #176339)
+  * Fixed build problem with sb16ctrl. (Closes: #175947)
+  * Added Replaces line on all bochs-gui packages. (Closes: #175264)
+  * Removed HTML documentation from bochs package.
+  * Fixed wrong links in index.html of documentation. (Closes: #175888)
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Fri, 24 Jan 2003 16:47:21 +0100
+
+bochs (2.0rel-2) unstable; urgency=low
+
+  * Added sb16ctrl-bochs (again).
+  * Removed linuxisms from sb16ctrl.c.
+  * Put xfonts-bochs dependency on bochs-x. (Closes: #174109)
+  * Now building html docs from docbook. Splitted into bochs-doc package.
+  * Added entry in debian menu.
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Wed, 25 Dec 2002 01:56:24 +0100
+
+bochs (2.0rel-1) unstable; urgency=low
+
+  * New upstream release.
+  * Split GUI plugins in their own packages to lower dependencies.
+  * Fixed Hurd nomenclaure in documentation.
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Sun, 22 Dec 2002 01:55:56 +0100
+
+bochs (2.0pre3-1) unstable; urgency=low
+
+  * New upstream release.
+  * Enabling plugins.
+  * Compiling SDL support.
+  * Add version check for conffile change debconf warning. (Closes: #170725)
+  * Add some notes about sb16ctrl.c in README.Debian. (Closes: #161873)
+  * Got rid of CHANGES.gz. (Closes: #170545)
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Sat,  7 Dec 2002 14:57:30 +0100
+
+bochs (2.0pre2-1) unstable; urgency=low
+
+  * New upstream release.
+  * Building WxWindows frontend (GTK+ based).
+  * Enabling x86-64 by default.
+  * Merged support for the different GUIs (X, curses, Wx) into one binary,
+    as they are no longer exclussive.
+  * Removed sb16ctrl package as it prevented Bochs from getting into
+    testing. Now sb16ctrl is in /usr/share/doc/bochs/sb16ctrl.c for you
+    to build. (Closes: #161873)
+  * Now Bochs binary can do most of what the launcher used to, so I've
+    rewritten the bochs launcher to do no more than a pair of things.
+  * Configuration file #home# and #guest# tags are now environmental variables,
+    added debconf template to tell the user he/she has to rework his/her
+    bochsrc.
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Fri, 22 Nov 2002 15:51:16 +0100
+
+bochs (1.4.1.z.cvs20021031-1) unstable; urgency=low
+
+  * New upstream snapshot.
+  * Fixed commandline parser of launcher, thanks Robbe. (Closes: #167152)
+  * Force creating sb16ctrl symlink. (Closes: #166906)
+  * Using --enable-all-optimizations autoconf flag.
+  * Stripping sb16ctrl with dh_strip.
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Fri,  1 Nov 2002 15:23:52 +0100
+
+bochs (1.4.1.z.cvs20020927-1) unstable; urgency=low
+
+  * New upstream snapshot. Implemented x86-64 support (see README.Debian)
+  * Disabling i686 optimisations as are discouraged upstream (fallback to i586)
+  * Fixed targets in debian/rules for building build-arch separately
+    from build-indep. (Closes: #161831)
+  * Now using dh_install.
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Fri, 27 Sep 2002 13:51:53 +0200
+
+bochs (1.4.1.z.cvs20020915-1) unstable; urgency=low
+
+  * New upstream snapshot with GDB stub patch.
+  * Reactivating bios building, as bug #153449 is fixed now.
+  * Enabling i686, MMX and FPU optimisations.
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Sun, 15 Sep 2002 07:51:41 +0200
+
+bochs (1.4.1.no.gifs-1) unstable; urgency=low
+
+  * Got rid of gifs.
+  * Splitted build-indep section.
+  * Addition of bochsbios and sb16ctrl.
+  * Temporarily deactivating bios building (see bug #153449).
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Mon, 29 Jul 2002 23:54:45 +0200
+
+bochs (1.4.1.no.elpin-1) unstable; urgency=low
+
+  * Removed nonfree elpin BIOS (ouch!). (Closes: #152762)
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Fri, 12 Jul 2002 05:52:51 +0200
+
+bochs (1.4.1-1) unstable; urgency=low
+
+  * New upstream release.
+  * Add dependancy on bochs to bochs-x and bochs-curses. (Closes: #150553)
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Wed, 26 Jun 2002 09:16:29 +0200
+
+bochs (1.4rel-6) unstable; urgency=low
+
+  * Removed DOC-linux.html installation document, useless in the package.
+  * Fixed sed rule in upstream Makefile to replace @VERSION@. (Closes: #140219)
+  * Made launcher to search .bochsrc in `pwd` first. (Closes: #146397)
+  * Patched misc non-upstream issues in manpages.
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Sat, 11 May 2002 12:52:50 +0200
+
+bochs (1.4rel-5) unstable; urgency=low
+
+  * Enabled support to specify location for bochsrc.
+  * Using versioned depends from bochs to bochs-{x,curses}. (Closes: #145268)
+  * Enabling serial support in iodev/serial.cc. (Closes: #145983)
+  * Merged FHS fixes into Makefile. Fixed misc install issues.
+    (Closes: #140219, #145943)
+  * Added GNU #defines to iodev/cdrom.cc.
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Sun, 21 Apr 2002 08:36:14 +0200
+
+bochs (1.4rel-4) unstable; urgency=low
+
+  * Got rid of linux/fs.h include that broak build on some arches.
+	
+ -- Robert Millan <zeratul2@wanadoo.es>  Thu, 18 Apr 2002 15:20:52 +0200
+
+bochs (1.4rel-3) unstable; urgency=low
+
+  * Fallback to fixed fonts when vga fonts are not present.
+  * Fixed deboostrap typo in debian/control.
+  * Checking for X properly with test -z $DISPLAY. (Closes: #142537)
+	
+ -- Robert Millan <zeratul2@wanadoo.es>  Fri, 12 Apr 2002 12:31:35 +0200
+
+bochs (1.4rel-2) unstable; urgency=low
+
+  * Reworked launcher script to be more flexible and less intrusive.
+  * Written Bochsconf tool to simplify setup. (please test!)
+  * Nicer error message when xfont is not present. (Closes: 142059)
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Mon,  8 Apr 2002 18:47:21 +0200
+
+bochs (1.4rel-1) unstable; urgency=low
+
+  * New upstream release.
+  * Merged gui/gui.cc into upstream.
+  * Fixed bad syntax in debian/rules that disabled vbe, cdrom, sb16 and
+    ne2k support for the X interface. (Closes: #140233)
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Thu, 28 Mar 2002 22:04:59 +0100
+
+bochs (1.4pre2-2) unstable; urgency=low
+
+  * Enabled Vesa Bios Extensions support, since vgabios now provides it.
+  * Created a bochs-curses package with ncurses interface.
+    (had to fix gui/gui.cc, with undeclared identifiers)
+  * Now using tempfile to get random locations in laucher.
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Wed, 20 Mar 2002 13:32:27 +0100
+
+bochs (1.4pre2-1) unstable; urgency=low
+
+  * New upstream release
+  * Created a launcher script for bochs. bochsrc is autoloaded and
+    $HOME is parsed.
+  * Enabled network support for GNU/Linux (oops)
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Wed,  6 Mar 2002 15:41:58 +0100
+
+bochs (1.3-2) unstable; urgency=low
+
+  * Removed unnecessary bcc and bin86 from Build-Depends.
+    (sigh, did i dream they were required?)
+  * Added support for GNU and GNU/*BSD.
+  * Passing DEB_HOST_GNU_TYPE and DEB_BUILD_GNU_TYPE to configure.
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Sun,  3 Mar 2002 14:21:16 +0100
+
+bochs (1.3-1) unstable; urgency=low
+
+  * Initial Release. (Closes: #78642)
+  * Sorry Goswin, had to take it.
+
+ -- Robert Millan <zeratul2@wanadoo.es>  Sat, 12 Jan 2002 11:34:12 +0100
+

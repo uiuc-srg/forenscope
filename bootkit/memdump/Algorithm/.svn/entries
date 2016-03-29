@@ -1,0 +1,40 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/bootkit/memdump/perl_usr/local/share/perl/5.8.8/Algorithm
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2009-07-15T14:57:27.552387Z
+771
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+ClusterPoints.pm
+file
+
+
+
+
+2011-09-21T17:00:10.000000Z
+44d3302914688d96efeded4f29eba8e1
+2009-07-15T14:57:27.552387Z
+771
+emchan
+

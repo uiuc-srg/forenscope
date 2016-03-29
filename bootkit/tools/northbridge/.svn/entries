@@ -1,0 +1,52 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/bootkit/tools/northbridge
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2009-08-11T04:09:09.838091Z
+797
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+northbridge.c
+file
+
+
+
+
+2011-09-21T16:59:08.000000Z
+ed5fad9fe1d6ced716ef4380842ab82c
+2009-08-11T04:09:09.838091Z
+797
+emchan
+
+Makefile
+file
+
+
+
+
+2011-09-21T16:59:08.000000Z
+ca0623a5353c8bf4d5c9e964a2ee3829
+2009-08-11T04:09:09.838091Z
+797
+emchan
+

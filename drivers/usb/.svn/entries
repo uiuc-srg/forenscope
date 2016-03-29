@@ -1,0 +1,106 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/drivers/usb
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+serial
+dir
+
+Kconfig
+file
+
+
+
+
+2011-09-21T17:04:05.000000Z
+bc006738b6196b8fa1ab75c063c5098c
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+atm
+dir
+
+image
+dir
+
+storage
+dir
+
+class
+dir
+
+core
+dir
+
+mon
+dir
+
+gadget
+dir
+
+misc
+dir
+
+usb-skeleton.c
+file
+
+
+
+
+2011-09-21T17:04:05.000000Z
+6759526390c39ae067c22102ce8379f8
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+host
+dir
+
+Makefile
+file
+
+
+
+
+2011-09-21T17:04:05.000000Z
+e4c328bd46cf1a53a1f5e9246e79e519
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+README
+file
+
+
+
+
+2011-09-21T17:04:05.000000Z
+4b89ff696b6f756d67cf2e16fa8f96e1
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

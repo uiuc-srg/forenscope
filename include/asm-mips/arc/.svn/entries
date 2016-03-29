@@ -1,0 +1,52 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/include/asm-mips/arc
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+hinv.h
+file
+
+
+
+
+2011-09-21T16:56:05.000000Z
+0a9c0096efd10295cf46fa61b32925cc
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+types.h
+file
+
+
+
+
+2011-09-21T16:56:05.000000Z
+03493c08ce29f944fb30d6254a4a5b93
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

@@ -1,0 +1,1 @@
+cmd_arch/i386/pci/built-in.o :=  ld -m elf_i386 -m elf_i386  -r -o arch/i386/pci/built-in.o arch/i386/pci/i386.o arch/i386/pci/init.o arch/i386/pci/pcbios.o arch/i386/pci/mmconfig.o arch/i386/pci/direct.o arch/i386/pci/mmconfig-shared.o arch/i386/pci/fixup.o arch/i386/pci/acpi.o arch/i386/pci/legacy.o arch/i386/pci/irq.o arch/i386/pci/common.o arch/i386/pci/early.o

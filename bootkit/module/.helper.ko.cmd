@@ -1,0 +1,1 @@
+cmd_/home/ubuntu/forenscope/bootkit/module/helper.ko := ld -m elf_i386 -m elf_i386 -r -o /home/ubuntu/forenscope/bootkit/module/helper.ko /home/ubuntu/forenscope/bootkit/module/helper.o /home/ubuntu/forenscope/bootkit/module/helper.mod.o

@@ -1,0 +1,106 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/arch/x86_64/boot
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+install.sh
+file
+
+
+
+
+2011-09-21T17:01:36.000000Z
+da77fb458819c2b45c5a86307b39618d
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+tools
+dir
+
+setup.S
+file
+
+
+
+
+2011-09-21T17:01:36.000000Z
+41a4ebaf718fabce8836f36dc566c52c
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+bootsect.S
+file
+
+
+
+
+2011-09-21T17:01:36.000000Z
+00ae67af3a441a353f7c3a1b9b18a18d
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+compressed
+dir
+
+.gitignore
+file
+
+
+
+
+2011-09-21T17:01:36.000000Z
+e67e6510a822b317e7a7da9b74735e80
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+mtools.conf.in
+file
+
+
+
+
+2011-09-21T17:01:36.000000Z
+0624f7c82cca6188298d5f9e2721233e
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+Makefile
+file
+
+
+
+
+2011-09-21T17:01:36.000000Z
+999726d5ae15bb1a84271cfa521e641f
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

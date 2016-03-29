@@ -1,0 +1,242 @@
+Index: qemu
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+Index: qemu-0.9.1/hw/i8254.c
+===================================================================
+--- qemu-0.9.1/hw/i8254.c	(revision 428)
++++ qemu-0.9.1/hw/i8254.c	(working copy)
+@@ -370,6 +370,7 @@
+     expire_time = pit_get_next_transition_time(s, current_time);
+     irq_level = pit_get_out1(s, current_time);
+     qemu_set_irq(s->irq, irq_level);
++//    term_printf("emchan: PIT interrupt %x\n", s->irq);
+ #ifdef DEBUG_PIT
+     printf("irq_level=%d next_delay=%f\n",
+            irq_level,
+Index: qemu-0.9.1/hw/i8259.c
+===================================================================
+--- qemu-0.9.1/hw/i8259.c	(revision 428)
++++ qemu-0.9.1/hw/i8259.c	(working copy)
+@@ -81,18 +81,23 @@
+         if (level) {
+             s->irr |= mask;
+             s->last_irr |= mask;
++	    if(irq & 1) term_printf("emchan: set irr1 %x\n", s->irr);
+         } else {
+             s->irr &= ~mask;
+             s->last_irr &= ~mask;
++	    if(irq & 1) term_printf("emchan(l): unset irr1 %x\n", s->irr);
+         }
+     } else {
+         /* edge triggered */
+         if (level) {
+-            if ((s->last_irr & mask) == 0)
++            if ((s->last_irr & mask) == 0) {
+                 s->irr |= mask;
++		if(irq & 1) term_printf("emchan: set irr1 %x\n", s->irr);
++	    }
+             s->last_irr |= mask;
+         } else {
+             s->last_irr &= ~mask;
++	    //if(irq & 1) term_printf("emchan(e): unset irr1 %x\n", s->irr);
+         }
+     }
+ }
+@@ -204,20 +209,27 @@
+     if (s->alt_irq_func)
+         s->alt_irq_func(s->alt_irq_opaque, irq, level);
+     pic_update_irq(s);
++//    if(irq == 1) term_printf("emchan: irq1 set as %x\n", level);
+ }
+ 
+ /* acknowledge interrupt 'irq' */
+ static inline void pic_intack(PicState *s, int irq)
+ {
++    static int emc_times = 0;
+     if (s->auto_eoi) {
++	if(irq == 1) term_printf("emchan: autoeoi %d\n", emc_times++);
+         if (s->rotate_on_auto_eoi)
+             s->priority_add = (irq + 1) & 7;
+     } else {
+         s->isr |= (1 << irq);
++	if(irq == 1) term_printf("emchan: manual eoi %d irr=%x\n", emc_times++, s->irr);
+     }
+     /* We don't clear a level sensitive interrupt here */
+-    if (!(s->elcr & (1 << irq)))
++    if (!(s->elcr & (1 << irq))) {
+         s->irr &= ~(1 << irq);
++	if(irq & 1) term_printf("emchan: eoi unset, level %d irr=%x\n", 
++		emc_times++, s->irr);
++    }
+ }
+ 
+ int pic_read_irq(PicState2 *s)
+@@ -226,6 +238,7 @@
+ 
+     irq = pic_get_irq(&s->pics[0]);
+     if (irq >= 0) {
++	if(irq == 1) term_printf("emchan: pic_intack()\n");
+         pic_intack(&s->pics[0], irq);
+         if (irq == 2) {
+             irq2 = pic_get_irq(&s->pics[1]);
+@@ -302,7 +315,10 @@
+                 hw_error("level sensitive irq not supported");
+         } else if (val & 0x08) {
+             if (val & 0x04)
++		{
++		term_printf("emchan: activate poll!\n");
+                 s->poll = 1;
++		}
+             if (val & 0x02)
+                 s->read_reg_select = val & 1;
+             if (val & 0x40)
+@@ -316,6 +332,7 @@
+                 break;
+             case 1: /* end of interrupt */
+             case 5:
++		if(irq == 1) term_printf("emchan eoi1\n");
+                 priority = get_priority(s, s->isr);
+                 if (priority != 8) {
+                     irq = (priority + s->priority_add) & 7;
+@@ -377,12 +394,15 @@
+     int ret;
+ 
+     ret = pic_get_irq(s);
++    term_printf("emchan: pic_poll_read %x\n", ret);
+     if (ret >= 0) {
+         if (addr1 >> 7) {
+             s->pics_state->pics[0].isr &= ~(1 << 2);
+             s->pics_state->pics[0].irr &= ~(1 << 2);
++	    if(ret == 1) term_printf("emchan: pic_poll_read irr=%x\n", s->irr);
+         }
+         s->irr &= ~(1 << ret);
++	if(ret == 1) term_printf("emchan: pic_poll_read irr=%x\n", s->irr);
+         s->isr &= ~(1 << ret);
+         if (addr1 >> 7 || ret != 2)
+             pic_update_irq(s->pics_state);
+@@ -403,6 +423,7 @@
+     addr = addr1;
+     addr &= 1;
+     if (s->poll) {
++	term_printf("emchan: *** activated pic_poll_read(%x) ***\n", addr1);
+         ret = pic_poll_read(s, addr1);
+         s->poll = 0;
+     } else {
+@@ -519,7 +540,7 @@
+ 
+     for(i=0;i<2;i++) {
+         s = &isa_pic->pics[i];
+-        term_printf("pic%d: irr=%02x imr=%02x isr=%02x hprio=%d irq_base=%02x rr_sel=%d elcr=%02x fnm=%d\n",
++        term_printf("(8259) pic%d: irr=%02x imr=%02x isr=%02x hprio=%d irq_base=%02x rr_sel=%d elcr=%02x fnm=%d\n",
+                     i, s->irr, s->imr, s->isr, s->priority_add,
+                     s->irq_base, s->read_reg_select, s->elcr,
+                     s->special_fully_nested_mode);
+Index: qemu-0.9.1/hw/pckbd.c
+===================================================================
+--- qemu-0.9.1/hw/pckbd.c	(revision 428)
++++ qemu-0.9.1/hw/pckbd.c	(working copy)
+@@ -140,6 +140,7 @@
+ static void kbd_update_irq(KBDState *s)
+ {
+     int irq_kbd_level, irq_mouse_level;
++    static int emc_times = 0;
+ 
+     irq_kbd_level = 0;
+     irq_mouse_level = 0;
+@@ -157,6 +158,12 @@
+                 irq_kbd_level = 1;
+         }
+     }
++
++    if(irq_kbd_level)
++	term_printf("emchan: *** pending kbd level irq %d\n", emc_times++);
++    else
++	term_printf("emchan: *** unpending kbd level irq %d\n", emc_times++);
++
+     qemu_set_irq(s->irq_kbd, irq_kbd_level);
+     qemu_set_irq(s->irq_mouse, irq_mouse_level);
+ }
+Index: qemu-0.9.1/hw/apic.c
+===================================================================
+--- qemu-0.9.1/hw/apic.c	(revision 428)
++++ qemu-0.9.1/hw/apic.c	(working copy)
+@@ -21,8 +21,8 @@
+ #include "pc.h"
+ #include "qemu-timer.h"
+ 
+-//#define DEBUG_APIC
+-//#define DEBUG_IOAPIC
++#define DEBUG_APIC
++#define DEBUG_IOAPIC
+ 
+ /* APIC Local Vector Table */
+ #define APIC_LVT_TIMER   0
+@@ -332,6 +332,7 @@
+     else
+         reset_bit(s->tmr, vector_num);
+     apic_update_irq(s);
++    term_printf("emchan: apic set irq %x mode=%x irr=%x\n", vector_num, trigger_mode, s->irr[0]);
+ }
+ 
+ static void apic_eoi(APICState *s)
+@@ -483,6 +484,7 @@
+     reset_bit(s->irr, intno);
+     set_bit(s->isr, intno);
+     apic_update_irq(s);
++    term_printf("emchan(apic): reset bit %x irr=%x\n", intno, s->irr[0]);
+     return intno;
+ }
+ 
+@@ -898,9 +900,15 @@
+                 delivery_mode = (entry >> 8) & 7;
+                 polarity = (entry >> 13) & 1;
+                 if (trig_mode == APIC_TRIGGER_EDGE)
++		{
+                     s->irr &= ~mask;
++		    term_printf("emchan(apic): mask irr=%x irr=%x\n", mask, s->irr);
++		}
+                 if (delivery_mode == APIC_DM_EXTINT)
++		{
+                     vector = pic_read_irq(isa_pic);
++		    if(vector==1) term_printf("emchan(apic): pic_read_irq\n");
++		}
+                 else
+                     vector = entry & 0xff;
+ 
+@@ -915,6 +923,7 @@
+ void ioapic_set_irq(void *opaque, int vector, int level)
+ {
+     IOAPICState *s = opaque;
++    static int cnt = 0;
+ 
+     if (vector >= 0 && vector < IOAPIC_NUM_PINS) {
+         uint32_t mask = 1 << vector;
+@@ -924,6 +933,7 @@
+             /* level triggered */
+             if (level) {
+                 s->irr |= mask;
++		if(vector == 1) term_printf("emchan(apic,l): mask irr=%x irr=%x\n", mask, s->irr);
+                 ioapic_service(s);
+             } else {
+                 s->irr &= ~mask;
+@@ -932,6 +942,7 @@
+             /* edge triggered */
+             if (level) {
+                 s->irr |= mask;
++		if(vector == 1) term_printf("emchan(apic,e,%03x): mask irr=%x irr=%x\n", cnt++,mask, s->irr);
+                 ioapic_service(s);
+             }
+         }
+Index: qemu-0.9.1/hw/pc.c
+===================================================================
+--- qemu-0.9.1/hw/pc.c	(revision 428)
++++ qemu-0.9.1/hw/pc.c	(working copy)
+@@ -108,6 +108,7 @@
+         return -1;
+ 
+     intno = pic_read_irq(isa_pic);
++    if(intno==1) term_printf("emchan: pc.c: pic_read_irq\n");
+     return intno;
+ }
+ 

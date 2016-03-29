@@ -1,0 +1,1 @@
+cmd_/home/ubuntu/forenscope/bootkit/module/debug.ko := ld -m elf_i386 -m elf_i386 -r -o /home/ubuntu/forenscope/bootkit/module/debug.ko /home/ubuntu/forenscope/bootkit/module/debug.o /home/ubuntu/forenscope/bootkit/module/debug.mod.o

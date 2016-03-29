@@ -1,0 +1,14 @@
+#!/bin/sh
+#
+# Wrapper to warn user about kernel-img.conf move
+#
+
+if [ -x /usr/sbin/grub-install ]; then
+	if [ "$0" = "/sbin/grub-install" ]; then
+		echo "You shouldn't call /sbin/grub-install. Please call /usr/sbin/grub-install instead!" >&2
+		echo >&2
+	fi
+	exec /usr/sbin/grub-install "$@"
+else
+	echo "Your /usr is broken; please fix it before calling this wrapper!" >&2
+fi

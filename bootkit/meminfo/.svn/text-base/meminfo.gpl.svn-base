@@ -1,0 +1,24 @@
+set term postscript eps enhanced
+set output "meminfo.eps"
+set size 0.7,0.7
+set xlabel "Time (in seconds)"
+set ylabel "Number of file buffers"
+set xrange [0:240]
+set yrange [0:8000]
+set ytics 500
+set xtics 20
+set key left
+set style line 1 lt rgb "blue" 
+set style line 2 lt rgb "red"
+set style line 3 lt rgb "green"
+set style line 4 lt rgb "black"
+set style line 5 lt rgb "cyan"
+set style line 6 lt rgb "yellow"
+set style line 7 lt rgb "magenta"
+
+plot "bitblocker_busybox_awk.data" title "Busybox compile-bitblocker" with lines ls 1, \
+    "busybox_compile1_awk.data" title "Busybox compile-disk1" with lines ls 2, \
+    "wget_ramdisk_awk.data" title "wget-ramdisk" with lines ls 4, \
+    "wget_bitblocker_awk.data" title "wget-bitblocker" with lines ls 5, \
+    "bitblocker_tbz2_awk.data" title "tar+bz2-bitblocker" with lines ls 6, \
+    "ramdisk_tbz2_awk.data" title "tar+bz2-ramdisk" with lines ls 7

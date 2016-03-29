@@ -1,0 +1,47 @@
+tcp_sock -> tcp_sock.ucopy.task = 504 bytes
+
+
+sock + 244 = sk_socket
+
+sk_socket + 88 = gid
+
+
+
+static struct tcp_seq_afinfo tcp4_seq_afinfo = {
+        .owner          = THIS_MODULE,
+        .name           = "tcp",
+        .family         = AF_INET,
+        .seq_show       = tcp4_seq_show,
+        .seq_fops       = &tcp4_seq_fops,
+};
+
+
+
+0x003adf10: c031ac6f << "tcp"
+0x003adf14: 00000002 << AF_INET
+0x003adf18: c02ce5af << tcp4_seq_show
+0x003adf1c: c041ca00
+
+
+
+0xc02ce5ed <tcp4_seq_show+62>:  call   0xc02ce1a5 <get_tcp4_sock>
+
+
+phalanx:~# ./mem2 c02ce1a5 << get_tcp4_sock
+0xc03bc9d0: 0xc02ce1a5
+0xc03bc9d4: 0xc02ce459
+0xc03bc9d8: 0xc02ce5af << tcp4_seq_show
+
+
+if(adr == tcp4_seq_show && adr - 4 != 2)
+get_tcp4_sock = *adr - 8
+
+
+
+om fd = 0:
+open() ///usr/share/unf.ph1/pid
+write()
+close()
+
+tstruct->parent->signal->tty 0 == ingen tty
+tstruct->signal->tty 0 == ingen tty

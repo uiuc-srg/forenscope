@@ -1,0 +1,21 @@
+#DPATCHLEVEL=0
+--- doc/man/bochsrc.5	2006-02-08 21:35:40.000000000 -0500
++++ doc/man/bochsrc.5	2006-03-09 03:15:18.000000000 -0500
+@@ -571,7 +571,7 @@
+ .TP
+ .I "ips:"
+ Emulated Instructions Per Second.  This option is deprecated.
+-Use the CPU paramter IPS instead (cpu: ips=N).
++Use the CPU parameter IPS instead (cpu: ips=N).
+ 
+ .TP
+ .I "clock:"
+@@ -741,7 +741,7 @@
+ .TP
+ .I "user_shortcut:"
+ This defines the keyboard shortcut to be sent when you press the "user"
+-button in the headerbar. The shortcut string is a combination of maximum
++button in the header bar. The shortcut string is a combination of maximum
+ 3 key names (listed below) separated with a '-' character. The old-style
+ syntax (without the '-') still works for the key combinations supported
+ in Bochs 2.2.1.

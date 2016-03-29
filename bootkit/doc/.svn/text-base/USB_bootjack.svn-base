@@ -1,0 +1,11 @@
+Using grub as a boot loader
+
+Although syslinux is small, simple to install, and comes with a very simple command line menu to select from different boot options, I definitely prefer grub. It is larger, but a lot more flexible and offers a complete boot menu and interactive command interface. With recent versions of grub (tested with 0.97), booting from USB is also possible without real issues. To install grub as a boot loader on the USB stick:
+Mount the VFAT(32) file system with mount /dev/sdu1 /mnt (or via KDE, in which case it will probably be mounted under /media/usb, then replace the /mnt occurances below accordingly)
+Create a directoriy for grub with mkdir -p /mnt/boot/grub
+Copy the grub files with cp /lib/grub/i386-pc/* /mnt/boot/grub
+Set a correct device map with echo '(hd0)  /dev/sdu' > /mnt/boot/grub/device.map
+Install grub into the master boot record with grub-install --root-directory=/mnt /dev/sdu
+After that, grub should already be bootable from the USB stick, and booting a PC with the stick attached should show the grub boot menu.
+
+http://www.mayrhofer.eu.org/Default.aspx?pageid=45

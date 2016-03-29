@@ -1,0 +1,105 @@
+Index: qemu-0.9.1/monitor.c
+===================================================================
+--- qemu-0.9.1/monitor.c	(revision 444)
++++ qemu-0.9.1/monitor.c	(working copy)
+@@ -1355,6 +1355,10 @@
+       "", "show virtual to physical memory mappings", },
+     { "mem", "", mem_info,
+       "", "show the active virtual memory mappings", },
++    { "keyb", "", keyb_info,
++      "", "show keyboard state", },
++    { "pit", "", pit_info,
++      "", "show pit timer state", },
+ #endif
+     { "jit", "", do_info_jit,
+       "", "show dynamic compiler info", },
+Index: qemu-0.9.1/hw/i8254.c
+===================================================================
+--- qemu-0.9.1/hw/i8254.c	(revision 444)
++++ qemu-0.9.1/hw/i8254.c	(working copy)
+@@ -417,6 +417,31 @@
+     }
+ }
+ 
++void pit_info(void)
++{
++    PITState *pit = &pit_state;
++    PITChannelState *s;
++    int i;
++
++    for(i = 0; i < 3; i++) {
++        s = &pit->channels[i];
++	term_printf("count=%08x, latched_count=%04x, count_latched=%02x, status_latched=%02x, status=%02x, read_state=%02x, write_state=%02x, write_latch=%02x, rw_mode=%02x, mode=%02x, bcd=%02x, gate=%02x, count_load_time=%02x\n",
++        s->count,
++        s->latched_count,
++        s->count_latched,
++        s->status_latched,
++        s->status,
++        s->read_state,
++        s->write_state,
++        s->write_latch,
++        s->rw_mode,
++        s->mode,
++        s->bcd,
++        s->gate,
++        s->count_load_time);
++    }
++}
++
+ static int pit_load(QEMUFile *f, void *opaque, int version_id)
+ {
+     PITState *pit = opaque;
+Index: qemu-0.9.1/hw/pckbd.c
+===================================================================
+--- qemu-0.9.1/hw/pckbd.c	(revision 444)
++++ qemu-0.9.1/hw/pckbd.c	(working copy)
+@@ -448,3 +448,16 @@
+ #endif
+     qemu_register_reset(kbd_reset, s);
+ }
++
++void keyb_info(void)
++{
++    term_printf("emchan: keyb info\n");
++    term_printf("write_cmd=%02x status=%02x "
++	        "mode=%02x pending=%02x || "
++		"kbd=%08x irq=%d base=%08x "
++		"it_shift=%08x\n",
++		kbd_state.write_cmd, kbd_state.status,
++		kbd_state.mode, kbd_state.pending,
++		kbd_state.kbd, kbd_state.irq_kbd, kbd_state.base,
++		kbd_state.it_shift);
++}
+Index: qemu-0.9.1/hw/pc.h
+===================================================================
+--- qemu-0.9.1/hw/pc.h	(revision 444)
++++ qemu-0.9.1/hw/pc.h	(working copy)
+@@ -46,6 +46,7 @@
+ void ioapic_set_irq(void *opaque, int vector, int level);
+ 
+ /* i8254.c */
++void pit_info(void);
+ 
+ #define PIT_FREQ 1193182
+ 
+@@ -66,6 +67,7 @@
+ void *vmmouse_init(void *m);
+ 
+ /* pckbd.c */
++void keyb_info(void);
+ 
+ void i8042_init(qemu_irq kbd_irq, qemu_irq mouse_irq, uint32_t io_base);
+ void i8042_mm_init(qemu_irq kbd_irq, qemu_irq mouse_irq,
+Index: qemu-0.9.1/qemu
+===================================================================
+--- qemu-0.9.1/qemu	(revision 0)
++++ qemu-0.9.1/qemu	(revision 0)
+@@ -0,0 +1 @@
++link i386-softmmu/qemu
+\ No newline at end of file
+
+Property changes on: qemu-0.9.1/qemu
+___________________________________________________________________
+Name: svn:special
+   + *
+

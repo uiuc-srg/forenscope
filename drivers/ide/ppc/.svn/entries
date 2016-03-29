@@ -1,0 +1,52 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/drivers/ide/ppc
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+pmac.c
+file
+
+
+
+
+2011-09-21T17:04:25.000000Z
+8fefbe94db5b8dd48110fb7a32724f72
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+mpc8xx.c
+file
+
+
+
+
+2011-09-21T17:04:25.000000Z
+5cbed820fd5df50de2126add85de5430
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

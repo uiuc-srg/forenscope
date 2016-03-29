@@ -1,0 +1,1 @@
+cmd_arch/i386/boot/compressed/vmlinux := ld -m elf_i386 -m elf_i386  -T arch/i386/boot/compressed/vmlinux.lds arch/i386/boot/compressed/head.o arch/i386/boot/compressed/misc.o arch/i386/boot/compressed/piggy.o -o arch/i386/boot/compressed/vmlinux 

@@ -1,0 +1,88 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/arch/m68knommu
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+kernel
+dir
+
+Kconfig
+file
+
+
+
+
+2011-09-21T17:01:40.000000Z
+6f0311363be67296a45398a9c7d27a1e
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+platform
+dir
+
+defconfig
+file
+
+
+
+
+2011-09-21T17:01:40.000000Z
+c96d193e153b55bd1117bc0104270bc4
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+Kconfig.debug
+file
+
+
+
+
+2011-09-21T17:01:40.000000Z
+d43203e4ecf35a10ae1ec87bdebbcdd2
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+lib
+dir
+
+mm
+dir
+
+Makefile
+file
+
+
+
+
+2011-09-21T17:01:40.000000Z
+0c0967b04b1b7129d2ac4e37f4a98468
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

@@ -1,0 +1,8 @@
+debian/update-grub		usr/sbin
+debian/kernel-helper		usr/sbin
+debian/grub-floppy		usr/sbin
+debian/grub-reboot		usr/sbin
+debian/mkbimage			usr/bin
+debian/presubj			usr/share/bug/grub
+debian/last-good-boot		etc/event.d
+debian/kernel-helper-rc		etc/default

@@ -1,0 +1,2 @@
+#! /bin/sh
+gdb -x scripts/gdbvmlinux.gdb vmlinux

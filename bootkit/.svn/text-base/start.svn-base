@@ -1,0 +1,53 @@
+#! /bin/ksh
+
+#QEMU="./tools/qemu-0.11"
+#QEMU="/usr/bin/qemu"
+QEMU="./tools/qemu/qemu -L tools/qemu/install/usr/local/share/qemu"
+#QEMU="./tools/qemu/qemu-0.9.1/i386-softmmu/qemu -L tools/qemu/install/usr/local/share/qemu -inject-address 0x0"
+QEMUARGS="-m 128 -cdrom grub.iso -boot d -k en-us"
+MON="-monitor stdio"
+VDISKARGS="-hda fat:vdisk"
+#SNAPSHOT="-snapshot"
+#SCADA_DISK_ARGS="-hda ubuntu8_scada.vmdk $SNAPSHOT"
+MEMDUMPSIZE="140M"
+MEMDUMPARGS="-hdb memdumptest.img"
+SSHARGS="-redir tcp:8022:10.0.2.15:8022"
+HTTPARGS="-redir tcp:8080:10.0.2.15:8080"
+NETARGS="-net user -net nic $SSHARGS $HTTPARGS"
+
+# Each sector is ~2.5 mb
+SECTORS="63"
+
+function make_memimage
+{
+	qemu-img create -f raw memdump.img ${MEMDUMPSIZE};
+
+# Create a FAT32 memdump partition
+	export MTOOLSRC="config/mtools.conf";
+	mpartition -I -s "${SECTORS}" -t 20 -h 255 c:;
+	mpartition -cpv -s "${SECTORS}" -t 20 -h 255 c:;
+	mformat c:;
+	mcopy vdisk/hello c:;
+}
+
+# make vdisk
+mkdir -p vdisk
+touch vdisk/hello
+echo Bootjacked > vdisk/hello
+cp scripts/mount_hdb.sh vdisk/mount_hdb.sh
+chmod a+x vdisk/mount_hdb.sh
+
+#make memdump image
+which mcopy || { echo "mcopy not found, please install mtools"; exit 1; }
+# Deleting the memdump.img and recreating it
+rm memdump.img
+make_memimage
+
+# Put the lib into vdisktools
+tar -xf vdisktools/lib.tgz 
+mv lib vdisktools/
+
+./scripts/gen_iso_img.sh
+#-s means GDB, -S means wait for GDB
+${QEMU} -s ${QEMUARGS} ${VDISKARGS} ${MEMDUMPARGS} ${SCADA_DISK_ARGS} ${NETARGS} ${MON} ${CUSTARGS} $@
+

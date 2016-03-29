@@ -1,0 +1,5 @@
+debian/tmp/usr/share/doc/bochs/development
+debian/tmp/usr/share/doc/bochs/documentation
+debian/tmp/usr/share/doc/bochs/images
+debian/tmp/usr/share/doc/bochs/index.html
+debian/tmp/usr/share/doc/bochs/user

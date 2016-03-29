@@ -1,0 +1,26 @@
+#!/bin/sh
+
+if [ "$1" = "configure" ]; then
+	if dpkg --compare-versions "$2" lt-nl "0.97-29ubuntu6"; then
+		update-grub
+	fi
+	if dpkg --compare-versions "$2" lt "0.97-29ubuntu26"; then
+		# This is an old misnamed config file we need to get rid of
+		rm -f /etc/event.d/event.d-last-good-boot
+	fi
+	if dpkg --compare-versions "$2" lt "0.97-29ubuntu38"; then
+		# Remnants of when this was default
+		rm -rf /boot/last-good-boot /lib/modules/last-good-boot
+	fi
+fi
+
+if [ "x$1" = xtriggered ] ; then
+	/usr/sbin/update-grub
+fi
+
+if [ "$1" = "configure" ]; then
+	# Create a last-good-boot if one doesn't exist.
+	/usr/sbin/kernel-helper -i
+fi
+
+#DEBHELPER#

@@ -1,0 +1,52 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/drivers/net/cris
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+eth_v10.c
+file
+
+
+
+
+2011-09-21T17:03:32.000000Z
+86163c49d183b6501a866a8deb3890bd
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+Makefile
+file
+
+
+
+
+2011-09-21T17:03:32.000000Z
+27d640fd14f947612a472d5102d95bd1
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

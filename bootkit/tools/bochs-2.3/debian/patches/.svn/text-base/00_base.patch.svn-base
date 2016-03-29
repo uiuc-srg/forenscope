@@ -1,0 +1,199 @@
+#DPATCHLEVEL=0
+Index: .bochsrc
+===================================================================
+--- .bochsrc.orig	2006-06-22 21:50:47.000000000 +0300
++++ .bochsrc	2006-09-17 01:19:14.000000000 +0300
+@@ -17,7 +17,7 @@
+ # the "wx" display library.
+ #=======================================================================
+ #config_interface: textconfig
+-#config_interface: wx
++config_interface: wx
+ 
+ #=======================================================================
+ # DISPLAY_LIBRARY
+@@ -31,15 +31,9 @@
+ #
+ # The choices are: 
+ #   x              use X windows interface, cross platform
+-#   win32          use native win32 libraries
+-#   carbon         use Carbon library (for MacOS X)
+-#   beos           use native BeOS libraries
+-#   macintosh      use MacOS pre-10
+-#   amigaos        use native AmigaOS libraries
+ #   sdl            use SDL library, cross platform
+ #   svga           use SVGALIB library for Linux, allows graphics without X11
+ #   term           text only, uses curses/ncurses library, cross platform
+-#   rfb            provides an interface to AT&T's VNC viewer, cross platform
+ #   wx             use wxWidgets library, cross platform
+ #   nogui          no display at all
+ #
+@@ -50,16 +44,10 @@
+ # Some display libraries now support specific option to control their
+ # behaviour. See the examples below for currently supported options.
+ #=======================================================================
+-#display_library: amigaos
+-#display_library: beos
+-#display_library: carbon
+-#display_library: macintosh
+ #display_library: nogui
+-#display_library: rfb, options="timeout=60" # time to wait for client
+ #display_library: sdl, options="fullscreen" # startup in fullscreen mode
+ #display_library: term
+-#display_library: win32, options="legacyF12" # use F12 to toggle mouse
+-#display_library: wx
++display_library: wx
+ #display_library: x
+ 
+ #=======================================================================
+@@ -74,7 +62,7 @@
+ # now supported, but we still recommend to use the BIOS distributed with
+ # Bochs. Now the start address can be calculated from image size.
+ #=======================================================================
+-romimage: file=$BXSHARE/BIOS-bochs-latest, address=0xf0000
++romimage: file=/usr/share/bochs/BIOS-bochs-latest, address=0xf0000
+ #romimage: file=mybios.bin, address=0xfff80000 # 512k at memory top
+ #romimage: file=mybios.bin # calculate start address from image size
+ 
+@@ -161,9 +149,8 @@ megs: 32
+ # VGAROMIMAGE
+ # You now need to load a VGA ROM BIOS into C0000.
+ #=======================================================================
+-#vgaromimage: file=bios/VGABIOS-elpin-2.40
+-vgaromimage: file=$BXSHARE/VGABIOS-lgpl-latest
+-#vgaromimage: file=bios/VGABIOS-lgpl-latest-cirrus
++vgaromimage: file=/usr/share/vgabios/vgabios.bin
++#vgaromimage: file=/usr/share/vgabios/vgabios.debug.bin
+ 
+ #=======================================================================
+ # VGA:
+@@ -282,12 +269,8 @@ ata3: enabled=0, ioaddr1=0x168, ioaddr2=
+ #   ata3-master: type=disk, mode=flat, path=483M.sample, cylinders=1024, heads=15, spt=63
+ #   ata3-slave:  type=cdrom, path=iso.sample, status=inserted
+ #=======================================================================
+-ata0-master: type=disk, mode=flat, path="30M.sample", cylinders=615, heads=6, spt=17
+-#ata0-master: type=disk, mode=flat, path="c.img", cylinders=0 # autodetect
+-#ata0-slave: type=cdrom, path=D:, status=inserted
+-#ata0-slave: type=cdrom, path=/dev/cdrom, status=inserted
+-#ata0-slave: type=cdrom, path="drive", status=inserted
+-#ata0-slave: type=cdrom, path=/dev/rcd0d, status=inserted 
++#ata0-master: type=disk, mode=flat, path="$HOME/.bochs/guest.hd0", cylinders=#cylinders#\, heads=16, spt=63
++ata0-slave: type=cdrom, path=/dev/#cdrom#, status=inserted
+ 
+ #=======================================================================
+ # BOOT:
+@@ -303,7 +286,8 @@ ata0-master: type=disk, mode=flat, path=
+ #   boot: cdrom, floppy, disk
+ #=======================================================================
+ #boot: floppy
+-boot: disk
++#boot: disk
++boot: cdrom
+ 
+ #=======================================================================
+ # CLOCK:
+@@ -358,8 +342,9 @@ floppy_bootsig_check: disabled=0
+ #   log: ./bochs.out
+ #   log: /dev/tty
+ #=======================================================================
++log: /dev/stdout
+ #log: /dev/null
+-log: bochsout.txt
++#log: /tmp/bochsout.txt
+ 
+ #=======================================================================
+ # LOGPREFIX:
+@@ -440,7 +425,7 @@ debugger_log: -
+ #   com3: enabled=1, mode=raw, dev=com1
+ #   com3: enabled=1, mode=socket, dev=localhost:8888
+ #=======================================================================
+-#com1: enabled=1, mode=term, dev=/dev/ttyp9
++com1: enabled=1, mode=term, dev=/dev/#com#
+ 
+ 
+ #=======================================================================
+@@ -456,7 +441,7 @@ debugger_log: -
+ #   parport2: enabled=1, file="/dev/lp0"
+ #   parport1: enabled=0
+ #=======================================================================
+-parport1: enabled=1, file="parport.out"
++parport1: enabled=1, file="/dev/lp0"
+ 
+ #=======================================================================
+ # SB16:
+@@ -493,7 +478,7 @@ parport1: enabled=1, file="parport.out"
+ # For an example look at the next line:
+ #=======================================================================
+ 
+-#sb16: midimode=1, midi=/dev/midi00, wavemode=1, wave=/dev/dsp, loglevel=2, log=sb16.log, dmatimer=600000
++sb16: midimode=1, midi=/dev/midi00, wavemode=1, wave=/dev/dsp, loglevel=2, log=/dev/stdout, dmatimer=600000
+ 
+ #=======================================================================
+ # VGA_UPDATE_INTERVAL:
+@@ -574,18 +559,6 @@ mouse: enabled=0
+ private_colormap: enabled=0
+ 
+ #=======================================================================
+-# fullscreen: ONLY IMPLEMENTED ON AMIGA
+-#             Request that Bochs occupy the entire screen instead of a 
+-#             window.
+-#
+-# Examples:
+-#   fullscreen: enabled=0
+-#   fullscreen: enabled=1
+-#=======================================================================
+-#fullscreen: enabled=0
+-#screenmode: name="sample"
+-
+-#=======================================================================
+ # ne2k: NE2000 compatible ethernet adapter
+ #
+ # Examples:
+@@ -625,10 +598,7 @@ private_colormap: enabled=0
+ #         overwrite files.
+ #
+ #=======================================================================
+-# ne2k: ioaddr=0x240, irq=9, mac=fe:fd:00:00:00:01, ethmod=fbsd, ethdev=en0 #macosx
+-# ne2k: ioaddr=0x240, irq=9, mac=b0:c4:20:00:00:00, ethmod=fbsd, ethdev=xl0
+-# ne2k: ioaddr=0x240, irq=9, mac=b0:c4:20:00:00:00, ethmod=linux, ethdev=eth0
+-# ne2k: ioaddr=0x240, irq=9, mac=b0:c4:20:00:00:01, ethmod=win32, ethdev=MYCARD
++# ne2k: ioaddr=0x240, irq=9, mac=b0:c4:20:00:00:00, ethmod=#kernel#, ethdev=#eth#
+ # ne2k: ioaddr=0x240, irq=9, mac=fe:fd:00:00:00:01, ethmod=tap, ethdev=tap0
+ # ne2k: ioaddr=0x240, irq=9, mac=fe:fd:00:00:00:01, ethmod=tuntap, ethdev=/dev/net/tun0, script=./tunconfig
+ # ne2k: ioaddr=0x240, irq=9, mac=b0:c4:20:00:00:01, ethmod=null, ethdev=eth0
+@@ -644,7 +614,7 @@ private_colormap: enabled=0
+ # Examples:
+ #   keyboard_mapping: enabled=1, map=gui/keymaps/x11-pc-de.map
+ #=======================================================================
+-keyboard_mapping: enabled=0, map=
++#keyboard_mapping: enabled=0, map=/usr/share/bochs/keymaps/x11-pc-de.map
+ 
+ #=======================================================================
+ # KEYBOARD_TYPE:
+@@ -740,11 +710,3 @@ i440fxsupport: enabled=1
+ #=======================================================================
+ #ips: 10000000
+ 
+-#=======================================================================
+-# for Macintosh, use the style of pathnames in the following
+-# examples.
+-#
+-# vgaromimage: :bios:VGABIOS-elpin-2.40
+-# romimage: file=:bios:BIOS-bochs-latest, address=0xf0000
+-# floppya: 1_44=[fd:], status=inserted
+-#=======================================================================
+Index: doc/man/bochs.1
+===================================================================
+--- doc/man/bochs.1.orig	2005-12-29 21:51:00.000000000 +0200
++++ doc/man/bochs.1	2006-09-17 01:14:55.000000000 +0300
+@@ -57,8 +57,8 @@ Example:
+ .SH LICENSE
+ This program  is distributed  under the terms of the  GNU
+ Lesser General Public License as published  by  the  Free
+-Software  Foundation.  See  the  COPYING file located  in
+-/usr/local/share/doc/bochs/ for details on the license and
++Software Foundation. See the LGPL file located in
++/usr/share/common-licenses/ for details on the license and
+ the lack of warranty.
+ .\"SKIP_SECTION"
+ .SH AVAILABILITY

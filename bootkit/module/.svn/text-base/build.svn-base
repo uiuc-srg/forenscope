@@ -1,0 +1,5 @@
+#! /bin/sh
+
+KERNELDIR=$1
+CFLAGS=-I../include make -C $KERNELDIR M=$PWD modules
+CFLAGS=-I../include make -C $KERNELDIR M=$PWD V=1

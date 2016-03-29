@@ -1,0 +1,6 @@
+00_base.patch -p0
+01_man.patch -p0
+02_libtool.patch -p1
+03_redolog_FTBFS.patch
+04_man_table.patch
+05_security_ne2k.patch -p0

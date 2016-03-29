@@ -1,0 +1,397 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/sound/pci
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+Kconfig
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+fabbc4ceb16c6c65ecf32c2b2d4245ce
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+es1968.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+7b56e6f5d68b41163af4df730a77426d
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+rme96.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+ad91464823f04e7b03cc70572ab82490
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+vx222
+dir
+
+ali5451
+dir
+
+pcxhr
+dir
+
+sonicvibes.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+e24f9ef5a8da8a2a4bde30fd7b224232
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+ymfpci
+dir
+
+via82xx.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+f3f1ac23675278ceb05ec152eeaea99a
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+au88x0
+dir
+
+azt3328.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+53e77fd712fabdebd5472f628b996962
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+cs46xx
+dir
+
+riptide
+dir
+
+azt3328.h
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+32da34cb04d02325f93d724c9332f6d6
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+als4000.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+38c0924227acc094dcf21d00fb01d34a
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+cs4281.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+252684ea57c3ca1a77863cc282f0541d
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+korg1212
+dir
+
+intel8x0m.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+6fefebe5bc604962c1797406581195af
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+cs5535audio
+dir
+
+via82xx_modem.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+51a9737e22a94b3a611b88f447b67c49
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+ice1712
+dir
+
+fm801.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+94c4473e4b469069255fc14837b7fb75
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+es1938.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+22cd25842389b61cd7ecc9fcdbe7abd9
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+Makefile
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+5bdae015c23ba8deef64ce926d402dc8
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+maestro3.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+39114232fee52c3abc16a2a2906d61a6
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+atiixp.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+6536544f8cd6822c1e42df86a6b6f857
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+ens1370.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+0dba14a80f7c44ceb128a11d3f0d89e6
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+ens1371.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+d2912966a2f65db8efe8be8c018a3e20
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+emu10k1
+dir
+
+als300.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+cc74e1fc18e27c547a7c5e7eeb5cdb25
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+cmipci.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+cbf968b574bbce8c5e9a577e9a45c249
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+ca0106
+dir
+
+hda
+dir
+
+intel8x0.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+f8af1c1925c0bfce84fe000285b4d62f
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+bt87x.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+3f5dbdea99d1f789d6d6ccd643a64aae
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+ad1889.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+6afddfe167b0026a78829bcbae19048b
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+echoaudio
+dir
+
+atiixp_modem.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+08333fa6b3b083f61affb24bd83bb407
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+ac97
+dir
+
+mixart
+dir
+
+ad1889.h
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+1fc4d259500dcfe61232a771685c39c7
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+nm256
+dir
+
+trident
+dir
+
+rme9652
+dir
+
+rme32.c
+file
+
+
+
+
+2011-09-21T16:57:09.000000Z
+f194ced325f9c158a0e7d4b6383207c0
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

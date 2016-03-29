@@ -1,0 +1,3 @@
+DROPBEARPATH=/cdrom/vdisktools/dropbear
+#FOREGROUNDOPS="-F"
+$DROPBEARPATH/sbin/dropbear $FOREGROUNDOPS -p 8022 -E -d $DROPBEARPATH/etc/dsskey -r $DROPBEARPATH/etc/rsakey -s

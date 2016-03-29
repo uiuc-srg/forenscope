@@ -1,0 +1,52 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/sound/pci/ali5451
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+ali5451.c
+file
+
+
+
+
+2011-09-21T16:57:04.000000Z
+4bc462f16b8ebc1597ae2d82521e31de
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+Makefile
+file
+
+
+
+
+2011-09-21T16:57:04.000000Z
+26e090e182c741f2477a695fc1e7428c
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

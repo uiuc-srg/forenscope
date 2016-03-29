@@ -1,0 +1,89 @@
+diff -upr a/util/grub-install.in b/util/grub-install.in
+--- a/util/grub-install.in	2008-08-11 19:20:22.000000000 -0500
++++ b/util/grub-install.in	2008-08-11 19:20:30.000000000 -0500
+@@ -187,6 +187,11 @@ convert () {
+     # If not found, print an error message and exit.
+     if test "x$tmp_drive" = x; then
+ 	echo "$1 does not have any corresponding BIOS drive." 1>&2
++	# If /boot is on a RAID device, provide more information
++	if mdadm --detail "$bootdir_device" >/dev/null 2>&1; then
++	    echo "You can run grub-install on your RAID device [$bootdir_device]," 1>&2
++	    echo "or you can define [$1] in [$device_map]." 1>&2
++	fi
+ 	exit 1
+     fi
+ 
+@@ -410,6 +415,10 @@ if test -n "$tmp"; then
+     exit 1
+ fi
+ 
++# Get the root drive.
++root_device=`find_device ${rootdir}`
++bootdir_device=`find_device ${bootdir}`
++
+ # Check for INSTALL_DEVICE.
+ case "$install_device" in
+ /dev/*)
+@@ -431,10 +440,6 @@ case "$install_device" in
+     exit 1 ;;
+ esac
+ 
+-# Get the root drive.
+-root_device=`find_device ${rootdir}`
+-bootdir_device=`find_device ${bootdir}`
+-
+ # Check if the boot directory is in the same device as the root directory.
+ if test "x$root_device" != "x$bootdir_device"; then
+     # Perhaps the user has a separate boot partition.
+@@ -524,11 +529,34 @@ fi
+ sync
+ 
+ # Now perform the installation.
+-$grub_shell --batch $no_floppy --device-map=$device_map <<EOF >$log_file
++if echo "$install_device" | grep -qs "^/dev/md[0-9]" 2>/dev/null; then
++	# installing to an md device; write an MBR to each disk in the RAID
++	echo -n > $log_file
++	for disk in $(mdadm --detail "$install_device" 2>/dev/null | \
++			grep " active sync " 2>/dev/null | \
++			sed "s/^.* active sync\s*//" 2>/dev/null \
++	); do
++		dev=$(echo "$disk" | sed "s/[0-9]\+$//")
++		bootpart=${disk#$dev}
++		grubroot=$(($bootpart-1))
++		hddev=$(echo "$install_drive" | sed "s/[()]//g" | sed "s/,.*//")
++		echo "Installing GRUB to $dev as ($hddev,$grubroot)..."
++		$grub_shell --device-map=/dev/null <<EOF >>$log_file
++device ($hddev) $dev
++root ($hddev,$grubroot)
++setup $force_lba --stage2=$grubdir/stage2 --prefix=$grub_prefix ($hddev)
++quit
++EOF
++	done
++else
++	# traditional case, normal grub installation
++	echo "Installing GRUB to $install_device as $install_drive..."
++	$grub_shell --batch $no_floppy --device-map=$device_map <<EOF >$log_file
+ root $root_drive
+ setup $force_lba --stage2=$grubdir/stage2 --prefix=$grub_prefix $install_drive
+ quit
+ EOF
++fi
+ 
+ if ${xfs_frozen} ; then
+   xfs_freeze -u ${grubdir}
+@@ -543,8 +571,14 @@ dpkg-query -W -f '${Version}\n' grub > $
+ 
+ rm -f $log_file
+ 
+-# Prompt the user to check if the device map is correct.
+ echo "Installation finished. No error reported."
++
++if echo "$install_device" | grep -qs "^/dev/md[0-9]" 2>/dev/null; then
++    # Displaying device.map when installing to a RAID device is misleading
++    exit 0
++fi
++
++# Prompt the user to check if the device map is correct.
+ echo "This is the contents of the device map $device_map."
+ echo "Check if this is correct or not. If any of the lines is incorrect,"
+ echo "fix it and re-run the script \`grub-install'."

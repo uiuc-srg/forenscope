@@ -1,0 +1,134 @@
+#DPATCHLEVEL=1
+
+diff -Naur -x .svn -x CVS bochs-2.2.5.orig/gui/Makefile.in bochs-2.2.5/gui/Makefile.in
+--- bochs-2.2.5.orig/gui/Makefile.in	2004-12-13 21:10:35.000000000 +0200
++++ bochs-2.2.5/gui/Makefile.in	2006-01-01 23:20:19.000000000 +0200
+@@ -112,47 +112,47 @@
+ 
+ ##### building plugins with libtool
+ %.lo: %.@CPP_SUFFIX@
+-	$(LIBTOOL) --mode=compile $(CXX) -c $(CXXFLAGS) $(LOCAL_CXXFLAGS) $< -o $@
++	$(LIBTOOL) --mode=compile --tag CXX $(CXX) -c $(CXXFLAGS) $(LOCAL_CXXFLAGS) $< -o $@
+ 
+ libbx_%.la: %.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH)
+ 
+ libbx_x.la: x.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_X)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_X)
+ 
+ libbx_sdl.la: sdl.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_SDL)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_SDL)
+ 
+ libbx_svga.la: svga.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_SVGA)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_SVGA)
+ 
+ libbx_beos.la: beos.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_BEOS)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_BEOS)
+ 
+ libbx_rfb.la: rfb.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_RFB)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_RFB)
+ 
+ libbx_amigaos.la: amigaos.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_AMIGAOS)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_AMIGAOS)
+ 
+ libbx_win32.la: win32.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_WIN32)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_WIN32)
+ 
+ libbx_macos.la: macos.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_MACOS)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_MACOS)
+ 
+ libbx_carbon.la: carbon.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_CARBON)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_CARBON)
+ 
+ libbx_nogui.la: nogui.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_NOGUI)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_NOGUI)
+ 
+ libbx_term.la: term.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_TERM)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH) $(GUI_LINK_OPTS_TERM)
+ 
+ # special link rules for plugins that require more than one object file
+ libbx_wx.la: $(GUI_OBJS_WX:.o=.lo) $(GUI_OBJS_WX_SUPPORT:.o=.lo)
+-	$(LIBTOOL) --mode=link $(CXX) -module $(GUI_OBJS_WX:.o=.lo) $(GUI_OBJS_WX_SUPPORT:.o=.lo) -o libbx_wx.la -rpath $(PLUGIN_PATH)  $(GUI_LINK_OPTS_WX)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module $(GUI_OBJS_WX:.o=.lo) $(GUI_OBJS_WX_SUPPORT:.o=.lo) -o libbx_wx.la -rpath $(PLUGIN_PATH)  $(GUI_LINK_OPTS_WX)
+ 
+ #### building DLLs for win32  (tested on cygwin only)
+ bx_%.dll: %.o
+diff -Naur -x .svn -x CVS bochs-2.2.5.orig/iodev/Makefile.in bochs-2.2.5/iodev/Makefile.in
+--- bochs-2.2.5.orig/iodev/Makefile.in	2005-12-10 20:37:35.000000000 +0200
++++ bochs-2.2.5/iodev/Makefile.in	2006-01-01 23:22:12.000000000 +0200
+@@ -124,38 +124,38 @@
+ 
+ ##### building plugins with libtool
+ %.lo: %.@CPP_SUFFIX@
+-	$(LIBTOOL) --mode=compile $(CXX) -c $(CXXFLAGS) $(LOCAL_CXXFLAGS) $< -o $@
++	$(LIBTOOL) --mode=compile --tag CXX $(CXX) -c $(CXXFLAGS) $(LOCAL_CXXFLAGS) $< -o $@
+ 
+ pcidev.lo : pcidev.@CPP_SUFFIX@
+-	$(LIBTOOL) --mode=compile $(CXX) -c $(CXXFLAGS) $(LOCAL_CXXFLAGS) $(PCIDEV_CXXFLAGS) $< -o $@
++	$(LIBTOOL) --mode=compile --tag CXX $(CXX) -c $(CXXFLAGS) $(LOCAL_CXXFLAGS) $(PCIDEV_CXXFLAGS) $< -o $@
+ 
+ libbx_%.la: %.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module $< -o $@ -rpath $(PLUGIN_PATH)
+ 
+ # special link rules for plugins that require more than one object file
+ libbx_harddrv.la: harddrv.lo hdimage.lo vmware3.lo $(CDROM_OBJS:.o=.lo)
+-	$(LIBTOOL) --mode=link $(CXX) -module harddrv.lo hdimage.lo vmware3.lo $(CDROM_OBJS:.o=.lo) -o libbx_harddrv.la -rpath $(PLUGIN_PATH)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module harddrv.lo hdimage.lo vmware3.lo $(CDROM_OBJS:.o=.lo) -o libbx_harddrv.la -rpath $(PLUGIN_PATH)
+ 
+ libbx_keyboard.la: keyboard.lo scancodes.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module keyboard.lo scancodes.lo -o libbx_keyboard.la -rpath $(PLUGIN_PATH)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module keyboard.lo scancodes.lo -o libbx_keyboard.la -rpath $(PLUGIN_PATH)
+ 
+ libbx_pit.la: pit.lo pit82c54.lo pit_wrap.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module pit.lo pit82c54.lo pit_wrap.lo -o libbx_pit.la -rpath $(PLUGIN_PATH)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module pit.lo pit82c54.lo pit_wrap.lo -o libbx_pit.la -rpath $(PLUGIN_PATH)
+ 
+ libbx_sb16.la: sb16.lo $(SOUNDLOW_OBJS:.o=.lo)
+-	$(LIBTOOL) --mode=link $(CXX) -module sb16.lo $(SOUNDLOW_OBJS:.o=.lo) -o libbx_sb16.la -rpath $(PLUGIN_PATH)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module sb16.lo $(SOUNDLOW_OBJS:.o=.lo) -o libbx_sb16.la -rpath $(PLUGIN_PATH)
+ 
+ libbx_ne2k.la: ne2k.lo $(NETLOW_OBJS:.o=.lo)
+-	$(LIBTOOL) --mode=link $(CXX) -module ne2k.lo $(NETLOW_OBJS:.o=.lo) -o libbx_ne2k.la -rpath $(PLUGIN_PATH)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module ne2k.lo $(NETLOW_OBJS:.o=.lo) -o libbx_ne2k.la -rpath $(PLUGIN_PATH)
+ 
+ libbx_pcipnic.la: pcipnic.lo $(NETLOW_OBJS:.o=.lo)
+-	$(LIBTOOL) --mode=link $(CXX) -module pcipnic.lo $(NETLOW_OBJS:.o=.lo) -o libbx_pcipnic.la -rpath $(PLUGIN_PATH)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module pcipnic.lo $(NETLOW_OBJS:.o=.lo) -o libbx_pcipnic.la -rpath $(PLUGIN_PATH)
+ 
+ libbx_serial.la: serial.lo serial_raw.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module serial.lo serial_raw.lo -o libbx_serial.la -rpath $(PLUGIN_PATH)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module serial.lo serial_raw.lo -o libbx_serial.la -rpath $(PLUGIN_PATH)
+ 
+ libbx_vga.la: vga.lo svga_cirrus.lo
+-	$(LIBTOOL) --mode=link $(CXX) -module vga.lo svga_cirrus.lo -o libbx_vga.la -rpath $(PLUGIN_PATH)
++	$(LIBTOOL) --mode=link --tag CXX $(CXX) -module vga.lo svga_cirrus.lo -o libbx_vga.la -rpath $(PLUGIN_PATH)
+ 
+ #### building DLLs for win32  (tested on cygwin only)
+ bx_%.dll: %.o
+diff -Naur -x .svn -x CVS bochs-2.2.5.orig/configure.in bochs-2.2.5/configure.in
+--- bochs-2.2.5.orig/configure.in	2005-12-30 18:07:54.000000000 +0200
++++ bochs-2.2.5/configure.in	2006-01-01 23:20:19.000000000 +0200
+@@ -1996,8 +1996,8 @@
+ MAKELIB="ar rv \$@"
+ RMCOMMAND="rm -f "
+ # first define link variables without libtool
+-LINK="\$(CXX) -o \$@ \$(CXXFLAGS) \$(LDFLAGS)"
+-LINK_CONSOLE="\$(CXX) -o \$@ \$(CXXFLAGS_CONSOLE) \$(LDFLAGS)"
++LINK="--tag CXX \$(CXX) -o \$@ \$(CXXFLAGS) \$(LDFLAGS)"
++LINK_CONSOLE="--tag CXX \$(CXX) -o \$@ \$(CXXFLAGS_CONSOLE) \$(LDFLAGS)"
+ # unless NO_LT is set, add libtool to the front of the link command
+ if test "$NO_LT" != 1; then
+   LINK="\$(LIBTOOL) --mode=link $LINK"

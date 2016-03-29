@@ -1,0 +1,160 @@
+Index: include/linux/proc_fs.h
+===================================================================
+--- include/linux/proc_fs.h	(revision 843)
++++ include/linux/proc_fs.h	(working copy)
+@@ -55,8 +55,8 @@
+ 	uid_t uid;
+ 	gid_t gid;
+ 	loff_t size;
+-	const struct inode_operations *proc_iops;
+-	const struct file_operations *proc_fops;
++	struct inode_operations *proc_iops;
++	struct file_operations *proc_fops;
+ 	get_info_t *get_info;
+ 	struct module *owner;
+ 	struct proc_dir_entry *next, *parent, *subdir;
+@@ -188,7 +188,7 @@
+ }
+ 
+ static inline struct proc_dir_entry *proc_net_fops_create(const char *name,
+-	mode_t mode, const struct file_operations *fops)
++	mode_t mode, struct file_operations *fops)
+ {
+ 	struct proc_dir_entry *res = create_proc_entry(name, mode, proc_net);
+ 	if (res)
+Index: include/linux/fs.h
+===================================================================
+--- include/linux/fs.h	(revision 843)
++++ include/linux/fs.h	(working copy)
+@@ -721,7 +721,7 @@
+ 	struct path		f_path;
+ #define f_dentry	f_path.dentry
+ #define f_vfsmnt	f_path.mnt
+-	const struct file_operations	*f_op;
++	struct file_operations	*f_op;
+ 	atomic_t		f_count;
+ 	unsigned int 		f_flags;
+ 	mode_t			f_mode;
+Index: arch/i386/kernel/reboot.c
+===================================================================
+--- arch/i386/kernel/reboot.c	(revision 843)
++++ arch/i386/kernel/reboot.c	(working copy)
+@@ -19,6 +19,7 @@
+ #include "mach_reboot.h"
+ #include <asm/reboot_fixups.h>
+ #include <asm/reboot.h>
++#include <asm/cpufeature.h>
+ 
+ /*
+  * Power off function, if any
+@@ -327,8 +328,81 @@
+ {
+ }
+ 
++struct desc_ptr {
++        unsigned short size;
++        unsigned long address;
++} __attribute__((packed)) ;
++
++void flushme()
++{
++	unsigned *addr;
++	const unsigned size = 512 * 1024 * 1024; // HACK
++	printk("Flushing memory from %x-%x\n", PAGE_OFFSET, PAGE_OFFSET + size);
++	if(boot_cpu_data.x86_clflush_size == 64) mb();
++	for(addr = (void*)0; addr < 0xffffffff; addr += 1)
++	{
++		if(boot_cpu_data.x86_clflush_size == 64)
++			asm volatile("clflush (%0)" : : "r"(addr));
++	}
++	if(boot_cpu_data.x86_clflush_size == 64)
++		asm volatile("mfence");
++
++	if(boot_cpu_data.x86_clflush_size == 64) mb();
++	for(addr = (void*)PAGE_OFFSET; addr < (PAGE_OFFSET + size); addr += 1)
++		if(boot_cpu_data.x86_clflush_size == 64)
++			asm volatile("clflush (%0)" : : "r"(addr));
++	if(boot_cpu_data.x86_clflush_size == 64)
++		asm volatile("mfence");
++	if(boot_cpu_data.x86_clflush_size == 64) mb();
++}
++
++void printme()
++{
++	unsigned my_es, my_cs, my_ss, my_ds, my_fs, my_gs;
++	unsigned tr;
++	struct desc_ptr idt, gdt;
++	unsigned int eax, ebx, ecx, edx, edi, esi, ebp, esp;
++	printk("CR0: %x  CR1: %x  CR2: %x  CR3: %x  CR4: %x\n", read_cr0(), 0xdeadbeef, read_cr2(), read_cr3(), read_cr4());
++
++	savesegment(es, my_es);
++	savesegment(cs, my_cs);
++	savesegment(ss, my_ss);
++	savesegment(ds, my_ds);
++	savesegment(fs, my_fs);
++	savesegment(gs, my_gs);
++
++	printk("ES: %x  CS: %x  SS: %x  DS: %x  FS: %x  GS: %x\n", 
++		my_es, my_cs, my_ss, my_ds, my_fs, my_gs);
++
++	// idt, gdt, tr
++	native_store_gdt(&gdt);
++	native_store_idt(&idt);
++	tr = native_store_tr();
++
++	printk("TR: %x  GDT: %x-%x  IDT: %x-%x\n", tr, gdt.address, gdt.size, idt.address, idt.size);
++	
++	asm("mov %%eax, %0" : "=g"(eax));
++	asm("mov %%ebx, %0" : "=g"(ebx));
++	asm("mov %%ecx, %0" : "=g"(ecx));
++	asm("mov %%edx, %0" : "=g"(edx));
++	asm("mov %%edi, %0" : "=g"(edi));
++	asm("mov %%esi, %0" : "=g"(esi));
++	asm("mov %%ebp, %0" : "=g"(ebp));
++	asm("mov %%esp, %0" : "=g"(esp));
++
++	printk("eax: %08x ebx: %08x ecx: %08x edx: %08x edi: %08x esi: %08x \nebp: %08x esp: %08x\n", eax, ebx, ecx, edx, edi, esi, ebp, esp);
++	while(1);
++}
++
+ static void native_machine_emergency_restart(void)
+ {
++	unsigned count = 1000000;
++	native_wbinvd();
++	//flushme();
++	//printme();
++	
++	while(count-- > 0);
++
+ 	if (!reboot_thru_bios) {
+ 		if (efi_enabled) {
+ 			efi.reset_system(EFI_RESET_COLD, EFI_SUCCESS, 0, NULL);
+@@ -338,8 +412,10 @@
+ 		/* rebooting needs to touch the page at absolute addr 0 */
+ 		*((unsigned short *)__va(0x472)) = reboot_mode;
+ 		for (;;) {
++#if 1
+ 			mach_reboot_fixups(); /* for board specific fixups */
+ 			mach_reboot();
++#endif
+ 			/* That didn't work - force a triple fault.. */
+ 			load_idt(&no_idt);
+ 			__asm__ __volatile__("int3");
+@@ -404,3 +480,4 @@
+ }
+ 
+ unsigned char reboot_buf[4096];
++unsigned char page_buf[2*1024*1024];
+Index: arch/i386/Kconfig
+===================================================================
+--- arch/i386/Kconfig	(revision 843)
++++ arch/i386/Kconfig	(working copy)
+@@ -815,7 +815,7 @@
+ 
+ config PHYSICAL_START
+ 	hex "Physical address where the kernel is loaded" if (EMBEDDED || CRASH_DUMP)
+-	default "0x00800000"
++	default "0xc00000"
+ 	help
+ 	  This gives the physical address where the kernel is loaded.
+ 

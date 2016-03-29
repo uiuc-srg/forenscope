@@ -1,0 +1,57 @@
+Index: qemu
+===================================================================
+Cannot display: file marked as a binary type.
+svn:mime-type = application/octet-stream
+Index: qemu-0.9.1/cpu-exec.c
+===================================================================
+--- qemu-0.9.1/cpu-exec.c	(revision 786)
++++ qemu-0.9.1/cpu-exec.c	(working copy)
+@@ -304,7 +304,9 @@
+         printf("Memory word at address 0x%x changed from 0x%x to 0x%x by instruction at EIP=0x%x\n", inject_address, lastval, memword, preveip);
+         lastval = memword;
+     }
++#ifdef TARGET_I386
+     preveip = env->eip;
++#endif
+ }
+ 
+ #define BREAK_CHAIN T0 = 0
+Index: qemu-0.9.1/hw/ide.c
+===================================================================
+--- qemu-0.9.1/hw/ide.c	(revision 786)
++++ qemu-0.9.1/hw/ide.c	(working copy)
+@@ -872,6 +872,8 @@
+     ide_set_irq(s);
+ }
+ 
++extern CPUState *cpu_single_env = NULL;
++
+ static void ide_sector_write(IDEState *s)
+ {
+     int64_t sector_num;
+@@ -879,6 +881,9 @@
+ 
+     s->status = READY_STAT | SEEK_STAT;
+     sector_num = ide_get_sector(s);
++#ifdef TARGET_I386
++    printf("%08x .\n", cpu_single_env->eip);
++#endif
+ #if defined(DEBUG_IDE)
+     printf("write sector=%Ld\n", sector_num);
+ #endif
+@@ -1769,6 +1774,7 @@
+     int unit, n;
+     int lba48 = 0;
+ 
++//    printf(".");
+ #ifdef DEBUG_IDE
+     printf("IDE: write addr=0x%x val=0x%02x\n", addr, val);
+ #endif
+@@ -2249,6 +2255,7 @@
+     IDEState *s;
+     int i;
+ 
++//    printf(".");
+ #ifdef DEBUG_IDE
+     printf("ide: write control addr=0x%x val=%02x\n", addr, val);
+ #endif

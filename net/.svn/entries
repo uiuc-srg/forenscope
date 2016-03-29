@@ -1,0 +1,229 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/net
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+irda
+dir
+
+Kconfig
+file
+
+
+
+
+2011-09-21T16:56:56.000000Z
+a04d0655c8ec56c9527451af10cfd786
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+atm
+dir
+
+unix
+dir
+
+netlabel
+dir
+
+sched
+dir
+
+wanrouter
+dir
+
+core
+dir
+
+TUNABLE
+file
+
+
+
+
+2011-09-21T16:56:56.000000Z
+0e3cde343ac03bdf408e31f7b9ba5a0f
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+netfilter
+dir
+
+mac80211
+dir
+
+ipx
+dir
+
+netlink
+dir
+
+bluetooth
+dir
+
+rose
+dir
+
+sysctl_net.c
+file
+
+
+
+
+2011-09-21T16:56:56.000000Z
+c4999c9fd2432db2b59426e897dacff0
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+802
+dir
+
+sctp
+dir
+
+8021q
+dir
+
+econet
+dir
+
+Makefile
+file
+
+
+
+
+2011-09-21T16:56:56.000000Z
+433a9c7963c7d98d53528db9d367e25d
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+x25
+dir
+
+ethernet
+dir
+
+lapb
+dir
+
+ax25
+dir
+
+ipv4
+dir
+
+rfkill
+dir
+
+ipv6
+dir
+
+key
+dir
+
+bridge
+dir
+
+wireless
+dir
+
+rxrpc
+dir
+
+tipc
+dir
+
+decnet
+dir
+
+ieee80211
+dir
+
+netrom
+dir
+
+nonet.c
+file
+
+
+
+
+2011-09-21T16:56:56.000000Z
+edebf252d01a4d822dbb3bd14171b17f
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+compat.c
+file
+
+
+
+
+2011-09-21T16:56:56.000000Z
+bfb34d0896682ad3a4def73ebde0eb62
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+iucv
+dir
+
+packet
+dir
+
+dccp
+dir
+
+socket.c
+file
+
+
+
+
+2011-09-21T16:56:56.000000Z
+be69242f5e81db53794e039b5cb2d5a7
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+llc
+dir
+
+sunrpc
+dir
+
+xfrm
+dir
+
+appletalk
+dir
+

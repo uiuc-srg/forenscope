@@ -1,0 +1,1 @@
+cmd_drivers/rtc/built-in.o :=  ld -m elf_i386 -m elf_i386  -r -o drivers/rtc/built-in.o drivers/rtc/rtc-lib.o drivers/rtc/hctosys.o drivers/rtc/rtc-core.o drivers/rtc/rtc-test.o drivers/rtc/rtc-ds1742.o drivers/rtc/rtc-m48t86.o drivers/rtc/rtc-ds1553.o drivers/rtc/rtc-v3020.o

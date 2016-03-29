@@ -1,0 +1,13 @@
+#!/bin/sh
+
+rm /lib
+ln -s /cdrom/vdisktools/lib /lib
+ln -s /cdrom/vdisktools/nsswitch.conf /etc/nsswitch.conf
+
+/cdrom/vdisktools/dropbear/startdropbear
+cp -r /cdrom/vdisktools/root /
+chown root /root
+chmod 700 /root
+
+/cdrom/vdisktools/makeptys 2>&1 > /dev/null
+ln -s /cdrom/vdisktools/dropbear/bin/scp /bin

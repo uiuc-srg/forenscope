@@ -1,0 +1,40 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/bootkit/tools/bochs-2.3/doc/docbook/documentation
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2008-03-18T02:04:43.908387Z
+418
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+documentation.dbk
+file
+
+
+
+
+2011-09-21T16:58:16.000000Z
+4a0c2a29898462c47f9c3760466a2e17
+2008-03-18T02:04:43.908387Z
+418
+emchan
+

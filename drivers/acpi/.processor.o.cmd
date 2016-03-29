@@ -1,0 +1,1 @@
+cmd_drivers/acpi/processor.o := ld -m elf_i386 -m elf_i386  -r -o drivers/acpi/processor.o drivers/acpi/processor_core.o drivers/acpi/processor_throttling.o drivers/acpi/processor_idle.o drivers/acpi/processor_thermal.o

@@ -1,0 +1,52 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/arch/alpha/boot/tools
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+mkbb.c
+file
+
+
+
+
+2011-09-21T17:01:21.000000Z
+e2db180026ca6a539ba04af7c108e339
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+objstrip.c
+file
+
+
+
+
+2011-09-21T17:01:21.000000Z
+7f9eeb2ef2380c7d3049379480cac590
+2007-10-03T20:38:42.322171Z
+233
+emchan
+

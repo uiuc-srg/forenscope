@@ -1,0 +1,11 @@
+--- grub-0.97/util/grub-install.in.orig	2006-07-09 15:48:38.069020456 -0700
++++ grub-0.97/util/grub-install.in	2006-07-09 15:48:53.886764300 -0700
+@@ -462,6 +462,8 @@
+     exit 1
+ fi
+ 
++dpkg-query -W -f '${Version}\n' grub > ${grubdir}/installed-version
++
+ rm -f $log_file
+ 
+ # Prompt the user to check if the device map is correct.

@@ -1,0 +1,17 @@
+Notes:
+To memdump from QEMU, type (128mb ram):
+memsave 0xc0800000 134217728 mem.dump
+hexdump -e '"%07.7_ax  " 1/4 "%08x " "\n"' mem.dump | grep -e "  c[0-7].....[048c]" > memdump.temp
+cat memdump.temp | ./memdump/process_dump.pl
+
+Terms:
+Access magnitude- The degree of ingress pointers to a particular target address.This may be an indication of the start of an important data structure or memory pool.
+
+In particular, page-aligned addresses with high access magnitudes may be further evidence of the beginning of an object pool.
+
+
+HOW-TO use the make_dot.sh:
+ ./make_dot.sh my_graph pointer.txt > pointer.dot
+ cat pointer.dot | dot -Tpng > pointer.png
+
+-must have the "graphviz" program

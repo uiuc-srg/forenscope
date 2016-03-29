@@ -1,0 +1,222 @@
+Index: module/payload.c
+===================================================================
+--- module/payload.c	(revision 893)
++++ module/payload.c	(working copy)
+@@ -270,8 +270,8 @@
+ 	ctask = *cctask;
+ 
+ 	/* Figure out commandline */
+-	if(!strcmp(cmdline, "/boot/bootjacker-kernel qemu"))
+-	{
++	if(!strcmp(cmdline, "/boot/bootjacker-kernel qemu") ||
++	   !strcmp(cmdline, "/boot/bootjacker-kernel memload")) {
+ 		printk("QEMU CR4 selected\n");
+ 		bootjctxt.cr4 = 0x00000690;
+ 	} else if(!strcmp(cmdline, "/boot/bootjacker-kernel memup")) {
+Index: src/grub.symbols
+===================================================================
+--- src/grub.symbols	(revision 893)
++++ src/grub.symbols	(working copy)
+@@ -2,8 +2,12 @@
+ 
+ symbols="
+ rawwrite \
++<<<<<<< .mine
+ rawread \
++=======
++rawread \
+ devread \
++>>>>>>> .r893
+ grub_open \
+ grub_read \
+ fat_read \
+Index: src/helper.c
+===================================================================
+--- src/helper.c	(revision 893)
++++ src/helper.c	(working copy)
+@@ -87,8 +87,38 @@
+ }
+ 
+ int (*rawwrite)(int drive, int sector, char *buf) = (void*) kk_rawwrite;
++<<<<<<< .mine
++int (*rawread) (int drive, int sector, int byte_offset, int byte_len, char *buf) = (void*) kk_rawread;
++=======
+ int (*rawread)(int drive, int sector, int byte_offset, int byte_len, char *buf) = (void*) kk_rawread;
++>>>>>>> .r893
+ 
++void do_memload(void)
++{
++	int* s_current_drive = (void*)kk_current_drive;
++	int dumpsector = 2, mb = 0;
++	void *nextsector = (void*) MEM_START; //start at start of extended memory
++	char sectorbuf[512];
++
++	printf("IN MEMLOAD!!\n\n");
++	printf("System time: %d:%d:%d GMT\n", read_cmos_time(CMOS_HOURS), read_cmos_time(CMOS_MINUTES), read_cmos_time(CMOS_SECONDS));
++	printf("System date: %d/%d/%d\n", read_cmos_time(CMOS_MONTH), read_cmos_time(CMOS_DATE), read_cmos_time(CMOS_YEAR));
++
++	while((int)nextsector < (int)MEM_LIMIT)
++	{	
++		int ret = rawread(*s_current_drive, dumpsector, 0, 512, sectorbuf);
++		if(dumpsector % 2048 == 0) // Once per MB
++		{
++			printf("memory addr at %x dumped from disk sector %d mb:%d\n", (unsigned)nextsector, dumpsector, ++mb);
++		}
++
++		memcpy(nextsector, (void *)sectorbuf, 512);	
++		nextsector = (void *)((int)nextsector + 512);
++		dumpsector++;
++	}
++}
++
++
+ unsigned int get_time(void)
+ {
+ 	unsigned int start_hr = read_cmos_time(CMOS_HOURS), start_min = read_cmos_time(CMOS_MINUTES), start_sec = read_cmos_time(CMOS_SECONDS);
+Index: src/helper.h
+===================================================================
+--- src/helper.h	(revision 893)
++++ src/helper.h	(working copy)
+@@ -15,7 +15,12 @@
+ #define DUMP_SIZE (1024*1024*32)
+ 
+ //#define QEMU
++<<<<<<< .mine
++// NOTE: This is the start of extended memory and is used for memdump, memload
++#define MEM_START 0x0100000  
++=======
+ #define MEM_START (1024*1024)
++>>>>>>> .r893
+ #define MEM_LIMIT 0x8000000
+ #define CMP_START  1
+ #define CMP_OFFSET (1024*1024*CMP_START)
+@@ -55,6 +60,7 @@
+ void do_memwrite(int* testptr, unsigned int testcnt);
+ void do_memcmp(int* testptr, int testcnt, int length);
+ void do_memdump(void);
++void do_memload(void);
+ void do_printtime(void);
+ void do_pcilist(void);
+ void do_pcifill(void);
+Index: start
+===================================================================
+--- start	(revision 893)
++++ start	(working copy)
+@@ -2,18 +2,20 @@
+ 
+ #QEMU="./tools/qemu-0.11"
+ #QEMU="/usr/bin/qemu"
+-QEMU="./tools/qemu/qemu -L tools/qemu/install/usr/local/share/qemu"
++#QEMU="./tools/qemu/qemu -L tools/qemu/install/usr/local/share/qemu"
+ #QEMU="./tools/qemu/qemu-0.9.1/i386-softmmu/qemu -L tools/qemu/install/usr/local/share/qemu -inject-address 0x0"
++QEMU="/home/ubuntu/qemu-0.12.2/i386-softmmu/qemu"
+ QEMUARGS="-m 128 -cdrom grub.iso -boot d -k en-us"
+ MON="-monitor stdio"
+ VDISKARGS="-hda fat:vdisk"
+ #SNAPSHOT="-snapshot"
+ #SCADA_DISK_ARGS="-hda ubuntu8_scada.vmdk $SNAPSHOT"
+ MEMDUMPSIZE="140M"
+-MEMDUMPARGS="-hdb memdumptest.img"
++#MEMDUMPARGS="-hdb memdumptest.img"
+ SSHARGS="-redir tcp:8022:10.0.2.15:8022"
+ HTTPARGS="-redir tcp:8080:10.0.2.15:8080"
+ NETARGS="-net user -net nic $SSHARGS $HTTPARGS"
++#PIPEARGS="tail -f qemu.pipe"
+ 
+ # Each sector is ~2.5 mb
+ SECTORS="63"
+@@ -39,15 +41,23 @@
+ 
+ #make memdump image
+ which mcopy || { echo "mcopy not found, please install mtools"; exit 1; }
+-# Deleting the memdump.img and recreating it
+-rm memdump.img
+-make_memimage
++if [ -e memdump.img ]
++then
++	echo "Using existing memdump"
++else
++	# Deleting the memdump.img and recreating it
++	rm memdump.img
++	make_memimage
++fi
+ 
+ # Put the lib into vdisktools
+ tar -xf vdisktools/lib.tgz 
+ mv lib vdisktools/
+ 
++# Clear the pipe
++cat /dev/null > qemu.pipe
++
+ ./scripts/gen_iso_img.sh
+ #-s means GDB, -S means wait for GDB
++#${PIPEARGS} |
+ ${QEMU} -s ${QEMUARGS} ${VDISKARGS} ${MEMDUMPARGS} ${SCADA_DISK_ARGS} ${NETARGS} ${MON} ${CUSTARGS} $@
+-
+Index: tools/diff/process-dd.sh
+===================================================================
+--- tools/diff/process-dd.sh	(revision 893)
++++ tools/diff/process-dd.sh	(working copy)
+@@ -1,7 +1,8 @@
+ pushd ../..
+ export MTOOLSRC="config/mtools.conf";
+ mcopy c:
+-mv DD-F.img tools/diff/
++mv ./DD-F.img tools/diff/dd-f.img
++mv $1 tools/diff
+ popd
+ 
+ # $1 is the pmemsave image
+Index: kernel.c
+===================================================================
+--- kernel.c	(revision 893)
++++ kernel.c	(working copy)
+@@ -176,8 +176,16 @@
+ 			do_dmesg();
+     else if(!strcmp(cmdline,"/boot/bootjacker-kernel memdump"))
+ 			do_memdump();
++<<<<<<< .mine
++    else if(!strcmp(cmdline,"/boot/bootjacker-kernel memload")) {
++			do_memload();
++			do_pcifill();
++			do_qemu();
++    }
++=======
+     else if(!strcmp(cmdline,"/boot/bootjacker-kernel memup"))
+ 			do_memup();
++>>>>>>> .r893
+     else if(!strcmp(cmdline,"/boot/bootjacker-kernel memcompressdump"))
+ 			do_memcompressdump();
+     else if(!strcmp(cmdline,"/boot/bootjacker-kernel printtime"))
+Index: config/menu.lst.cdrom
+===================================================================
+--- config/menu.lst.cdrom	(revision 893)
++++ config/menu.lst.cdrom	(working copy)
+@@ -16,7 +16,7 @@
+ ## timeout sec
+ # Set a timeout, in SEC seconds, before automatically booting the default entry
+ # (normally the first entry defined).
+-timeout		15
++timeout		1
+ 
+ # Pretty colours
+ color cyan/blue white/blue
+@@ -142,11 +142,18 @@
+ kernel		/boot/bootjacker-kernel memdump
+ root		(hd1,0)
+ 
++<<<<<<< .mine
++title		Bootjacker Memload 
++kernel		/boot/bootjacker-kernel memload
++root		(hd1,0)
+ 
++=======
++
+ title		Bootjacker Virtualiser
+ kernel		/boot/bootjacker-kernel memup
+ root		(hd1,0)
+ 
++>>>>>>> .r893
+ title		Bootjacker Syscall 
+ kernel		/boot/bootjacker-kernel syscall
+ module		/syscall.bin

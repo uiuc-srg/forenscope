@@ -1,0 +1,42 @@
+#! /bin/sh /usr/share/dpatch/dpatch-run
+## use_genisoimage_instead_of_mkisofs.dpatch by  <lutin@ubuntu.com>
+##
+## All lines beginning with `## DP:' are a description of the patch.
+## DP: No description.
+
+@DPATCH@
+diff -urNad grub-0.97~/docs/grub.texi grub-0.97/docs/grub.texi
+--- grub-0.97~/docs/grub.texi	2005-05-08 04:59:59.000000000 +0200
++++ grub-0.97/docs/grub.texi	2007-12-03 19:28:04.000000000 +0100
+@@ -717,12 +717,12 @@
+ Finally, make a ISO9660 image file like this:
+ 
+ @example
+-$ @kbd{mkisofs -R -b boot/grub/stage2_eltorito -no-emul-boot \
++$ @kbd{genisoimage -R -b boot/grub/stage2_eltorito -no-emul-boot \
+     -boot-load-size 4 -boot-info-table -o grub.iso iso}
+ @end example
+ 
+ This produces a file named @file{grub.iso}, which then can be burned
+-into a CD (or a DVD).  @kbd{mkisofs} has already set up the disc to boot
++into a CD (or a DVD).  @kbd{genisoimage} has already set up the disc to boot
+ from the @kbd{boot/grub/stage2_eltorito} file, so there is no need to 
+ setup GRUB on the disc.  (Note that the @kbd{-boot-load-size 4} bit is
+ required for compatibility with the BIOS on many older machines.)
+diff -urNad grub-0.97~/util/mkbimage grub-0.97/util/mkbimage
+--- grub-0.97~/util/mkbimage	2004-07-24 20:57:31.000000000 +0200
++++ grub-0.97/util/mkbimage	2007-12-03 19:28:04.000000000 +0100
+@@ -403,11 +403,11 @@
+ 
+ For El Torito floppy emulation :
+ 
+-mkisofs -b <image> -c boot.catalog -o raw.iso <dir>
++genisoimage -b <image> -c boot.catalog -o raw.iso <dir>
+ 
+ And for El Torito Hard Disk emulation:
+ 
+-mkisofs -b <image> -hard-disk-boot -c boot.catalog -o raw.iso <dir> 
++genisoimage -b <image> -hard-disk-boot -c boot.catalog -o raw.iso <dir> 
+ 
+ Enjoy!
+ EOF

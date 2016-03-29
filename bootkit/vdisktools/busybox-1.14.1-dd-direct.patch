@@ -1,0 +1,11 @@
+--- busybox-vanilla/busybox-1.14.1/coreutils/dd.c	2009-05-13 09:32:07.000000000 -0500
++++ busybox-1.14.1/coreutils/dd.c	2010-01-25 00:53:26.000000000 -0600
+@@ -250,7 +250,7 @@
+ 		infile = bb_msg_standard_input;
+ 	}
+ 	if (outfile != NULL) {
+-		int oflag = O_WRONLY | O_CREAT;
++		int oflag = O_WRONLY | O_CREAT | O_DIRECT;
+ 
+ 		if (!seek && !(flags & FLAG_NOTRUNC))
+ 			oflag |= O_TRUNC;

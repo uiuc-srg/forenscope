@@ -1,0 +1,88 @@
+8
+
+dir
+894
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc/trunk/main/linux_integrity/linux-bootkit/sound/soc
+svn+ssh://emchan@srgprojects.cs.uiuc.edu/repository/mcc
+
+
+
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+
+svn:special svn:externals svn:needs-lock
+
+
+
+
+
+
+
+
+
+
+
+4e7d1064-7825-0410-8635-8e7224fd1a4c
+
+codecs
+dir
+
+Kconfig
+file
+
+
+
+
+2011-09-21T16:56:58.000000Z
+fdf26fd034cc993a50dcc8e04a952fcc
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+soc-dapm.c
+file
+
+
+
+
+2011-09-21T16:56:58.000000Z
+7c06fe573f5239569364e09c751bd76a
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+pxa
+dir
+
+soc-core.c
+file
+
+
+
+
+2011-09-21T16:56:58.000000Z
+bcb7eabc1ac79c456e29994511a68773
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+Makefile
+file
+
+
+
+
+2011-09-21T16:56:58.000000Z
+2f07ec04a373da455d89161948b0d335
+2007-10-03T20:38:42.322171Z
+233
+emchan
+
+at91
+dir
+
+s3c24xx
+dir
+
